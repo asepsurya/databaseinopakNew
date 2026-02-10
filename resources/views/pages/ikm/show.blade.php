@@ -4,6 +4,7 @@
 
 @push('styles')
 <!-- DataTables CSS -->
+<link href="{{ asset('assets/plugins/datatables/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/plugins/datatables/responsive.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
 <style>
     .table {
@@ -142,10 +143,13 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            {{-- <div class="card-header bg-primary text-white justify-content-between d-flex align-items-center">
-                <h5 class="mb-0"><i class="mdi mdi-account-group me-2"></i>Data IKM - {{ $project->NamaProjek }}</h5>
-                <a href="/project" class="btn btn-light btn-sm"><i class="mdi mdi-arrow-left"></i> Kembali</a>
-            </div> --}}
+            <div class="card-header justify-content-between d-flex align-items-center">
+                <h4 class="mb-0"><i class="ti ti-user-group me-2"></i>Data IKM - {{ $project->NamaProjek }}</h4>
+                <div class="d-flex gap-2">
+                    <a href="/project" class="btn btn-light btn-sm"><i class="ti ti-arrow-left me-1"></i> Kembali</a>
+                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#tambahIkm"><i class="ti ti-plus me-1"></i> Tambah</button>
+                </div>
+            </div>
             <div class="card-body">
 
 
@@ -171,13 +175,17 @@
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-3">
-                                        <div class="avatar-title bg-light rounded">
-                                            <i class="mdi mdi-storefront text-muted"></i>
-                                        </div>
+                                        @if($data->foto && file_exists(public_path('storage/' . $data->foto)))
+                                            <img src="{{ asset('storage/' . $data->foto) }}" alt="{{ $data->nama }}" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                        @else
+                                            <div class="avatar-title bg-light text-muted rounded">
+                                                <i class="ti ti-user"></i>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div>
                                         <a href="/project/ikms/{{ encrypt($data->id) }}/{{ $project->id }}" class="link-reset fw-medium">{{ $data->nama }}</a>
-                                        <p class="text-muted mb-0 small" style="font-size: 12px;">{{ $data->email ?? 'No email' }}</p>
+                                        <p class="text-muted mb-0 small" style="font-size: 12px;">{{ $data->created_at->diffForHumans() }}</p>
                                     </div>
                                 </div>
                             </td>
@@ -203,7 +211,7 @@
                             <td>
                                 <div class="d-flex gap-1">
                                     <a href="/project/ikms/{{ encrypt($data->id) }}/{{ $project->id }}" class="btn btn-sm btn-light btn-icon" title="Detail">
-                                        <i class="mdi mdi-eye"></i>
+                                        <i class="ti ti-eye"></i>
                                     </a>
                                     <form action="/project/dataikm/{{ $project->id }}/update" method="POST" class="d-inline">
                                         @csrf
@@ -215,7 +223,7 @@
                                         <input type="text" value="{{ $data->id }}" name="getId_IKM" hidden>
                                         <input type="text" value="{{ $project->NamaProjek }}" name="get_Nmproject" hidden>
                                         <button type="submit" class="btn btn-sm btn-light btn-icon" title="Ubah">
-                                            <i class="mdi mdi-pencil"></i>
+                                            <i class="ti ti-pencil"></i>
                                         </button>
                                     </form>
                                     <form action="/project/dataikm/{{ $project->id }}/delete" method="POST" class="d-inline">
@@ -223,7 +231,7 @@
                                         <input type="text" value="{{ $data->id }}" name="id_ikm" hidden>
                                         <input type="text" value="{{ $project->id }}" name="id_Project" hidden>
                                         <button type="submit" class="btn btn-sm btn-light btn-icon" title="Hapus" onclick="return confirm('Anda Yakin data ini akan dihapus?')">
-                                            <i class="mdi mdi-delete"></i>
+                                            <i class="ti ti-trash"></i>
                                         </button>
                                     </form>
                                 </div>
@@ -233,10 +241,10 @@
                         <tr>
                             <td colspan="8" class="text-center py-5">
                                 <div class="d-flex flex-column align-items-center">
-                                    <i class="mdi mdi-inbox-outline fs-1 d-block mb-2 text-muted"></i>
+                                    <i class="ti ti-inbox fs-1 d-block mb-2 text-muted"></i>
                                     <p class="mb-3 text-muted">Belum ada data IKM</p>
                                     <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahIkm">
-                                        <i class="mdi mdi-plus me-2"></i>Tambah IKM Pertama
+                                        <i class="ti ti-plus me-2"></i>Tambah IKM Pertama
                                     </a>
                                 </div>
                             </td>
@@ -262,21 +270,19 @@
                     @csrf
                     <div class="mb-3">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="nama" placeholder="Nama Lengkap" required>
-                            <label for="nama" class="form-label">Nama Lengkap</label>
+                            <input type="text" class="form-control" name="nama" placeholder="Nama" required>
+                            <label for="nama" class="form-label">Nama IKM</label>
                         </div>
-                        <small class="text-muted">*) Nama Lengkap IKM</small>
                     </div>
                     <div class="mb-3">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="jenisProduk" placeholder="Ex: Keripik Salak, Keripik Pisang" required>
+                            <input type="text" class="form-control" name="jenisProduk" placeholder="Jenis Produk" required>
                             <label for="jenisProduk" class="form-label">Jenis Produk</label>
                         </div>
-                        <small class="text-muted">*) Ex: Keripik Salak, Keripik Pisang</small>
                     </div>
                     <input type="text" name="id_Project" id="id_Project" value="{{ $project->id }}" hidden>
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="mdi mdi-content-save me-2"></i>Simpan
+                        <i class="ti ti-device-floppy me-2"></i>Simpan
                     </button>
                 </form>
             </div>
@@ -286,9 +292,15 @@
 @endsection
 
 @push('scripts')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<!-- jQuery -->
+<script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+
+<!-- DataTables JS -->
+<script src="{{ asset('assets/plugins/datatables/dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/datatables/dataTables.bootstrap5.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/datatables/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/datatables/responsive.bootstrap5.min.js') }}"></script>
+
 <script>
     $(document).ready(function () {
         $('#ikm-table').DataTable({
@@ -301,8 +313,10 @@
                 info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
                 infoEmpty: "Menampilkan 0 sampai 0 dari 0 data",
                 paginate: {
-                    previous: '<i class="mdi mdi-chevron-left"></i>',
-                    next: '<i class="mdi mdi-chevron-right"></i>'
+                    previous: '<i class="ti ti-chevron-left"></i>',
+                    next: '<i class="ti ti-chevron-right"></i>',
+                    first: '<i class="ti ti-chevron-left"></i>',
+                    last: '<i class="ti ti-chevron-right"></i>'
                 }
             }
         });

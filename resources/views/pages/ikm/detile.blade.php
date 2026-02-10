@@ -1,1059 +1,615 @@
 @extends('layouts.master')
 
-@section('page-title', 'Detail IKM - ' . $project->namaProject)
+@section('page-title', 'Detail IKM - ' . ($ikm->first()->nama ?? 'N/A'))
+
+@section('styles')
+
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+
+
+<style>
+/* MATIKAN SEMUA FOCUS TABLE */
+table:focus,
+table:focus-within,
+tr:focus,
+tr:focus-within,
+td:focus,
+td:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: inherit !important;
+}
+
+/* MATIKAN CONTENTEDITABLE */
+[contenteditable],
+[contenteditable]:focus,
+[contenteditable]:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* MATIKAN TINYMCE INLINE TOTAL */
+.tox-tinymce-inline,
+.tox-tinymce-inline *,
+.tox-edit-area,
+.tox-edit-area__iframe {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* EDITOR ITSELF */
+.inline-editor{
+    border: none !important;
+}
+
+
+
+    .dark input { color: #9fa6bc; }
+    .mytr { background-color: #f8f8f8; }
+    .dark .mytr { background-color: transparent; }
+    .transparent-input {
+        background: transparent;
+        border-top-style: hidden;
+        border-right-style: hidden;
+        border-left-style: hidden;
+        border-bottom-style: hidden;
+        outline: none !important;
+        outline-width: 0 !important;
+        box-shadow: none;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+    .transparent-textarea {
+        background: transparent;
+        border-top-style: hidden;
+        border-right-style: hidden;
+        border-left-style: hidden;
+        border-bottom-style: hidden;
+        outline: none !important;
+        outline-width: 0 !important;
+        box-shadow: none;
+        -moz-box-shadow: none;
+        -webkit-box-shadow: none;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        resize: vertical;
+        min-height: 60px;
+    }
+    .ql-container {
+        border-bottom-left-radius: 0.375rem;
+        border-bottom-right-radius: 0.375rem;
+        font-size: 14px;
+    }
+    .ql-toolbar {
+        border-top-left-radius: 0.375rem;
+        border-top-right-radius: 0.375rem;
+    }
+    .editor-wrapper {
+        background: #fff;
+        border-radius: 0.375rem;
+        border: 1px solid #e1e5eb;
+    }
+    .dark .editor-wrapper {
+        background: #2e3344;
+        border-color: #3d4458;
+    }
+    .editor-wrapper:focus-within {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.125rem rgba(13, 110, 253, 0.15);
+    }
+    .image-editor-container {
+        max-height: 400px;
+        background: #f8f9fa;
+    }
+    .dark .image-editor-container {
+        background: #2e3344;
+    }
+    .cropper-view-box,
+    .cropper-face {
+        border-radius: 0;
+    }
+    .discussion-card {
+        transition: all 0.2s ease;
+    }
+    .discussion-card:hover {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    .dark .discussion-card:hover {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.25);
+    }
+    .comment-input-wrapper {
+        position: relative;
+    }
+    .comment-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .benchmark-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.5rem;
+    }
+    .benchmark-card img {
+        transition: transform 0.3s ease;
+    }
+    .benchmark-card:hover img {
+        transform: scale(1.05);
+    }
+    .benchmark-actions {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 0.5rem;
+        background: linear-gradient(transparent, rgba(0,0,0,0.7));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .benchmark-card:hover .benchmark-actions {
+        opacity: 1;
+    }
+    .design-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.75rem;
+    }
+    .design-preview-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        cursor: pointer;
+    }
+    .design-preview-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .design-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+    .design-preview-item:hover .design-overlay {
+        opacity: 1;
+    }
+    .tab-content-editor {
+        min-height: 200px;
+    }
+    .color-picker-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 0.375rem;
+        border: 2px solid #e1e5eb;
+        cursor: pointer;
+    }
+    .dark .color-picker-btn {
+        border-color: #3d4458;
+    }
+    .ai-generate-btn {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s ease;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+}
+
+.ai-editor-wrapper:focus-within .ai-generate-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Hilangkan semua efek fokus */
+.inline-editor {
+    background: transparent;
+    border: none;
+    outline: none !important;
+    box-shadow: none !important;
+    padding-right: 40px;
+}
+
+</style>
+@endsection
+
 @section('content')
+@if($ikm->first())
 <div class="row">
     <div class="col-xxl-12">
         <div class="row g-0">
-            <!-- Project Main Details -->
+            <!-- Main Content -->
             <div class="col-xl-9">
                 <div class="card card-h-100 rounded-0 rounded-start border-end border-dashed">
+                    <!-- Profile Header -->
                     <div class="card-header align-items-start p-4">
-                        <div class="avatar-xxl me-3">
-                            <span class="avatar-title text-bg-light rounded">
-                                @if($ikm->first() && $ikm->first()->gambar)
-                                    <img src="{{ asset('storage/'.$ikm->first()->gambar) }}" height="48" alt="Brand-img" class="rounded">
-                                @else
-                                    <i class="ti ti-box fs-xl"></i>
-                                @endif
-                            </span>
-                        </div>
+                        <div class="avatar-xxl me-3 position-relative">
+                                <a data-fslightbox href="{{ asset('storage/'.$ikm->first()->gambar) }}" title="Klik untuk perbesar">
+                                    <img src="{{ asset('storage/'.$ikm->first()->gambar) }}" alt="{{ $ikm->first()->nama }}" class="rounded" style="width: 72px; height: 72px; object-fit: cover;">
+                                </a>
+                                <button class="btn btn-light btn-sm position-absolute bottom-0 end-0 rounded-circle p-1" data-bs-toggle="modal" data-bs-target="#UpdatePicture" title="Ubah foto" style="width: 24px; height: 24px; line-height: 1;">
+                                    <i class="ti ti-pencil" style="font-size: 12px;"></i>
+                                </button>
+                            </div>
                         <div>
-                            <h3 class="mb-1 d-flex fs-xl align-items-center">{{ $project->namaProject }} - IKM Analytics Dashboard</h3>
-                            <p class="text-muted mb-2 fs-xxs">Updated 5 minutes ago</p>
+                            <h3 class="mb-1 d-flex fs-xl align-items-center">{{ $ikm->first()->nama }} - {{ $project->NamaProjek }} </h3>
+                            <p class="text-muted mb-2 fs-xxs">Updated {{ $ikm->first()->updated_at->diffForHumans() }}</p>
                             <span class="badge badge-soft-success fs-xxs badge-label">In Progress</span>
                         </div>
-                        <div class="ms-auto">
-                            <a href="/project/dataikm/{{ $ikm->first()->id ?? $project->id }}/update" class="btn btn-light">
-                                <i class="ti ti-pencil me-1"></i>
-                                Edit
+                        <div class="ms-auto d-flex gap-2">
+                            <a href="{{ url()->previous() }}" class="btn btn-light">
+                                <i class="ti ti-arrow-left me-1"></i> Kembali
                             </a>
+                            <a href="/project/dataikm/{{ $project->id }}/update" class="btn btn-light">
+                                <i class="ti ti-pencil me-1"></i> Edit
+                            </a>
+                               <a class="btn btn-soft-secondary btn-sm" href="/report/brainstorming/{{ $ikm->first()->id }}/{{ $ikm->first()->nama }}" target="_blank">
+                                                <i class="far fa-file-pdf me-1"></i> Export
+                                            </a>
                         </div>
+
                     </div>
                     <div class="card-body px-4">
-                        <!-- IKM Info -->
-                        @if($ikm->first())
+                        <!-- Project Info -->
                         <div class="mb-4">
-                            <h5 class="fs-base mb-2">Project Description:</h5>
-                            <div class="tab-pane fade active show" id="tab-bencmark" role="tabpanel"
-                            aria-labelledby="bencmark-tab">
-
-                            <div class="row justify-content-between align-items-end g-3 mb-5">
-                                <div class="col-12 col-sm-auto col-xl-8">
-                                    <h2 class="mb-0">Form Brainstorming Produk</h2>
-                                </div>
-                                <div class="col-12 col-sm-auto col-xl-4">
-                                    <div class="d-flex ">
-                                        <a class="btn btn-soft-secondary px-5 me-2"
-                                            href="/report/brainstorming/{{ $ikm->first()->id }}/{{ $ikm->first()->nama }}"
-                                            target="_blank">
-                                            <span class="far fa-file-pdf"></span> Export</a>
-
-
-                                        <form action="/project/dataikm/{{ $project->id }}/update" method="POST">
-                                            @csrf
-                                            <input type="text" value="{{ $project->id}}" name="getId_project" hidden>
-                                            <input type="text" value="{{ $ikm->first()->id}}" name="getId_IKM" hidden>
-                                            <button class="btn btn-soft-primary"><span class="fas fa-pencil"></span>
-                                                Edit Data</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <form action="/project/ikms/updateBrainstorming" method="post">
-                                @csrf
-                                <input type="text" value="{{ $ikm->first()->id }}" name="id_ikm" hidden>
-                                <input type="text" value="{{ $ikm->first()->id_Project }}" name="id_Project" hidden>
-                                <table class="table table-bordered table-responsive" style="table-layout: fixed;overflow-wrap: break-word;">
-                                    <thead>
-                                        <tr  class="mytr">
-                                            <th style="padding-left:10px;width:300px;">Produk</th>
-                                            <th scope="col">Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="padding-left:10px">Jenis Produk</td>
-                                            <td>
-                                                <input type="text" name="jenisProduk" id="jenisProduk" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      " value="{{ $ikm->first()->jenisProduk}}">
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Merk</td>
-                                            <td>
-
-                                                <input type="text" name="merk" id="merk"
-                                                    placeholder="Masukan Merk Produk" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      resize: none;
-                      " value="{{ $ikm->first()->merk }}">
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Komposisi </td>
-                                            <td>
-                                                <textarea name="komposisi" id="komposisi" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      min-height: 60px;
-                      resize: vertical;">{{ $ikm->first()->komposisi }}</textarea>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Varian Produk</td>
-                                            <td>
-                                                <textarea name="varian" id="varian" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      min-height: 60px;
-                      resize: vertical;
-                      " placeholder="Masukan Varian Produk">{{ $ikm->first()->varian }}</textarea>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Kelebihan Produk</td>
-                                            <td>
-                                                <textarea name="kelebihan" id="kelebihan" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      min-height: 60px;
-                      resize: vertical;
-                      " placeholder="Masukan Kelebihan Produk">{{ $ikm->first()->kelebihan }}</textarea>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Nama Perusahaan </td>
-                                            <td>
-                                                <input type="text" placeholder="Masukan Nama Perusahaan" name="namaUsaha"
-                                                    id="namaUsaha" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      " value="{{ $ikm->first()->namaUsaha }}">
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">PIRT </td>
-                                            <td>
-                                                <input type="text" placeholder="Masukan Nomor PIRT" name="noPIRT"
-                                                    id="noPIRT" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      " value="{{ $ikm->first()->noPIRT }}">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Halal</td>
-                                            <td>
-                                                <input type="text" placeholder="Masukan Nomor Halal" name="noHalal"
-                                                    id="noHalal" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      " value="{{ $ikm->first()->noHalal }}">
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Legalitas lainnya</td>
-                                            <td>
-                                                <textarea name="legalitasLain" id="legalitasLain" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      min-height: 60px;
-                      resize: vertical;
-                      " placeholder="Legalitas Lainnya">{{ $ikm->first()->legalitasLain }}</textarea>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Saran Penyajian / Keterangan Lainnya </td>
-                                            <td>
-                                                <textarea name="other" id="other" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      min-height: 60px;
-                      resize: vertical;
-                      " placeholder="Ex : Cara Memasak, Saran Penyajian">{{ $ikm->first()->other }}</textarea>
-
-                                            </td>
-                                        </tr>
-
-                                    </tbody>
-
-                                </table>
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr class="mytr">
-                                            <th style="padding-left:10px;width:300px;">Produk</th>
-                                            <th scope="col">Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td style="padding-left:10px">Segmentasi </td>
-                                            <td>
-                                                <input type="text" placeholder="Segmentasi Produk" name="segmentasi"
-                                                    id="segmentasi" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      " value="{{ $ikm->first()->segmentasi }}">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Jenis Kemasan dan Ukuran </td>
-                                            <td>
-                                                <textarea name="jenisKemasan" id="jenisKemasan" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      min-height: 60px;
-                      resize: vertical;
-                      " placeholder="Jenis Kemasan">{{ $ikm->first()->jenisKemasan }}</textarea>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Kemasan Pendukung </td>
-                                            <td>
-                                                <textarea name="harga" id="harga" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      min-height: 60px;
-                      resize: vertical;
-                      " placeholder="Kemasan Pendukung">{{ $ikm->first()->harga }}</textarea>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Tagline</td>
-                                            <td>
-                                                <input type="text" name="tagline" id="tagline" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      " placeholder="Tagline" value="{{ $ikm->first()->tagline }}">
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Redaksi</td>
-                                            <td>
-                                                <textarea name="redaksi" id="redaksi" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      min-height: 100px;
-                      resize: vertical;
-                      " placeholder="Redaksi Produk">{{ $ikm->first()->redaksi }}</textarea>
-
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding-left:10px">Gramasi</td>
-                                            <td>
-                                                <input type="text" placeholder="Gramasi Produk (g)" name="gramasi"
-                                                    id="gramasi" style="
-                      background: transparent;
-                      border-top-style: hidden;
-                      border-right-style: hidden;
-                      border-left-style: hidden;
-                      border-bottom-style: hidden;
-                      outline:none !important;
-                      outline-width: 0 !important;
-                      box-shadow: none;
-                      -moz-box-shadow: none;
-                      -webkit-box-shadow: none;
-                      margin:0;
-                      padding:0;
-                      width:100%;
-                      " value="{{ $ikm->first()->gramasi }}">
-
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <div class="col-12 gy-6">
-                                    <div class="row g-3 justify-content-end">
-                                        <div class="col-auto">
-                                            <a href="{{ url()->previous() }}" class="btn btn-phoenix-primary px-5">Cancel</a>
-                                        </div>
-                                        <div class="col-auto">
-                                            <button class="btn btn-primary px-5 px-sm-15" type="submit">Simpan Data</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                            <h5 class="fs-base mb-2">Informasi IKM:</h5>
+                            <p class="text-muted">{!! $ikm->first()->jenisProduk !!} - {!! $ikm->first()->namaUsaha ?? 'N/A' !!}</p>
+                            <p class="text-muted">
+                                {{ $ikm->first()->alamat }}{{ $ikm->first()->district->name ?? '' }} {{ $ikm->first()->regency->name ?? '' }} {{ $ikm->first()->province->name ?? '' }}
+                            </p>
+                            <p class="text-muted">
+                                Telepon: {{ $ikm->first()->telp }}
+                            </p>
                         </div>
                         <div class="row mb-4">
                             <div class="col-md-4 col-xl-3">
-                                <h6 class="mb-1 text-muted text-uppercase">Created Date:</h6>
-                                <p class="fw-medium mb-0">{{ $project->created_at->format('F d, Y') }}</p>
+                                <h6 class="mb-1 text-muted text-uppercase">Tanggal Bergabung:</h6>
+                                <p class="fw-medium mb-0">{{ $ikm->first()->created_at->format('F d, Y') }}</p>
                             </div>
                             <div class="col-md-4 col-xl-3">
-                                <h6 class="mb-1 text-muted text-uppercase">Deadline:</h6>
-                                <p class="fw-medium mb-0">June 30, 2025</p>
+                                <h6 class="mb-1 text-muted text-uppercase">Jenis Produk:</h6>
+                                <p class="fw-medium mb-0">{{ $ikm->first()->jenisProduk }}</p>
                             </div>
                             <div class="col-md-4 col-xl-3">
-                                <h6 class="mb-1 text-muted text-uppercase">Created By:</h6>
-                                <p class="fw-medium mb-0">John Smith</p>
+                                <h6 class="mb-1 text-muted text-uppercase">Merk:</h6>
+                                <p class="fw-medium mb-0">{{ $ikm->first()->merk ?? 'N/A' }}</p>
                             </div>
                             <div class="col-md-4 col-xl-3">
-                                <h6 class="mb-1 text-muted text-uppercase">Client Name:</h6>
+                                <h6 class="mb-1 text-muted text-uppercase">Nama Usaha:</h6>
                                 <p class="fw-medium mb-0">{{ $ikm->first()->namaUsaha ?? 'N/A' }}</p>
                             </div>
                         </div>
-                        @else
-                        <div class="alert alert-warning">
-                            <p>Data IKM tidak ditemukan.</p>
-                        </div>
-                        @endif
 
                         <!-- Tabs -->
                         <ul class="nav nav-tabs nav-bordered mb-3" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link active" data-bs-toggle="tab" href="#comments" role="tab" aria-selected="true">
-                                    <i class="ti ti-message-circle fs-lg me-md-1 align-middle"></i>
-                                    <span class="d-none d-md-inline-block align-middle">Comments</span>
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab-info" role="tab" aria-selected="false">
+                                    <i class="ti ti-user fs-lg me-md-1 align-middle"></i>
+                                    <span class="d-none d-md-inline-block align-middle">Informasi IKM</span>
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link" data-bs-toggle="tab" href="#Mytasks" role="tab" aria-selected="false" tabindex="-1">
-                                    <i class="ti ti-list-check fs-lg me-md-1 align-middle"></i>
-                                    <span class="d-none d-md-inline-block align-middle">Task List</span>
+                                <a class="nav-link active" data-bs-toggle="tab" href="#tab-bencmark" role="tab" aria-selected="true">
+                                    <i class="ti ti-file fs-lg me-md-1 align-middle"></i>
+                                    <span class="d-none d-md-inline-block align-middle">Brainstorming</span>
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link" data-bs-toggle="tab" href="#activity" role="tab" aria-selected="false" tabindex="-1">
-                                    <i class="ti ti-activity fs-lg me-md-1 align-middle"></i>
-                                    <span class="d-none d-md-inline-block align-middle">Activity</span>
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab-cots" role="tab" aria-selected="false" tabindex="-1">
+                                    <i class="ti ti-home fs-lg me-md-1 align-middle"></i>
+                                    <span class="d-none d-md-inline-block align-middle">COTS</span>
                                 </a>
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <!-- Comments Tab -->
-                            <div class="tab-pane fade active show" id="comments" role="tabpanel">
-                                <form action="#" class="mb-3">
-                                    <div class="mb-3">
-                                        <textarea class="form-control" id="form-control-textarea" rows="4" placeholder="Enter your messages..."></textarea>
+                            <!-- IKM Info Tab -->
+                            <div class="tab-pane fade" id="tab-info" role="tabpanel">
+                                <div class="section1">
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input class="form-control" id="nama" type="text" placeholder="Nama Lengkap"
+                                                    name="nama" required value="{{ $ikm->first()->nama }}" readonly />
+                                                <label class="form-label" for="provinsi">Nama Lengkap<span style="color:red">*</span></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input required class="form-control" type="text" placeholder="Nomor Telepon"
+                                                    name="telp" id="telp" value="{{ $ikm->first()->telp }}" readonly />
+                                                <label class="form-label" for="name">No Telepon<span style="color:red">*</span></label>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="text-end">
-                                        <button type="submit" class="btn btn-secondary btn-sm">
-                                            Comment
-                                            <i class="ti ti-send-2 align-baseline ms-1"></i>
-                                        </button>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <select required class="form-control" aria-label="Default select example"
+                                                    name="gender" id="gender" disabled>
+                                                    @if ($ikm->first()->gender == 1)
+                                                        <option value="1">Laki - Laki</option>
+                                                    @else
+                                                        <option value="2">Perempuan</option>
+                                                    @endif
+                                                </select>
+                                                <label class="form-label" for="email">Jenis Kelamin<span style="color:red">*</span></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <select name="id_Project" id="" class="form-control" disabled>
+                                                    <option value="">{{ $project->namaProject }}</option>
+                                                </select>
+                                                <label for="id_Project" class="form-label">Asosiasi / Komunitas</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="section2">
+                                    <div class="mb-3 text-start">
+                                        <div class="form-floating">
+                                            <input required class="form-control" id="alamat" name="alamat" type="text"
+                                                placeholder="Alamat" value="{{ $ikm->first()->alamat }}" readonly />
+                                            <label class="form-label" for="alamat">Alamat<span style="color:red">*</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <select required class="form-control" id="provinsi" name="id_provinsi" disabled>
+                                                    <option value="">
+                                                        @if ($ikm->first()->province)
+                                                            {{ $ikm->first()->province->name }}
+                                                        @endif
+                                                    </option>
+                                                </select>
+                                                <label class="form-label" for="provinsi">Provinsi<span style="color:red">*</span></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <select required id="kabupaten" name="id_kota" class="form-control" disabled>
+                                                    <option value="">
+                                                        @if ($ikm->first()->regency)
+                                                            {{ $ikm->first()->regency->name }}
+                                                        @endif
+                                                    </option>
+                                                </select>
+                                                <label class="form-label" for="kabupaten">Kota/Kabupaten<span style="color:red">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mb-2">
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <select required class="form-select" id="kecamatan" name="id_kecamatan" disabled>
+                                                    <option value="">
+                                                        @if ($ikm->first()->district)
+                                                            {{ $ikm->first()->district->name }}
+                                                        @endif
+                                                    </option>
+                                                </select>
+                                                <label class="form-label" for="kecamatan">Kecamatan<span style="color:red">*</span></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <select required class="form-select" id="desa" name="id_desa" disabled>
+                                                    <option value="">
+                                                        @if ($ikm->first()->village)
+                                                            {{ $ikm->first()->village->name }}
+                                                        @endif
+                                                    </option>
+                                                </select>
+                                                <label class="form-label" for="desa">Kelurahan/Desa<span style="color:red">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-3 mb-2">
+                                        <div class="col-md-6">
+                                            <div class="mb-3 text-start">
+                                                <div class="form-floating">
+                                                    <input required class="form-control" id="rt" name="rt" type="text"
+                                                        placeholder="RT" value="{{ $ikm->first()->rt }}" readonly />
+                                                    <label class="form-label" for="rt">RT<span style="color:red">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3 text-start">
+                                                <div class="form-floating">
+                                                    <input required class="form-control" id="rw" name="rw" type="text"
+                                                        placeholder="RW" value="{{ $ikm->first()->rw }}" readonly />
+                                                    <label class="form-label" for="rw">RW<span style="color:red">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Brainstorming Tab -->
+                            <div class="tab-pane fade active show" id="tab-bencmark" role="tabpanel">
+
+
+                                <form action="/project/ikms/updateBrainstorming" method="post">
+                                    @csrf
+
+                                    <input type="hidden" name="id_ikm" value="{{ $ikm->first()->id }}">
+                                    <input type="hidden" name="id_Project" value="{{ $ikm->first()->id_Project }}">
+
+                                    <table class="table table-bordered table-responsive" style="table-layout: fixed;">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:200px;">Produk</th>
+                                                <th>Keterangan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @php
+                                            $fields = [
+                                            'jenisProduk' => 'Jenis Produk',
+                                            'merk' => 'Merk',
+                                            'komposisi' => 'Komposisi',
+                                            'varian' => 'Varian Produk',
+                                            'kelebihan' => 'Kelebihan Produk',
+                                            'namaUsaha' => 'Nama Perusahaan',
+                                            'noPIRT' => 'PIRT',
+                                            'noHalal' => 'Halal',
+                                            'lainnya' => 'Legalitas lainnya',
+                                            'saranPenyajian' => 'Saran Penyajian',
+                                            'segmentasi' => 'Segmentasi',
+                                            'jenisKemasan' => 'Jenis Kemasan',
+                                            'harga' => 'Kemasan Pendukung',
+                                            'tagline' => 'Tagline',
+                                            'redaksi' => 'Redaksi',
+                                            'gramasi' => 'Gramasi'
+                                            ];
+                                            @endphp
+
+                                            @foreach($fields as $key => $label)
+                                            <tr>
+                                                <td>{{ $label }}</td>
+                                                <td>
+                                                    <div class="position-relative">
+                                                        <div id="{{ $key }}" class="inline-editor" style="background: transparent;
+                                border-top-style: hidden;
+                                border-right-style: hidden;
+                                border-left-style: hidden;
+                                border-bottom-style: hidden;
+                                outline:none !important;
+                                outline-width: 0 !important;
+                                box-shadow: none;
+                                -moz-box-shadow: none;
+                                -webkit-box-shadow: none;
+                                margin:0;
+                                padding:0;
+                                padding-right: 40px;" contenteditable="true" data-placeholder="{{ $label }}">
+                                                            {!! $ikm->first()->$key ?? '' !!}
+                                                        </div>
+                                                        <button type="button" class="btn btn-soft-primary btn-sm ai-generate-btn position-absolute" style="top: 50%; right: 0; transform: translateY(-50%); border: none;" data-field="{{ $key }}" data-label="{{ $label }}" title="Generate dengan AI">
+                                                            <i class="ti ti-sparkles"></i>
+                                                        </button>
+                                                    </div>
+                                                    <input type="hidden" name="{{ $key }}" id="{{ $key }}_input">
+                                                </td>
+                                            </tr>
+                                            @endforeach
+
+                                        </tbody>
+                                    </table>
+
+                                    <div class="text-end mt-3">
+                                        <a href="{{ url()->previous() }}" class="btn btn-secondary">Cancel</a>
+                                        <button type="submit" class="btn btn-primary">Simpan Data</button>
                                     </div>
                                 </form>
 
-                                <h4 class="mb-3 fs-md">Comments (15)</h4>
-
-                                <div class="d-flex mb-2 border border-dashed rounded p-3">
-                                    <div class="shrink-0">
-                                        <img src="assets/images/users/user-8.jpg" alt="" class="avatar-sm rounded-circle shadow-sm">
-                                    </div>
-                                    <div class="grow ms-2">
-                                        <h5 class="mb-1">
-                                            Liam Carter
-                                            <small class="text-muted">15 Apr 2025 · 09:20AM</small>
-                                        </h5>
-                                        <p class="mb-2">Customers are reporting that the checkout page freezes after submitting their payment information.</p>
-                                        <a href="javascript:void(0);" class="badge bg-light text-muted d-inline-flex align-items-center gap-1">
-                                            <i class="ti ti-corner-up-left fs-lg"></i>
-                                            Reply
-                                        </a>
-
-                                        <div class="d-flex mt-4">
-                                            <div class="shrink-0">
-                                                <img src="assets/images/users/user-10.jpg" alt="" class="avatar-sm rounded-circle shadow-sm">
-                                            </div>
-                                            <div class="grow ms-2">
-                                                <h5 class="mb-1">
-                                                    Nina Bryant
-                                                    <small class="text-muted">15 Apr 2025 · 11:47AM</small>
-                                                </h5>
-                                                <p class="mb-2">That might be caused by the third-party payment gateway. I recommend testing in incognito mode and checking for any JS errors in the console.</p>
-                                                <a href="javascript:void(0);" class="badge bg-light text-muted d-inline-flex align-items-center gap-1">
-                                                    <i class="ti ti-corner-up-left fs-lg"></i>
-                                                    Reply
-                                                </a>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex mt-4">
-                                            <div class="shrink-0">
-                                                <img src="assets/images/users/user-3.jpg" alt="" class="avatar-sm rounded-circle shadow-sm">
-                                            </div>
-                                            <div class="grow ms-2">
-                                                <h5 class="mb-1">
-                                                    Sophie Allen
-                                                    <small class="text-muted">16 Apr 2025 · 10:15AM</small>
-                                                </h5>
-                                                <p class="mb-2">We've noticed this issue before when the CDN cache hasn't been cleared properly. Try purging the cache and reloading the page.</p>
-                                                <a href="javascript:void(0);" class="badge bg-light text-muted d-inline-flex align-items-center gap-1">
-                                                    <i class="ti ti-corner-up-left fs-lg"></i>
-                                                    Reply
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
 
-                                <div class="d-flex mb-2 border border-dashed rounded p-3">
-                                    <div class="shrink-0">
-                                        <img src="assets/images/users/user-6.jpg" alt="" class="avatar-sm rounded-circle shadow-sm">
-                                    </div>
-                                    <div class="grow ms-2">
-                                        <h5 class="mb-1">
-                                            Daniel West
-                                            <small class="text-muted">14 Apr 2025 · 04:15PM</small>
-                                        </h5>
-                                        <p class="mb-2">You can also clear the browser cache or try a different browser. We had a similar issue with Chrome extensions interfering before.</p>
-                                        <a href="javascript:void(0);" class="badge bg-light text-muted d-inline-flex align-items-center gap-1">
-                                            <i class="ti ti-corner-up-left fs-lg"></i>
-                                            Reply
-                                        </a>
-                                    </div>
-                                </div>
 
-                                <div class="d-flex mb-3 border border-dashed rounded p-3">
-                                    <div class="shrink-0">
-                                        <img src="assets/images/users/user-10.jpg" alt="" class="avatar-sm rounded-circle shadow-sm">
-                                    </div>
-                                    <div class="grow ms-2">
-                                        <h5 class="mb-1">
-                                            Nina Bryant
-                                            <small class="text-muted">16 Apr 2025 · 08:04AM</small>
-                                        </h5>
-                                        <p>
-                                            The
-                                            <a href="javascript:void(0)" class="text-decoration-underline">System Status Page</a>
-                                            has been updated. We're actively monitoring and will release a patch within 24 hours.
-                                        </p>
-
-                                        <a href="javascript:void(0);" class="badge bg-light text-muted d-inline-flex align-items-center gap-1">
-                                            <i class="ti ti-corner-up-left fs-lg"></i>
-                                            Reply
-                                        </a>
-
-                                        <div class="d-flex mt-4">
-                                            <div class="shrink-0">
-                                                <img src="assets/images/users/user-6.jpg" alt="" class="avatar-sm rounded-circle shadow-sm">
+                            <!-- COTS Tab -->
+                            <div class="tab-pane fade" id="tab-cots" role="tabpanel">
+                                @if(isset($cots) && $cots != 0 && isset($cotsview))
+                                    @foreach($cotsview as $a)
+                                        <div class="row justify-content-between align-items-end g-3 mb-4">
+                                            <div class="col-12 col-sm-auto">
+                                                <h5 class="mb-0">Form Coaching on The Spot (COTS)</h5>
                                             </div>
-                                            <div class="grow ms-2">
-                                                <h5 class="mb-1">
-                                                    Daniel West
-                                                    <small class="text-muted">16 Apr 2025 · 08:30AM</small>
-                                                </h5>
-                                                <p>Thanks for the update! We'll notify the customers and let them know the issue is being resolved.</p>
-                                                <a href="javascript:void(0);" class="badge bg-light text-muted d-inline-flex align-items-center gap-1">
-                                                    <i class="ti ti-corner-up-left fs-lg"></i>
-                                                    Reply
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <ul class="pagination pagination-rounded pagination-boxed justify-content-center mb-0">
-                                    <li class="page-item previous disabled">
-                                        <a href="#" class="page-link">
-                                            <i class="ti ti-chevron-left"></i>
-                                        </a>
-                                    </li>
-                                    <li class="page-item active">
-                                        <a href="#" class="page-link">1</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="#" class="page-link">2</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="#" class="page-link">3</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="#" class="page-link">...</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="#" class="page-link">5</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a href="#" class="page-link">6</a>
-                                    </li>
-                                    <li class="page-item next">
-                                        <a href="#" class="page-link">
-                                            <i class="ti ti-chevron-right"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <!-- Task List Tab -->
-                            <div class="tab-pane fade" id="Mytasks" role="tabpanel">
-                                <div class="card mb-1">
-                                    <div class="card-body p-2">
-                                        <div class="row g-3 align-items-center justify-content-between">
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="checkbox" class="form-check-input rounded-circle mt-0 fs-xl" id="task2">
-                                                    <a href="#!" role="button" class="link-reset fw-medium">Finalize monthly performance report</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-3 justify-content-md-end">
-                                                    <div class="d-flex align-items-center gap-1">
-                                                        <div class="avatar avatar-xs">
-                                                            <img src="assets/images/users/user-2.jpg" alt="avatar-2" class="img-fluid rounded-circle">
-                                                        </div>
-                                                        <div>
-                                                            <h5 class="text-nowrap mb-0 lh-base">
-                                                                <a href="#!" class="link-reset">Liam James</a>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="shrink-0">
-                                                        <span class="badge text-bg-success badge-label">Completed</span>
-                                                    </div>
-
-                                                    <ul class="list-inline fs-base text-end shrink-0 mb-0">
-                                                        <li class="list-inline-item">
-                                                            <i class="ti ti-calendar text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-semibold">Yesterday</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-list-details text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">7/7</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-message text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">12</span>
-                                                        </li>
-                                                    </ul>
+                                            <div class="col-12 col-sm-auto">
+                                                <div class="d-flex gap-2">
+                                                    @if($ikm->first()->id_provinsi != NULL)
+                                                        <a class="btn btn-soft-secondary btn-sm" href="/report/cots/{{ $ikm->first()->id }}/{{ $ikm->first()->nama }}">
+                                                            <i class="far fa-file-pdf me-1"></i> Export
+                                                        </a>
+                                                    @else
+                                                        <button class="btn btn-soft-secondary btn-sm" onclick="alert('Mohon Lengkapi Data IKM terlebih dahulu!')">
+                                                            <i class="far fa-file-pdf me-1"></i> Export
+                                                        </button>
+                                                    @endif
+                                                    <a class="btn btn-soft-primary btn-sm" id="enableCots">
+                                                        <i class="fas fa-pencil-alt me-1"></i> Edit
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
 
-                                <div class="card mb-1">
-                                    <div class="card-body p-2">
-                                        <div class="row g-3 align-items-center justify-content-between">
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="checkbox" class="form-check-input rounded-circle mt-0 fs-xl" id="task3">
-                                                    <a href="#!" role="button" class="link-reset fw-medium">Design wireframes for new onboarding flow</a>
-                                                </div>
+                                        <form action="/project/ikms/{{ $ikm->first()->id }}/updateCots" method="POST">
+                                            @csrf
+                                            <div class="d-flex gap-2 mb-3" id="cotsActions" style="display:none;">
+                                                <button class="btn btn-phoenix-primary btn-sm" type="button" id="batalCots">Batal</button>
+                                                <button class="btn btn-primary btn-sm" type="submit" id="simpanCots">Simpan</button>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-3 justify-content-md-end">
-                                                    <div class="d-flex align-items-center gap-1">
-                                                        <div class="avatar avatar-xs">
-                                                            <img src="assets/images/users/user-4.jpg" alt="avatar-4" class="img-fluid rounded-circle">
-                                                        </div>
-                                                        <div>
-                                                            <h5 class="text-nowrap mb-0 lh-base">
-                                                                <a href="#!" class="link-reset">Sophia Lee</a>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="shrink-0">
-                                                        <span class="badge text-bg-danger badge-label">Delayed</span>
-                                                    </div>
+                                            <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                                            <input type="text" name="id_project" value="{{ $project->id }}" hidden>
+                                            <input type="text" name="id_cots" value="{{ $a->id }}" hidden>
 
-                                                    <ul class="list-inline fs-base text-end shrink-0 mb-0">
-                                                        <li class="list-inline-item">
-                                                            <i class="ti ti-calendar text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-semibold">Tomorrow</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-list-details text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">2/5</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-message text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">7</span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
+                                            <table class="table table-bordered" style="table-layout: fixed; overflow-wrap: break-word;">
+                                                <tbody>
+                                                    @php
+                                                    $cotsFields = [
+                                                        'sejarahSingkat' => 'Sejarah Singkat',
+                                                        'produkjual' => 'Produk yang Dijual',
+                                                        'carapemasaran' => 'Cara Pemasaran',
+                                                        'bahanbaku' => 'Bahan Baku',
+                                                        'prosesproduksi' => 'Proses Produksi',
+                                                        'omset' => 'Omset',
+                                                        'kapasitasProduksi' => 'Kapasitas Produksi',
+                                                        'kendala' => 'Kendala',
+                                                        'solusi' => 'Solusi'
+                                                    ];
+                                                    @endphp
+
+                                                    @foreach($cotsFields as $key => $label)
+                                                    <tr>
+                                                        <td style="padding-left:10px;background-color:#f5f5f5;width:200px;"><strong>{{ $label }}</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="p-2">
+                                                            <div id="{{ $key }}" class="inline-editor" style="background: transparent; border-top-style: hidden; border-right-style: hidden; border-left-style: hidden; border-bottom-style: hidden; outline:none !important; outline-width: 0 !important; box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; margin:0; padding:0; min-height: 60px;" contenteditable="true" data-placeholder="{{ $label }}" readonly>
+                                                                {!! $a->$key ?? '' !!}
+                                                            </div>
+                                                            <input type="hidden" name="{{ $key }}" id="{{ $key }}_input">
+                                                        </td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </form>
+                                    @endforeach
+                                @else
+                                    <div class="text-center py-5">
+                                        <i class="ti ti-report fs-3 text-muted mb-3"></i>
+                                        <p class="text-muted mb-3">Belum ada Laporan COTS</p>
+                                        <form action="/project/ikms/{{ $ikm->first()->id }}/cots" method="post" class="d-inline">
+                                            @csrf
+                                            <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                                            <input type="text" name="id_project" value="{{ $ikm->first()->id_Project }}" hidden>
+                                            <button class="btn btn-phoenix-primary" type="submit">
+                                                <i class="fas fa-plus me-1"></i> Buat Laporan COTS
+                                            </button>
+                                        </form>
                                     </div>
-                                </div>
-
-                                <div class="card mb-1">
-                                    <div class="card-body p-2">
-                                        <div class="row g-3 align-items-center justify-content-between">
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="checkbox" class="form-check-input rounded-circle mt-0 fs-xl" id="task4">
-                                                    <a href="#!" role="button" class="link-reset fw-medium">Update customer segmentation dashboard</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-3 justify-content-md-end">
-                                                    <div class="d-flex align-items-center gap-1">
-                                                        <div class="avatar avatar-xs">
-                                                            <img src="assets/images/users/user-5.jpg" alt="avatar-5" class="img-fluid rounded-circle">
-                                                        </div>
-                                                        <div>
-                                                            <h5 class="text-nowrap mb-0 lh-base">
-                                                                <a href="#!" class="link-reset">Noah Carter</a>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="shrink-0">
-                                                        <span class="badge text-bg-primary badge-label">Pending</span>
-                                                    </div>
-
-                                                    <ul class="list-inline fs-base text-end shrink-0 mb-0">
-                                                        <li class="list-inline-item">
-                                                            <i class="ti ti-calendar text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-semibold">Friday</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-list-details text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">0/4</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-message text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">3</span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card mb-1">
-                                    <div class="card-body p-2">
-                                        <div class="row g-3 align-items-center justify-content-between">
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="checkbox" class="form-check-input rounded-circle mt-0 fs-xl" id="task5">
-                                                    <a href="#!" role="button" class="link-reset fw-medium">Conduct competitor analysis report</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-3 justify-content-md-end">
-                                                    <div class="d-flex align-items-center gap-1">
-                                                        <div class="avatar avatar-xs">
-                                                            <img src="assets/images/users/user-6.jpg" alt="avatar-6" class="img-fluid rounded-circle">
-                                                        </div>
-                                                        <div>
-                                                            <h5 class="text-nowrap mb-0 lh-base">
-                                                                <a href="#!" class="link-reset">Emily Davis</a>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="shrink-0">
-                                                        <span class="badge text-bg-warning badge-label">In Progress</span>
-                                                    </div>
-
-                                                    <ul class="list-inline fs-base text-end shrink-0 mb-0">
-                                                        <li class="list-inline-item">
-                                                            <i class="ti ti-calendar text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-semibold">Next Week</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-list-details text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">1/6</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-message text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">5</span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card mb-1">
-                                    <div class="card-body p-2">
-                                        <div class="row g-3 align-items-center justify-content-between">
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="checkbox" class="form-check-input rounded-circle mt-0 fs-xl" id="task6">
-                                                    <a href="#!" role="button" class="link-reset fw-medium">Implement API for mobile integration</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-3 justify-content-md-end">
-                                                    <div class="d-flex align-items-center gap-1">
-                                                        <div class="avatar avatar-xs">
-                                                            <img src="assets/images/users/user-7.jpg" alt="avatar-7" class="img-fluid rounded-circle">
-                                                        </div>
-                                                        <div>
-                                                            <h5 class="text-nowrap mb-0 lh-base">
-                                                                <a href="#!" class="link-reset">Lucas White</a>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="shrink-0">
-                                                        <span class="badge text-bg-info badge-label">Review</span>
-                                                    </div>
-
-                                                    <ul class="list-inline fs-base text-end shrink-0 mb-0">
-                                                        <li class="list-inline-item">
-                                                            <i class="ti ti-calendar text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-semibold">Today</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-list-details text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">6/6</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-message text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">10</span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card mb-1">
-                                    <div class="card-body p-2">
-                                        <div class="row g-3 align-items-center justify-content-between">
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="checkbox" class="form-check-input rounded-circle mt-0 fs-xl" id="task7">
-                                                    <a href="#!" role="button" class="link-reset fw-medium">QA testing for billing module</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-3 justify-content-md-end">
-                                                    <div class="d-flex align-items-center gap-1">
-                                                        <div class="avatar avatar-xs">
-                                                            <img src="assets/images/users/user-8.jpg" alt="avatar-8" class="img-fluid rounded-circle">
-                                                        </div>
-                                                        <div>
-                                                            <h5 class="text-nowrap mb-0 lh-base">
-                                                                <a href="#!" class="link-reset">Olivia Martin</a>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="shrink-0">
-                                                        <span class="badge text-bg-warning badge-label">In Progress</span>
-                                                    </div>
-
-                                                    <ul class="list-inline fs-base text-end shrink-0 mb-0">
-                                                        <li class="list-inline-item">
-                                                            <i class="ti ti-calendar text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-semibold">Monday</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-list-details text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">4/8</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-message text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">14</span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card mb-1">
-                                    <div class="card-body p-2">
-                                        <div class="row g-3 align-items-center justify-content-between">
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <input type="checkbox" class="form-check-input rounded-circle mt-0 fs-xl" id="task8">
-                                                    <a href="#!" role="button" class="link-reset fw-medium">Schedule product roadmap presentation</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="d-flex align-items-center gap-3 justify-content-md-end">
-                                                    <div class="d-flex align-items-center gap-1">
-                                                        <div class="avatar avatar-xs">
-                                                            <img src="assets/images/users/user-9.jpg" alt="avatar-9" class="img-fluid rounded-circle">
-                                                        </div>
-                                                        <div>
-                                                            <h5 class="text-nowrap mb-0 lh-base">
-                                                                <a href="#!" class="link-reset">Ethan Moore</a>
-                                                            </h5>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="shrink-0">
-                                                        <span class="badge text-bg-secondary badge-label">Planned</span>
-                                                    </div>
-
-                                                    <ul class="list-inline fs-base text-end shrink-0 mb-0">
-                                                        <li class="list-inline-item">
-                                                            <i class="ti ti-calendar text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-semibold">Next Month</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-list-details text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">0/1</span>
-                                                        </li>
-                                                        <li class="list-inline-item ms-1">
-                                                            <i class="ti ti-message text-muted fs-lg me-1 align-middle"></i>
-                                                            <span class="fw-medium">0</span>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Activity Tab -->
-                            <div class="tab-pane fade" id="activity" role="tabpanel">
-                                <div class="d-flex gap-1 border-bottom border-dashed pb-3">
-                                    <div class="me-2 shrink-0">
-                                        <img src="assets/images/users/user-1.jpg" class="avatar-md rounded-circle" alt="">
-                                    </div>
-                                    <div class="grow text-muted">
-                                        <span class="fw-medium text-body">Daniel Martinez</span>
-                                        uploaded a revised contract file.
-                                        <p class="fs-xs mb-0 text-body-secondary">Today 10:15 am - 24 Apr, 2025</p>
-                                    </div>
-                                    <p class="fs-xs text-body-secondary">5m ago</p>
-                                </div>
-
-                                <div class="d-flex gap-1 border-bottom border-dashed py-3">
-                                    <div class="me-2 shrink-0">
-                                        <img src="assets/images/users/user-2.jpg" class="avatar-md rounded-circle" alt="">
-                                    </div>
-                                    <div class="grow text-muted">
-                                        <span class="fw-medium text-body">Nina Patel</span>
-                                        commented on your design update.
-                                        <p class="fs-xs mb-0 text-body-secondary">Today 8:00 am - 24 Apr, 2025</p>
-                                    </div>
-                                    <p class="fs-xs text-body-secondary">2h ago</p>
-                                </div>
-
-                                <div class="d-flex gap-1 border-bottom border-dashed py-3">
-                                    <div class="me-2 shrink-0">
-                                        <img src="assets/images/users/user-3.jpg" class="avatar-md rounded-circle" alt="">
-                                    </div>
-                                    <div class="grow text-muted">
-                                        <span class="fw-medium text-body">Jason Lee</span>
-                                        completed the feedback review.
-                                        <p class="fs-xs mb-0 text-body-secondary">Yesterday 6:10 pm - 23 Apr, 2025</p>
-                                    </div>
-                                    <p class="fs-xs text-body-secondary">16h ago</p>
-                                </div>
-
-                                <div class="d-flex gap-1 border-bottom border-dashed py-3">
-                                    <div class="me-2 shrink-0">
-                                        <img src="assets/images/users/user-4.jpg" class="avatar-md rounded-circle" alt="">
-                                    </div>
-                                    <div class="grow text-muted">
-                                        <span class="fw-medium text-body">Emma Davis</span>
-                                        shared a link in the marketing group chat.
-                                        <p class="fs-xs mb-2 text-body-secondary">Yesterday 3:25 pm - 23 Apr, 2025</p>
-                                        <a href="#!" class="btn btn-default border px-1 py-0">
-                                            <i class="ti ti-link me-1"></i>
-                                            View
-                                        </a>
-                                    </div>
-                                    <p class="fs-xs text-body-secondary">19h ago</p>
-                                </div>
-
-                                <div class="d-flex gap-1 border-bottom border-dashed py-3">
-                                    <div class="me-2 shrink-0">
-                                        <img src="assets/images/users/user-5.jpg" class="avatar-md rounded-circle" alt="">
-                                    </div>
-                                    <div class="grow text-muted position-relative">
-                                        <span class="fw-medium text-body">Leo Zhang</span>
-                                        sent you a private message.
-                                        <p class="fs-xs text-body-secondary">2 days ago 11:45 am - 22 Apr, 2025</p>
-
-                                        <div class="py-2 px-3 bg-light bg-opacity-50">"Let's sync up on the product roadmap tomorrow afternoon, does 2 PM work for you?"</div>
-                                    </div>
-                                    <p class="fs-xs shrink-0 text-body-secondary">30h ago</p>
-                                </div>
-
-                                <div class="d-flex align-items-center justify-content-center gap-2 p-3">
-                                    <strong>Loading...</strong>
-                                    <div class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></div>
-                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -1063,325 +619,1133 @@
             </div>
             <!-- end col-xl-9 -->
 
-            <!-- Team Sidebar -->
+            <!-- Sidebar -->
             <div class="col-xl-3">
                 <div class="card card-h-100 rounded-0 rounded-end border-start border-dashed shadow-none">
                     <div class="card-body p-0">
+                        <!-- Bencmark Produk -->
                         <div class="p-3 border-bottom border-dashed">
-                            <h5 class="mb-2">Status</h5>
-                            <div class="app-search">
-                                <select class="form-select form-control my-1 my-md-0">
-                                    <option>Status</option>
-                                    <option selected="" value="On Track">On Track</option>
-                                    <option value="Delayed">Delayed</option>
-                                    <option value="At Risk">At Risk</option>
-                                    <option value="Completed">Completed</option>
-                                </select>
-                                <i class="ti ti-calendar-clock app-search-icon text-muted"></i>
+                            <div class="d-flex mb-3 justify-content-between align-items-center">
+                                <h5 class="mb-0">Bencmark Produk ({{ $ikm->first()->bencmark->count() }})</h5>
+                                <button class="btn btn-phoenix-primary btn-sm" data-bs-toggle="modal" data-bs-target="#verticallyCentered" title="Upload Bencmark">
+                                    <i class="ti ti-plus"></i>
+                                </button>
+                            </div>
+                            <div class="row g-2">
+                                @if($ikm->first()->bencmark && $ikm->first()->bencmark->count())
+                                    @foreach($ikm->first()->bencmark as $image)
+                                        <div class="col-6">
+                                            <form action="/project/ikms/{{ $image->id }}/deletebencmark" method="post">
+                                                @csrf
+                                                <input type="text" value="{{ $image->gambar }}" name="oldImage" hidden>
+                                                <div class="position-relative rounded overflow-hidden" style="height: 80px;">
+                                                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 z-3" type="submit" onclick="return confirm('Yakin hapus?')">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                    <a data-fslightbox href="{{ asset('storage/'.$image->gambar) }}">
+                                                        <img class="w-100 h-100" src="{{ asset('storage/'.$image->gambar) }}" alt="Bencmark" style="object-fit: cover;">
+                                                    </a>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column align-items-center justify-content-center py-3 bg-light rounded">
+                                            <i class="ti ti-photo fs-4 text-muted mb-1"></i>
+                                            <small class="text-muted">Belum ada</small>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
+                        <!-- Desain Produk -->
                         <div class="p-3 border-bottom border-dashed">
                             <div class="d-flex mb-3 justify-content-between align-items-center">
-                                <h5 class="mb-0">Team Members:</h5>
-                                <a href="javascript: void(0);" class="btn btn-light btn-sm btn-icon rounded-circle">
+                                <h5 class="mb-0">Desain Produk ({{ $ikm->first()->produkDesign->count() }})</h5>
+                                <button class="btn btn-phoenix-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadDesign" title="Upload Desain">
                                     <i class="ti ti-plus"></i>
-                                </a>
+                                </button>
                             </div>
+                            <div class="row g-2">
+                                @if($ikm->first()->produkDesign && $ikm->first()->produkDesign->count())
+                                  @foreach($ikm->first()->produkDesign as $image)
+                                <div class="col-6">
+                                    <form action="/project/ikms/{{ $image->id }}/deleteDesain" method="post">
+                                        @csrf
+                                        <input type="hidden" value="{{ $image->gambar }}" name="oldImage">
 
-                            <!-- team member -->
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="avatar avatar-sm">
-                                        <img src="assets/images/users/user-3.jpg" alt="avatar-3" class="img-fluid rounded-circle">
-                                    </div>
-                                    <div>
-                                        <h5 class="text-nowrap mb-0 lh-base">
-                                            <a href="#!" class="link-reset">Ava Brooks</a>
-                                        </h5>
-                                        <p class="text-muted fs-xxs mb-0">UI/UX Designer</p>
-                                    </div>
+                                        <div class="image-wrapper position-relative rounded overflow-hidden" style="height:80px;">
+
+                                            <button
+                                                class="btn btn-danger btn-sm delete-btn position-absolute top-0 end-0 m-1 z-3"
+                                                type="submit"
+                                                onclick="return confirm('Yakin hapus?')"
+                                            >
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+
+                                            <a data-fslightbox href="{{ asset('storage/'.$image->gambar) }}">
+                                                <img
+                                                    src="{{ asset('storage/'.$image->gambar) }}"
+                                                    class="w-100 h-100"
+                                                    style="object-fit:cover;"
+                                                    alt="Desain"
+                                                >
+                                            </a>
+
+                                        </div>
+                                    </form>
                                 </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Message">
-                                        <i class="ti ti-message text-muted fs-lg"></i>
-                                    </a>
-                                </div>
+                            @endforeach
+
+                                @else
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column align-items-center justify-content-center py-3 bg-light rounded">
+                                            <i class="ti ti-palette fs-4 text-muted mb-1"></i>
+                                            <small class="text-muted">Belum ada</small>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="avatar avatar-sm">
-                                        <img src="assets/images/users/user-4.jpg" alt="avatar-4" class="img-fluid rounded-circle">
-                                    </div>
-                                    <div>
-                                        <h5 class="text-nowrap mb-0 lh-base">
-                                            <a href="#!" class="link-reset">Liam Carter</a>
-                                        </h5>
-                                        <p class="text-muted fs-xxs mb-0">Frontend Developer</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Message">
-                                        <i class="ti ti-message text-muted fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="avatar avatar-sm">
-                                        <img src="assets/images/users/user-5.jpg" alt="avatar-5" class="img-fluid rounded-circle">
-                                    </div>
-                                    <div>
-                                        <h5 class="text-nowrap mb-0 lh-base">
-                                            <a href="#!" class="link-reset">Sophia Lee</a>
-                                        </h5>
-                                        <p class="text-muted fs-xxs mb-0">Project Manager</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Message">
-                                        <i class="ti ti-message text-muted fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="avatar avatar-sm">
-                                        <img src="assets/images/users/user-6.jpg" alt="avatar-6" class="img-fluid rounded-circle">
-                                    </div>
-                                    <div>
-                                        <h5 class="text-nowrap mb-0 lh-base">
-                                            <a href="#!" class="link-reset">Noah Kim</a>
-                                        </h5>
-                                        <p class="text-muted fs-xxs mb-0">Backend Developer</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Message">
-                                        <i class="ti ti-message text-muted fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="avatar avatar-sm">
-                                        <img src="assets/images/users/user-7.jpg" alt="avatar-7" class="img-fluid rounded-circle">
-                                    </div>
-                                    <div>
-                                        <h5 class="text-nowrap mb-0 lh-base">
-                                            <a href="#!" class="link-reset">Emma Watson</a>
-                                        </h5>
-                                        <p class="text-muted fs-xxs mb-0">QA Engineer</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Message">
-                                        <i class="ti ti-message text-muted fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="avatar avatar-sm">
-                                        <img src="assets/images/users/user-8.jpg" alt="avatar-8" class="img-fluid rounded-circle">
-                                    </div>
-                                    <div>
-                                        <h5 class="text-nowrap mb-0 lh-base">
-                                            <a href="#!" class="link-reset">James Nolan</a>
-                                        </h5>
-                                        <p class="text-muted fs-xxs mb-0">DevOps Engineer</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Message">
-                                        <i class="ti ti-message text-muted fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="avatar avatar-sm">
-                                        <img src="assets/images/users/user-9.jpg" alt="avatar-9" class="img-fluid rounded-circle">
-                                    </div>
-                                    <div>
-                                        <h5 class="text-nowrap mb-0 lh-base">
-                                            <a href="#!" class="link-reset">Olivia Reed</a>
-                                        </h5>
-                                        <p class="text-muted fs-xxs mb-0">Product Owner</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Message">
-                                        <i class="ti ti-message text-muted fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="avatar avatar-sm">
-                                        <img src="assets/images/users/user-10.jpg" alt="avatar-10" class="img-fluid rounded-circle">
-                                    </div>
-                                    <div>
-                                        <h5 class="text-nowrap mb-0 lh-base">
-                                            <a href="#!" class="link-reset">Daniel Craig</a>
-                                        </h5>
-                                        <p class="text-muted fs-xxs mb-0">Data Scientist</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Message">
-                                        <i class="ti ti-message text-muted fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <!-- End -->
                         </div>
 
-                        <div class="px-3 pt-3 border-bottom border-dashed">
+                        <!-- Dokumentasi COTS -->
+                        <div class="p-3">
                             <div class="d-flex mb-3 justify-content-between align-items-center">
-                                <h5 class="mb-0">Files:</h5>
-                                <a href="javascript: void(0);" class="btn btn-light btn-sm btn-icon rounded-circle">
+                                <h5 class="mb-0">Dokumentasi</h5>
+                                <button class="btn btn-phoenix-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addDokumentasi" title="Upload Dokumentasi">
                                     <i class="ti ti-plus"></i>
-                                </a>
+                                </button>
                             </div>
-
-                            <!-- Download Files -->
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="shrink-0 avatar-md bg-light bg-opacity-50 text-muted rounded-2 d-flex align-items-center justify-content-center">
-                                        <i class="ti ti-file-text fs-xl"></i>
+                            <div class="row g-2">
+                                @if(isset($dokumentasicots) && $dokumentasicots->count())
+                                    @foreach($dokumentasicots as $img)
+                                        <div class="col-6">
+                                            <form action="/project/ikms/{{ $ikm->first()->id }}/deleteDoc" method="post">
+                                                @csrf
+                                                <input type="text" value="{{ $img->id }}" name="id_gambar" hidden>
+                                                <input type="text" value="{{ $img->gambar }}" name="old_gambar" hidden>
+                                                <div class="position-relative rounded overflow-hidden" style="height: 80px;">
+                                                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 z-3" type="submit" onclick="return confirm('Yakin hapus?')">
+                                                        <i class="ti ti-trash"></i>
+                                                    </button>
+                                                    <a data-fslightbox href="{{ asset('storage/'.$img->gambar) }}">
+                                                        <img class="w-100 h-100" src="{{ asset('storage/'.$img->gambar) }}" alt="Dokumentasi" style="object-fit: cover;">
+                                                    </a>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="col-12">
+                                        <div class="d-flex flex-column align-items-center justify-content-center py-3 bg-light rounded">
+                                            <i class="ti ti-photo fs-4 text-muted mb-1"></i>
+                                            <small class="text-muted">Belum ada</small>
+                                        </div>
                                     </div>
-                                    <div class="grow">
-                                        <h5 class="mb-1 fs-base">
-                                            <a href="#!" class="link-reset">Project-Brief.pdf</a>
-                                        </h5>
-                                        <p class="text-muted mb-0 fs-xs">2.1MB</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Download">
-                                        <i class="ti ti-download fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="shrink-0 avatar-md bg-light bg-opacity-50 text-muted rounded-2 d-flex align-items-center justify-content-center">
-                                        <i class="ti ti-music fs-xl avatar-title"></i>
-                                    </div>
-                                    <div class="grow">
-                                        <h5 class="mb-1 fs-base">
-                                            <a href="#!" class="link-reset">Team-Intro.mp3</a>
-                                        </h5>
-                                        <p class="text-muted mb-0 fs-xs">5.6MB</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Download">
-                                        <i class="ti ti-download fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="shrink-0 avatar-md bg-light bg-opacity-50 text-muted rounded-2 d-flex align-items-center justify-content-center">
-                                        <i class="ti ti-file-zip fs-xl avatar-title"></i>
-                                    </div>
-                                    <div class="grow">
-                                        <h5 class="mb-1 fs-base">
-                                            <a href="#!" class="link-reset">UI-Kit.zip</a>
-                                        </h5>
-                                        <p class="text-muted mb-0 fs-xs">42MB</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Download">
-                                        <i class="ti ti-download fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="shrink-0 avatar-md bg-light bg-opacity-50 text-muted rounded-2 d-flex align-items-center justify-content-center">
-                                        <i class="ti ti-photo fs-xl avatar-title"></i>
-                                    </div>
-                                    <div class="grow">
-                                        <h5 class="mb-1 fs-base">
-                                            <a href="#!" class="link-reset">Brand-Logo.png</a>
-                                        </h5>
-                                        <p class="text-muted mb-0 fs-xs">1.2MB</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Download">
-                                        <i class="ti ti-download fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="shrink-0 avatar-md bg-light bg-opacity-50 text-muted rounded-2 d-flex align-items-center justify-content-center">
-                                        <i class="ti ti-video fs-xl avatar-title"></i>
-                                    </div>
-                                    <div class="grow">
-                                        <h5 class="mb-1 fs-base">
-                                            <a href="#!" class="link-reset">Promo-Video.mp4</a>
-                                        </h5>
-                                        <p class="text-muted mb-0 fs-xs">78MB</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Download">
-                                        <i class="ti ti-download fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center pb-2">
-                                <div class="d-flex align-items-center py-1 gap-2">
-                                    <div class="shrink-0 avatar-md bg-light bg-opacity-50 text-muted rounded-2 d-flex align-items-center justify-content-center">
-                                        <i class="ti ti-code fs-xl avatar-title"></i>
-                                    </div>
-                                    <div class="grow">
-                                        <h5 class="mb-1 fs-base">
-                                            <a href="#!" class="link-reset">dashboard-config.json</a>
-                                        </h5>
-                                        <p class="text-muted mb-0 fs-xs">524KB</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <a href="#" class="btn btn-sm btn-icon btn-default" title="Download">
-                                        <i class="ti ti-download fs-lg"></i>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex align-items-center justify-content-center gap-2 p-3">
-                                <strong>Loading...</strong>
-                                <div class="spinner-border spinner-border-sm text-danger" role="status" aria-hidden="true"></div>
+                                @endif
                             </div>
                         </div>
                     </div>
-                    <!-- end card-body -->
                 </div>
-                <!-- end card -->
             </div>
             <!-- end col-xl-3 -->
         </div>
         <!-- end row -->
     </div>
-    <!-- end col-xxl-10 -->
+    <!-- end col-xxl-12 -->
 </div>
+
+<!-- Upload Bencmark Modal -->
+<div class="modal fade" id="verticallyCentered" tabindex="-1" aria-labelledby="verticallyCenteredModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verticallyCenteredModalLabel"><i class="ti ti-photo me-2"></i>Upload Bencmark Produk</h5>
+                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="fas fa-times fs--1"></span>
+                </button>
+            </div>
+            <form action="/project/ikms/{{ encrypt($ikm->first()->id) }}/bencmark" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                    <input type="text" name="id_Project" value="{{ $project->id }}" hidden>
+
+                    <div class="mb-3">
+                        <label for="bencmarkFiles" class="form-label">Pilih Gambar Bencmark:</label>
+                        <input class="form-control" type="file" id="bencmarkFiles" name="gambar[]" multiple accept="image/*">
+                        <small class="text-muted">Bisa upload lebih dari 1 gambar</small>
+                    </div>
+
+                    <div class="alert alert-soft-info" role="alert">
+                        <small><i class="ti ti-info-circle me-1"></i> Format yang didukung: JPG, PNG, GIF</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Batal</button>
+                    <button class="btn btn-primary" type="submit"><i class="ti ti-upload me-1"></i> Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Design Modal -->
+<div class="modal fade" id="uploadDesign" tabindex="-1" aria-labelledby="uploadDesignModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadDesignModalLabel"><i class="ti ti-palette me-2"></i>Upload Desain Produk</h5>
+                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="ti ti-x"></span>
+                </button>
+            </div>
+            <form action="/project/ikms/{{ encrypt($ikm->first()->id) }}/tambahDesain" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                    <input type="text" name="id_project" value="{{ $project->id }}" hidden>
+
+                    <div class="mb-3">
+                        <label for="designFiles" class="form-label">Pilih Gambar Desain:</label>
+                        <input class="form-control" type="file" id="designFiles" name="gambar[]" multiple accept="image/*">
+                        <small class="text-muted">Bisa upload lebih dari 1 gambar</small>
+                    </div>
+
+                    <div class="alert alert-soft-info" role="alert">
+                        <small><i class="ti ti-info-circle me-1"></i> Format yang didukung: JPG, PNG, GIF</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Batal</button>
+                    <button class="btn btn-primary" type="submit"><i class="ti ti-upload me-1"></i> Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add Documentation Modal -->
+<div class="modal fade" id="addDokumentasi" tabindex="-1" aria-labelledby="addDokumentasiModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addDokumentasiModalLabel"><i class="ti ti-photo me-2"></i>Upload Photo Dokumentasi</h5>
+                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="ti ti-x"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/project/ikms/{{ $ikm->first()->id }}/dokumentasi" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <label for="foto" class="form-label">Pilih Photo :</label>
+                    <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                    <input type="text" name="id_project" value="{{ $project->id }}" hidden>
+                    <input type="file" name="gambar[]" id="gambar" class="form-control" multiple>
+                    <br>
+                    <div class="alert alert-soft-primary" role="alert">
+                        <small>Upload max 3 foto secara bertahap</small>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit"><i class="ti ti-upload me-1"></i> Upload</button>
+                </form>
+                <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Picture Modal -->
+<div class="modal fade" id="UpdatePicture" tabindex="-1" aria-labelledby="UpdatePictureModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="UpdatePictureModalLabel"><i class="ti ti-user me-2"></i>Ubah Foto IKM</h5>
+                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="ti ti-x"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="/project/ikms/{{ $ikm->first()->id }}/update" method="POST" enctype="multipart/form-data" id="cropForm">
+                    @csrf
+                    <input type="text" name="id_projek" value="{{ $project->id }}" hidden>
+                    <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                    <input type="text" name="oldImage" value="{{ $ikm->first()->gambar }}" hidden>
+
+                    <!-- Image Input -->
+                    <div class="mb-3">
+                        <label class="form-label">Pilih Foto</label>
+                        <input type="file" name="gambar" class="form-control" id="imageInput" accept="image/*">
+                    </div>
+
+                    <!-- Cropper Container -->
+                    <div class="cropper-container" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="img-container" style="max-height: 400px; background: #333;">
+                                    <img id="imageToCrop" src="" alt="Gambar untuk di-crop">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="preview-container" style="width: 150px; height: 150px; overflow: hidden; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                    <div class="preview" style="width: 100%; height: 100%;"></div>
+                                </div>
+                                <div class="mt-3">
+                                    <p class="text-muted mb-2">Preview:</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden input for cropped image -->
+                    <input type="hidden" name="croppedImage" id="croppedImage">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" id="cropButton" style="display:none;">
+                    <i class="ti ti-crop me-1"></i> Crop Foto
+                </button>
+                <button class="btn btn-outline-secondary" type="button" id="resetButton" style="display:none;">
+                    <i class="ti ti-refresh me-1"></i> Reset
+                </button>
+                <button class="btn btn-primary" type="button" id="saveButton" style="display:none;" onclick="document.getElementById('cropForm').submit()">
+                    <i class="ti ti-check me-1"></i> Simpan
+                </button>
+                <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const fields = [
+        'jenisProduk',
+        'merk',
+        'komposisi',
+        'varian',
+        'kelebihan',
+        'namaUsaha',
+        'noPIRT',
+        'noHalal',
+        'lainnya',
+        'saranPenyajian',
+        'segmentasi',
+        'jenisKemasan',
+        'harga',
+        'tagline',
+        'redaksi',
+        'gramasi'
+    ];
+
+    const cotsFields = [
+        'sejarahSingkat',
+        'produkjual',
+        'carapemasaran',
+        'bahanbaku',
+        'prosesproduksi',
+        'omset',
+        'kapasitasProduksi',
+        'kendala',
+        'solusi'
+    ];
+
+    fields.forEach(function(id){
+        tinymce.init({
+            selector: '#' + id,
+            inline: true,
+            menubar: false,
+            plugins: 'lists wordcount',
+            toolbar: 'bold italic underline | bullist numlist',
+            setup: function (editor) {
+
+                editor.on('init', function () {
+                    const hidden = document.getElementById(id + '_input');
+                    hidden.value = editor.getContent();
+                });
+
+                editor.on('change keyup', function () {
+                    const hidden = document.getElementById(id + '_input');
+                    hidden.value = editor.getContent();
+                });
+            }
+        });
+    });
+
+    // Enable COTS edit functionality
+    document.getElementById('enableCots')?.addEventListener('click', function () {
+        cotsFields.forEach(id => {
+            document.getElementById(id).removeAttribute('readonly');
+        });
+        document.getElementById('cotsActions').style.display = 'flex';
+    });
+
+    // Cancel COTS edit
+    document.getElementById('batalCots')?.addEventListener('click', function () {
+        cotsFields.forEach(id => {
+            document.getElementById(id).setAttribute('readonly', 'readonly');
+        });
+        document.getElementById('cotsActions').style.display = 'none';
+    });
+
+    // AI Generate Button Event Listeners
+    document.querySelectorAll('.ai-generate-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const fieldId = this.getAttribute('data-field');
+            const fieldLabel = this.getAttribute('data-label');
+            document.getElementById('aiTargetField').value = fieldId;
+
+            // Pre-fill prompt dengan label field
+            const promptInput = document.getElementById('aiPrompt');
+            promptInput.value = `Tuliskan konten untuk field "${fieldLabel}" yang menarik dan profesional untuk produk IKM ini.`;
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('aiGenerateModal'));
+            modal.show();
+        });
+    });
+
+});
+
+// AI Generate Multiple Options Function
+async function generateAIMultiple() {
+    const targetField = document.getElementById('aiTargetField').value;
+    const prompt = document.getElementById('aiPrompt').value;
+    const loading = document.getElementById('aiLoading');
+    const generateBtn = document.getElementById('generateAIBtn');
+
+    if (!targetField || !prompt) {
+        alert('Mohon masukkan prompt terlebih dahulu.');
+        return;
+    }
+
+    // Show loading
+    loading.style.display = 'block';
+    generateBtn.disabled = true;
+    generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Generating...';
+
+    // Get existing content from editor
+    const editor = tinymce.get(targetField);
+    const existingContent = editor ? editor.getContent({format: 'text'}).trim() : '';
+
+    // Build context dari field lain
+    const contextFields = ['jenisProduk', 'merk', 'komposisi', 'namaUsaha', 'segmentasi'];
+    let contextText = '';
+
+    contextFields.forEach(field => {
+        if (field !== targetField) {
+            const fieldEditor = tinymce.get(field);
+            if (fieldEditor) {
+                const content = fieldEditor.getContent({format: 'text'}).trim();
+                if (content) {
+                    const label = document.querySelector(`[data-field="${field}"]`)?.getAttribute('data-label') || field;
+                    contextText += `${label}: ${content}\n`;
+                }
+            }
+        }
+    });
+
+    // Enhanced prompt untuk menghasilkan 4 opsi dengan HTML formatting
+    const enhancedPrompt = contextText
+        ? `${contextText}\n\nPrompt: ${prompt}\n\nTolong hasilkan 4 variasi deskripsi yang berbeda dan menarik. Setiap variasi harus menggunakan format HTML dengan:
+- <strong> untuk teks penting/utama
+- <em> untuk penekanan
+- <p> untuk paragraf
+- <br> untuk baris baru jika diperlukan
+- <ul> dan <li> untuk list jika perlu\n\nPisahkan setiap variasi dengan marker ===OPTION_START=== dan ===OPTION_END===`
+        : `${prompt}\n\nTolong hasilkan 4 variasi deskripsi yang berbeda dan menarik. Setiap variasi harus menggunakan format HTML dengan:
+- <strong> untuk teks penting/utama
+- <em> untuk penekanan
+- <p> untuk paragraf
+- <br> untuk baris baru jika diperlukan
+- <ul> dan <li> untuk list jika perlu\n\nPisahkan setiap variasi dengan marker ===OPTION_START=== dan ===OPTION_END===`;
+
+    const abortController = new AbortController();
+
+    try {
+        const res = await fetch('https://myollama.scrollwebid.com/api/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'gpt-oss:120b-cloud',
+                prompt: enhancedPrompt,
+                stream: true,
+                web_search: {
+                    enabled: true,
+                    search_depth: 'high'
+                },
+                options: {
+                    temperature: 0.8,
+                    top_p: 0.95
+                }
+            }),
+            signal: abortController.signal
+        });
+
+        if (!res.ok) {
+            throw new Error('API request failed');
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let result = '';
+
+        // Update button to show streaming
+        generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Receiving...';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value);
+            try {
+                const data = JSON.parse(chunk);
+                if (data.response) {
+                    result += data.response;
+                }
+                if (data.done) {
+                    break;
+                }
+            } catch (e) {
+                // Handle partial JSON chunks
+                const lines = chunk.split('\n');
+                for (const line of lines) {
+                    if (line.trim()) {
+                        try {
+                            const data = JSON.parse(line);
+                            if (data.response) {
+                                result += data.response;
+                            }
+                            if (data.done) {
+                                break;
+                            }
+                        } catch (e) {
+                            // Ignore parse errors for partial chunks
+                        }
+                    }
+                }
+            }
+        }
+
+        // Parse options from result
+        const options = parseOptions(result);
+
+        if (options.length === 0) {
+            // Fallback: if no options parsed, use the whole result as one option
+            displayOptions([result]);
+        } else {
+            displayOptions(options);
+        }
+
+        // Close first modal and show options modal
+        const generateModalEl = document.getElementById('aiGenerateModal');
+        const generateModal = bootstrap.Modal.getInstance(generateModalEl);
+        if (generateModal) {
+            generateModal.hide();
+        }
+
+        // Show options modal
+        document.getElementById('aiOptionsTargetField').value = targetField;
+        const optionsModal = new bootstrap.Modal(document.getElementById('aiOptionsModal'));
+        optionsModal.show();
+
+    } catch (error) {
+        console.error('AI Generation Error:', error);
+        alert('Gagal menghasilkan opsi. Silakan coba lagi. Error: ' + error.message);
+    } finally {
+        // Reset loading
+        loading.style.display = 'none';
+        generateBtn.disabled = false;
+        generateBtn.innerHTML = '<i class="ti ti-sparkles me-1"></i> Generate Opsi';
+    }
+}
+
+// Parse options from AI response
+function parseOptions(result) {
+    // Clean up result
+    result = result.trim();
+
+    // Try to extract options using markers
+    const optionStartMarker = '===OPTION_START===';
+    const optionEndMarker = '===OPTION_END===';
+
+    if (result.includes(optionStartMarker)) {
+        const parts = result.split(optionStartMarker);
+        const options = [];
+
+        for (let i = 1; i < parts.length; i++) {
+            let option = parts[i];
+            if (option.includes(optionEndMarker)) {
+                option = option.split(optionEndMarker)[0];
+            }
+            option = option.trim();
+            if (option) {
+                options.push(formatHTML(option));
+            }
+        }
+
+        return options;
+    }
+
+    // Fallback: try to parse numbered list
+    const numberedPattern = /^(\d+)[\.\)]\s*(.+)$/gm;
+    const matches = result.match(numberedPattern);
+    if (matches && matches.length > 0) {
+        return matches.map(m => {
+            const clean = m.replace(/^(\d+)[\.\)]\s*/, '').trim();
+            return formatHTML(clean);
+        });
+    }
+
+    // If still no options, split by double newlines
+    const paragraphs = result.split(/\n\n+/);
+    return paragraphs.filter(p => p.trim().length > 20).map(p => formatHTML(p.trim()));
+}
+
+// Format text to HTML with proper styling
+function formatHTML(text) {
+    // Apply HTML formatting
+    let formatted = text;
+
+    // Convert **text** to <strong>text</strong>
+    formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+    // Convert *text* to <em>text</em>
+    formatted = formatted.replace(/(?<!\*)\*([^\*]+)\*(?!\*)/g, '<em>$1</em>');
+
+    // Convert _text_ to <em>text</em>
+    formatted = formatted.replace(/_(.+?)_/g, '<em>$1</em>');
+
+    // Convert numbered lists
+    formatted = formatted.replace(/^(\d+)[\.\)]\s*(.+)$/gm, '<li>$2</li>');
+
+    // Wrap consecutive <li> elements in <ul>
+    if (formatted.includes('<li>')) {
+        formatted = '<ul>' + formatted + '</ul>';
+    }
+
+    // Convert newlines to <br>
+    formatted = formatted.replace(/\n/g, '<br>');
+
+    // Wrap in paragraph if no HTML tags
+    if (!formatted.includes('<') && !formatted.includes('>')) {
+        formatted = '<p>' + formatted + '</p>';
+    }
+
+    return formatted;
+}
+
+// Display options in the modal
+function displayOptions(options) {
+    const container = document.getElementById('aiOptionsContainer');
+    container.innerHTML = '';
+
+    const targetField = document.getElementById('aiOptionsTargetField').value;
+
+    options.forEach((option, index) => {
+        const card = document.createElement('div');
+        card.className = 'ai-option-card position-relative';
+        card.setAttribute('data-index', index);
+        card.onclick = function() { selectOption(this, targetField); };
+
+        card.innerHTML = `
+            <span class="option-number">${index + 1}</span>
+            <div class="option-content">${option}</div>
+        `;
+
+        container.appendChild(card);
+    });
+}
+
+// Select an option and insert into editor
+function selectOption(card, targetField) {
+    // Remove selected class from all cards
+    document.querySelectorAll('.ai-option-card').forEach(c => c.classList.remove('selected'));
+
+    // Add selected class to clicked card
+    card.classList.add('selected');
+
+    // Get the selected option HTML
+    const optionIndex = card.getAttribute('data-index');
+    const options = document.querySelectorAll('.ai-option-card');
+    const selectedOption = options[optionIndex].querySelector('.option-content').innerHTML;
+
+    // Insert into editor
+    const editor = tinymce.get(targetField);
+    if (editor) {
+        const currentContent = editor.getContent();
+        if (currentContent && currentContent !== '<p>&nbsp;</p>') {
+            // Append if there's existing content
+            editor.setContent(currentContent + '<br><br>' + selectedOption);
+        } else {
+            editor.setContent(selectedOption);
+        }
+
+        // Update hidden input
+        const hiddenInput = document.getElementById(targetField + '_input');
+        if (hiddenInput) {
+            hiddenInput.value = editor.getContent();
+        }
+    }
+
+    // Close modal
+    const modalEl = document.getElementById('aiOptionsModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+        modal.hide();
+    }
+}
+
+// Regenerate options
+async function regenerateOptions() {
+    const loading = document.getElementById('aiOptionsLoading');
+    const container = document.getElementById('aiOptionsContainer');
+
+    loading.style.display = 'block';
+    container.style.opacity = '0.5';
+
+    // Call generateAIMultiple again with same parameters
+    const targetField = document.getElementById('aiTargetField').value;
+    const prompt = document.getElementById('aiPrompt').value;
+
+    // Get existing content from editor
+    const editor = tinymce.get(targetField);
+    const existingContent = editor ? editor.getContent({format: 'text'}).trim() : '';
+
+    // Build context dari field lain
+    const contextFields = ['jenisProduk', 'merk', 'komposisi', 'namaUsaha', 'segmentasi'];
+    let contextText = '';
+
+    contextFields.forEach(field => {
+        if (field !== targetField) {
+            const fieldEditor = tinymce.get(field);
+            if (fieldEditor) {
+                const content = fieldEditor.getContent({format: 'text'}).trim();
+                if (content) {
+                    const label = document.querySelector(`[data-field="${field}"]`)?.getAttribute('data-label') || field;
+                    contextText += `${label}: ${content}\n`;
+                }
+            }
+        }
+    });
+
+    const enhancedPrompt = contextText
+        ? `${contextText}\n\nPrompt: ${prompt}\n\nTolong hasilkan 4 variasi BARU yang berbeda dari sebelumnya. Setiap variasi harus menggunakan format HTML dengan:
+- <strong> untuk teks penting/utama
+- <em> untuk penekanan
+- <p> untuk paragraf
+- <br> untuk baris baru jika diperlukan\n\nPisahkan setiap variasi dengan marker ===OPTION_START=== dan ===OPTION_END===`
+        : `${prompt}\n\nTolong hasilkan 4 variasi BARU yang berbeda. Setiap variasi harus menggunakan format HTML dengan:
+- <strong> untuk teks penting/utama
+- <em> untuk penekanan
+- <p> untuk paragraf
+- <br> untuk baris baru jika diperlukan\n\nPisahkan setiap variasi dengan marker ===OPTION_START=== dan ===OPTION_END===`;
+
+    const abortController = new AbortController();
+
+    try {
+        const res = await fetch('https://myollama.scrollwebid.com/api/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'gpt-oss:120b-cloud',
+                prompt: enhancedPrompt,
+                stream: true,
+                web_search: {
+                    enabled: true,
+                    search_depth: 'high'
+                },
+                options: {
+                    temperature: 0.9,
+                    top_p: 0.98
+                }
+            }),
+            signal: abortController.signal
+        });
+
+        if (!res.ok) {
+            throw new Error('API request failed');
+        }
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let result = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value);
+            try {
+                const data = JSON.parse(chunk);
+                if (data.response) {
+                    result += data.response;
+                }
+                if (data.done) {
+                    break;
+                }
+            } catch (e) {
+                const lines = chunk.split('\n');
+                for (const line of lines) {
+                    if (line.trim()) {
+                        try {
+                            const data = JSON.parse(line);
+                            if (data.response) {
+                                result += data.response;
+                            }
+                            if (data.done) {
+                                break;
+                            }
+                        } catch (e) {
+                            // Ignore parse errors
+                        }
+                    }
+                }
+            }
+        }
+
+        const options = parseOptions(result);
+        displayOptions(options.length > 0 ? options : ['<p>Opsi tidak tersedia. Silakan coba lagi.</p>']);
+
+    } catch (error) {
+        console.error('Regenerate Error:', error);
+        alert('Gagal menghasilkan opsi baru. Error: ' + error.message);
+    } finally {
+        loading.style.display = 'none';
+        container.style.opacity = '1';
+    }
+}
+
+</script>
+
+<!-- Cropper.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<!-- Image Cropping Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('imageInput');
+    const imageToCrop = document.getElementById('imageToCrop');
+    const cropperContainer = document.querySelector('.cropper-container');
+    const cropButton = document.getElementById('cropButton');
+    const resetButton = document.getElementById('resetButton');
+    const saveButton = document.getElementById('saveButton');
+    const croppedImageInput = document.getElementById('croppedImage');
+
+    let cropper = null;
+
+    // Handle file selection
+    imageInput.addEventListener('change', function(e) {
+        const files = e.target.files;
+
+        if (files && files.length > 0) {
+            const file = files[0];
+
+            // Validate file type
+            if (!file.type.match('image.*')) {
+                alert('Please select an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                // Destroy existing cropper if any
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                // Set image source
+                imageToCrop.src = e.target.result;
+
+                // Show cropper container
+                cropperContainer.style.display = 'block';
+
+                // Initialize Cropper
+                cropper = new Cropper(imageToCrop, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    responsive: true,
+                    preview: '.preview',
+                    crop: function(event) {
+                        // Optional: Update preview on crop
+                    }
+                });
+
+                // Show buttons
+                cropButton.style.display = 'inline-block';
+                resetButton.style.display = 'inline-block';
+                saveButton.style.display = 'inline-block';
+
+                // Hide file input (optional)
+                imageInput.parentElement.style.display = 'none';
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Handle crop button click
+    cropButton.addEventListener('click', function() {
+        if (cropper) {
+            // Get cropped canvas
+            const canvas = cropper.getCroppedCanvas({
+                width: 300,
+                height: 300,
+                fillColor: '#fff',
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            });
+
+            // Convert to base64
+            const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+            // Set to hidden input
+            croppedImageInput.value = croppedDataUrl;
+
+            // Show success message
+            alert('Foto berhasil di-crop! Klik Simpan untuk menyimpan.');
+
+            // Update preview
+            document.querySelector('.preview').style.backgroundImage = `url(${croppedDataUrl})`;
+            document.querySelector('.preview').style.backgroundSize = 'cover';
+            document.querySelector('.preview').style.backgroundPosition = 'center';
+        }
+    });
+
+    // Handle reset button click
+    resetButton.addEventListener('click', function() {
+        // Destroy cropper
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+
+        // Reset image source
+        imageToCrop.src = '';
+
+        // Hide cropper container
+        cropperContainer.style.display = 'none';
+
+        // Hide buttons
+        cropButton.style.display = 'none';
+        resetButton.style.display = 'none';
+        saveButton.style.display = 'none';
+
+        // Clear inputs
+        imageInput.value = '';
+        croppedImageInput.value = '';
+
+        // Show file input
+        imageInput.parentElement.style.display = 'block';
+
+        // Reset preview
+        document.querySelector('.preview').style.backgroundImage = '';
+    });
+
+    // Handle modal close/hide
+    const updatePictureModal = document.getElementById('UpdatePicture');
+    updatePictureModal.addEventListener('hidden.bs.modal', function() {
+        // Reset cropper when modal is closed
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+
+        // Reset UI
+        cropperContainer.style.display = 'none';
+        cropButton.style.display = 'none';
+        resetButton.style.display = 'none';
+        saveButton.style.display = 'none';
+
+        // Clear inputs
+        imageInput.value = '';
+        croppedImageInput.value = '';
+
+        // Show file input
+        imageInput.parentElement.style.display = 'block';
+
+        // Reset preview
+        document.querySelector('.preview').style.backgroundImage = '';
+    });
+});
+</script>
+
+<!-- AI Generate Modal -->
+<div class="modal fade" id="aiGenerateModal" tabindex="-1" aria-labelledby="aiGenerateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aiGenerateModalLabel"><i class="ti ti-sparkles me-2"></i>Generate with AI</h5>
+                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="ti ti-x"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="aiTargetField" value="">
+                <div class="mb-3">
+                    <label for="aiPrompt" class="form-label">Prompt:</label>
+                    <textarea class="form-control" id="aiPrompt" rows="4" placeholder="Masukkan instruksi untuk AI... (contoh: Tuliskan tagline menarik untuk produk makanan sehat)"></textarea>
+                </div>
+                <div class="alert alert-soft-info" role="alert">
+                    <small><i class="ti ti-info-circle me-1"></i> AI akan menghasilkan beberapa opsi teks berdasarkan instruksi Anda. Pilih yang paling sesuai.</small>
+                </div>
+                <div id="aiLoading" style="display:none;">
+                    <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm me-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <small class="text-muted">Sedang menghasilkan opsi...</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Batal</button>
+                <button class="btn btn-primary" type="button" id="generateAIBtn" onclick="generateAIMultiple()">
+                    <i class="ti ti-sparkles me-1"></i> Generate Opsi
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Description Options Modal -->
+<div class="modal fade" id="aiOptionsModal" tabindex="-1" aria-labelledby="aiOptionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aiOptionsModalLabel"><i class="ti ti-list-check me-2"></i>Pilih Opsi Deskripsi</h5>
+                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="ti ti-x"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="aiOptionsTargetField" value="">
+                <p class="text-muted mb-3">Pilih salah satu opsi di bawah ini atau <button type="button" class="btn btn-link p-0" onclick="regenerateOptions()">generate ulang</button></p>
+
+                <div id="aiOptionsLoading" style="display:none;">
+                    <div class="d-flex align-items-center justify-content-center py-4">
+                        <div class="spinner-border spinner-border-sm me-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <small class="text-muted">Sedang menghasilkan opsi baru...</small>
+                    </div>
+                </div>
+
+                <div id="aiOptionsContainer" class="d-flex flex-column gap-3">
+                    <!-- Options will be inserted here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Loading Indicator (for editor) -->
+<style>
+.ai-generate-btn {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+.ai-generate-btn i {
+    font-size: 14px;
+}
+.ai-generate-btn:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+.ai-option-card {
+    border: 2px solid #e1e5eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+.dark .ai-option-card {
+    background: #2e3344;
+    border-color: #3d4458;
+}
+.ai-option-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+.ai-option-card.selected {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.05);
+}
+.ai-option-card .option-number {
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: #667eea;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+.ai-option-card .option-content {
+    font-size: 14px;
+    line-height: 1.6;
+}
+.ai-option-card .option-content strong {
+    color: #667eea;
+}
+.ai-option-card .option-content em {
+    color: #6c757d;
+}
+.ai-option-card .select-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+.ai-loading-overlay {
+    position: relative;
+}
+.ai-loading-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+.ai-loading-overlay::after .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+</style>
+
+
+@else
+<div class="alert alert-warning">
+    <p>Data IKM tidak ditemukan.</p>
+</div>
+@endif
+
 @endsection

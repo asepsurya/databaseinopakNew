@@ -7,6 +7,7 @@
     <meta name="description" content="Database INOPAK - Sistem Pengelolaan Informasi" />
     <meta name="keywords" content="inopak, database, ikm, admin dashboard" />
     <meta name="author" content="INOPAK" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') | Database INOPAK</title>
 
     <!-- App favicon -->
@@ -17,13 +18,68 @@
 
     <!-- Vendor css -->
     <link href="{{ asset('assets/css/vendors.min.css') }}" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.3.0/tinymce.min.js" referrerpolicy="origin"></script>
 
     <!-- App css -->
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+    <!-- Toastr Custom Styles -->
     <style>
+        /* Toastr notification styles */
+        .toast-simple {
+            font-family: inherit;
+            font-size: 13px;
+            padding: 12px 16px;
+            border-radius: 0.375rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        .toast-success {
+            background-color: #d1e7dd;
+            border-left: 4px solid #198754;
+            color: #0f5132;
+        }
+        .toast-error {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #842029;
+        }
+        .toast-info {
+            background-color: #cff4fc;
+            border-left: 4px solid #0dcaf0;
+            color: #055160;
+        }
+        .toast-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #664d03;
+        }
+        .toast-top-right {
+            top: 20px;
+            right: 20px;
+        }
+
+        /* Dark mode toastr support */
+        [data-theme="dark"] .toast-simple,
+        .dark .toast-simple {
+            background-color: #344050;
+            color: #f8f9fa;
+        }
+        [data-theme="dark"] .toast-success,
+        .dark .toast-success {
+            background-color: #1e3a2f;
+            color: #75b798;
+        }
+        [data-theme="dark"] .toast-error,
+        .dark .toast-error {
+            background-color: #3d1e21;
+            color: #ea868f;
+        }
+
         /* Small toast notifications - Light/Dark mode support */
         .swal2-toast-small {
             font-size: 13px !important;
@@ -1015,54 +1071,7 @@
         <!-- ============================================================== -->
         <div class="content-page">
             <div class="content">
-                <div class="container-fluid">
-
-
-
-                    <!-- Flash Messages -->
-                    @if (session()->has('Berhasil'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="ti ti-check me-2"></i>
-                            {{ session('Berhasil') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    @if (session()->has('UpdateBerhasil'))
-                        <div class="alert alert-info alert-dismissible fade show" role="alert">
-                            <i class="ti ti-pencil me-2"></i>
-                            {{ session('UpdateBerhasil') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    @if (session()->has('HapusBerhasil'))
-                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                            <i class="ti ti-trash me-2"></i>
-                            {{ session('HapusBerhasil') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    @if (session()->has('loginError'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="ti ti-alert-circle me-2"></i>
-                            {{ session('loginError') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    @if ($errors->any())
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
+                <div class="container-fluid py-3">
                     <!-- Main Content -->
                     @yield('content')
 
@@ -1223,33 +1232,27 @@
 
     if(session()->has('Berhasil')) {
         $alertType = 'success';
-        $alertMessage = '{{ session("Berhasil") }}';
+        $alertMessage = 'Data berhasil disimpan';
     } elseif(session()->has('HapusBerhasil')) {
         $alertType = 'success';
-        $alertMessage = '{{ session("HapusBerhasil") }}';
+        $alertMessage = 'Data berhasil dihapus';
     } elseif(session()->has('UpdateBerhasil')) {
         $alertType = 'success';
-        $alertMessage = '{{ session("UpdateBerhasil") }}';
+        $alertMessage = 'Data berhasil diperbarui';
     } elseif(session()->has('gagalSimpan')) {
         $alertType = 'error';
-        $alertMessage = '{{ session("gagalSimpan") }}';
+        $alertMessage = 'Gagal menyimpan data';
     }
     @endphp
 
     @if(!empty($alertType))
     document.addEventListener('DOMContentLoaded', function() {
-        Swal.fire({
-            icon: '{{ $alertType }}',
-            title: '<span style="font-size: 14px;">{{ $alertType === "success" ? "Berhasil!" : "Gagal!" }}</span>',
-            html: '<span style="font-size: 13px;">{!! $alertMessage !!}</span>',
-            toast: true,
-            position: 'top-end',
-            timer: 3000,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            customClass: {
-                popup: 'swal2-toast-small'
-            }
+        toastr['{{ $alertType }}']('{{ $alertMessage }}', '{{ $alertType === "success" ? "Berhasil" : "Gagal" }}', {
+            timeOut: 3000,
+            closeButton: true,
+            progressBar: true,
+            positionClass: 'toast-top-right',
+            toastClass: 'toast-simple toast-' + '{{ $alertType }}'
         });
     });
     @endif
@@ -1321,8 +1324,17 @@
         });
     </script>
 
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- FsLightbox JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fslightbox@3.4.2/index.min.js"></script>
 
     @stack('scripts')
 </body>

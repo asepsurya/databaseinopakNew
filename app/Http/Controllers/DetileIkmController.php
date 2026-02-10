@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DetileIkmController extends Controller
 {
- 
+
     public function index($id_ikm, $id_project){
         // unkripsi id ikm
         $id_ikm =decrypt($id_ikm);
@@ -35,10 +35,49 @@ class DetileIkmController extends Controller
     public function ubahFotoIkm(request $request){
 
         // return $request->file('gambar')->store('ikms-img-Profile');
-        
-        $validasiGambar = $request->validate([
+
+        $validasiGambar = [
             'gambar'=>'image|file',
-        ]);
+        ];
+
+        // Check if cropped image data is provided (base64)
+        if($request->croppedImage) {
+            // Handle base64 cropped image
+            $request->validate([
+                'croppedImage' => 'string',
+            ]);
+
+            $imageData = $request->croppedImage;
+
+            // Remove data URL prefix if present
+            if (preg_match('/^data:image\/(\w+);base64,/', $imageData, $matches)) {
+                $imageType = $matches[1];
+                $imageData = substr($imageData, strpos($imageData, ',') + 1);
+            }
+
+            $imageData = base64_decode($imageData);
+
+            // Generate unique filename
+            $fileName = 'ikm_' . $request->id_ikm . '_' . time() . '.jpg';
+            $filePath = 'ikms-img-Profile/' . $fileName;
+
+            // Store the image
+            Storage::put($filePath, $imageData);
+
+            // Delete old image if exists
+            if($request->oldImage){
+                Storage::delete($request->oldImage);
+            }
+
+            ikm::where('id', $request->id_ikm)->update(['gambar' => $filePath]);
+
+            $request->session()->flash('UpdateBerhasil', 'Photo Berhasil Diubah');
+            return redirect('/project/dataikm/'.$request->id_projek);
+        }
+
+        // Handle regular file upload
+        $request->validate($validasiGambar);
+
         if($request->file('gambar')){
             //gambar dibah maka gambar di storage di hapus
             if($request->oldImage){
@@ -57,7 +96,7 @@ class DetileIkmController extends Controller
             'id_ikm'=>'',
             'gambar.*'=>'image|file',
             'id_Project'=>'',
-           
+
         ]);
 
         foreach ($request->file('gambar') as $item){
@@ -92,7 +131,7 @@ class DetileIkmController extends Controller
         // ]);
     }
     public function Updatecots(request $request){
-      
+
         $validasi = $request->validate([
             'id_ikm'=>'',
             'id_project'=>'',
@@ -106,7 +145,7 @@ class DetileIkmController extends Controller
             'kendala'=>'',
             'solusi'=>'',
         ]);
-  
+
         cots::where('id_ikm',$request->id_ikm)->update($validasi);
         $request->session()->flash('UpdateBerhasil', 'Data Berhasil Diubah');
         return redirect()->route('detail',[
@@ -137,7 +176,7 @@ class DetileIkmController extends Controller
      $id_ikm = $request->id_ikm;
      $id_gambar=$request->id_gambar;
      $old_gambar=$request->old_gambar;
-     
+
     //  hapus di storage
     if($old_gambar){
         Storage::delete($old_gambar);
@@ -145,8 +184,8 @@ class DetileIkmController extends Controller
      DokumentasiCots::where('gambar',$old_gambar)->orWhere('id',$id_gambar)->delete();
      $request->session()->flash('Berhasil', 'Data Berhasil DiHapus');
      return redirect()->back();
-   
-    
+
+
    }
    public function bencmarkDelete(Request $request, $id_gambar){
     $old_gambar = $request->oldImage;
@@ -169,7 +208,7 @@ class DetileIkmController extends Controller
         $validasiGambar['gambar']= $item->store('Produk-design');
         ProdukDesign::create($validasiGambar);
     }
-    
+
     $request->session()->flash('Berhasil', 'Data Berhasil disimpan');
     return redirect()->back();
    }
@@ -206,24 +245,24 @@ class DetileIkmController extends Controller
     ]);
     $request->session()->flash('Berhasil', 'Data Berhasil disimpan');
     return redirect()->back();
-   
+
    }
-   
+
     public function publik_cots(){
     return view('pages.public-cots.cots_public',[
         'title'=>'Form COTS',
         'dataIkm'=>ikm::all(),
         'project'=>Project::all(),
         'provinsi'=>province::all(),
-       
+
     ]);
    }
    public function cots_save(Request $request){
-    
+
     if($request->file('gambar')){
         $validasiGambar = $request->file('gambar')->store('ikms-img-Profile');
-    } 
-  
+    }
+
     ikm::create([
         'nama'=>$request->nama,
         'telp'=>$request->telp,
@@ -237,23 +276,23 @@ class DetileIkmController extends Controller
         'rt'=>$request->rt,
         'rw'=>$request->rw,
         'gambar'=>$validasiGambar
-   
+
     ]);
-    
+
     // get data
     $a = ikm::where(['nama'=>$request->nama,'telp'=>$request->telp,'id_Project'=>$request->id_Project])->get();
     foreach($a as $data){
         $id_ikm = $data->id;
         $id_project=$data->id_Project;
     }
-    // input Dokumentasi COTS   
+    // input Dokumentasi COTS
     foreach ($request->file('gambargallery') as $item){
         $validasiGambar2 = $item->store('images');
         DokumentasiCots::create([
             'id_ikm'=>$id_ikm,
             'id_project'=>$id_project,
             'gambar'=>$validasiGambar2
-        ]); 
+        ]);
     }
 
     // input Data COTS
@@ -275,5 +314,5 @@ class DetileIkmController extends Controller
         'title'=>'Finish'
     ]);
    }
-   
+
 }

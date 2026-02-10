@@ -111,3 +111,9 @@ Route::get('/clean', function() {
     }
 });
 
+// Ollama Proxy - Forward /api/generate to /api/tags on myollama.scrollwebid.com
+Route::any('/ollama/{any}', [MyController::class, 'ollamaProxy'])->where('any', '.*');
+
+// Ollama Proxy - Forward /api/generate to /api/tags
+Route::any('/ollama/{any}', [MyController::class, 'ollamaProxy'])->where('any', '.*')->middleware('auth');
+
