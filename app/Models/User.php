@@ -21,6 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_photo',
+        'bio',
+        'phone',
+        'address',
     ];
 
     /**
@@ -44,5 +48,23 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the user's notifications.
+     */
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get the user's unread notifications.
+     */
+    public function unreadNotifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable')
+            ->whereNull('read_at')
+            ->orderBy('created_at', 'desc');
     }
 }

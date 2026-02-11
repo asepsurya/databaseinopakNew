@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DetileIkmController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,7 @@ use App\Http\Controllers\DetileIkmController;
 
 Route::get('/', function () {
     return redirect('/login');
-});
+    });
 
 Route::resource('/register', RegisterController::class);
 //Route Privilage
@@ -40,6 +41,9 @@ Route::post('/login',[LoginController::class,'login'])->middleware('guest')->nam
 Route::get('/dashboard',[LoginController::class,'dashboard'])->middleware('auth');
 //Profile
 Route::resource('/profile', ProfileController::class)->middleware('auth');
+Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update')->middleware('auth');
+Route::delete('/profile/photo', [ProfileController::class, 'removePhoto'])->name('profile.photo.remove')->middleware('auth');
+Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update')->middleware('auth');
 //backEnd
 Route::get('/brainstorming',[MyController::class,'brainstorming'])->middleware('auth');
 Route::get('/brainstorming',[MyController::class,'brainstorming'])->middleware('auth');
@@ -109,11 +113,35 @@ Route::get('/clean', function() {
             'message' => 'Failed to clear cache. Please check logs.'
         ], 500);
     }
-});
+    });
 
 // Ollama Proxy - Forward /api/generate to /api/tags on myollama.scrollwebid.com
 Route::any('/ollama/{any}', [MyController::class, 'ollamaProxy'])->where('any', '.*');
 
 // Ollama Proxy - Forward /api/generate to /api/tags
 Route::any('/ollama/{any}', [MyController::class, 'ollamaProxy'])->where('any', '.*')->middleware('auth');
+
+// Notification Routes
+Route::prefix('notifications')->middleware('auth')->group(function () {
+    // API endpoints for AJAX
+    Route::get('/recent', [NotificationController::class, 'recent']);
+    Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::get('/preferences', [NotificationController::class, 'preferences']);
+    Route::put('/preferences', [NotificationController::class, 'updatePreferences']);
+    Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+    Route::post('/initialize-preferences', [NotificationController::class, 'initializePreferences']);
+
+        // Page route for settings
+    Route::get('/settings', function() {
+        return view('pages.notifications.preferences');
+    })->name('notifications.settings');
+
+    // Individual notification operations
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::get('/{notification}', [NotificationController::class, 'show']);
+    Route::put('/{notification}/read', [NotificationController::class, 'markAsRead']);
+    Route::put('/{notification}/unread', [NotificationController::class, 'markAsUnread']);
+    Route::delete('/{notification}', [NotificationController::class, 'destroy']);
+    Route::delete('/', [NotificationController::class, 'destroyAll']);
+});
 

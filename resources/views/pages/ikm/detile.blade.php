@@ -242,7 +242,14 @@ td:focus-within {
                     <div class="card-header align-items-start p-4">
                         <div class="avatar-xxl me-3 position-relative">
                                 <a data-fslightbox href="{{ asset('storage/'.$ikm->first()->gambar) }}" title="Klik untuk perbesar">
-                                    <img src="{{ asset('storage/'.$ikm->first()->gambar) }}" alt="{{ $ikm->first()->nama }}" class="rounded" style="width: 72px; height: 72px; object-fit: cover;">
+                                    @if($ikm->first()->gambar && file_exists(storage_path('app/public/' . $ikm->first()->gambar)))
+                                        <img src="{{ asset('storage/'.$ikm->first()->gambar) }}" alt="{{ $ikm->first()->nama }}" class="rounded" style="width: 72px; height: 72px; object-fit: cover;">
+                                    @else
+                                        <div class="rounded d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; background-color: #e9ecef;">
+                                            <i class="ti ti-user" style="font-size: 32px; color: #6c757d;"></i>
+                                        </div>
+                                    @endif
+                                </a>
                                 </a>
                                 <button class="btn btn-light btn-sm position-absolute bottom-0 end-0 rounded-circle p-1" data-bs-toggle="modal" data-bs-target="#UpdatePicture" title="Ubah foto" style="width: 24px; height: 24px; line-height: 1;">
                                     <i class="ti ti-pencil" style="font-size: 12px;"></i>
@@ -285,15 +292,15 @@ td:focus-within {
                             </div>
                             <div class="col-md-4 col-xl-3">
                                 <h6 class="mb-1 text-muted text-uppercase">Jenis Produk:</h6>
-                                <p class="fw-medium mb-0">{{ $ikm->first()->jenisProduk }}</p>
+                                <p class="fw-medium mb-0">{!! $ikm->first()->jenisProduk !!}</p>
                             </div>
                             <div class="col-md-4 col-xl-3">
                                 <h6 class="mb-1 text-muted text-uppercase">Merk:</h6>
-                                <p class="fw-medium mb-0">{{ $ikm->first()->merk ?? 'N/A' }}</p>
+                                <p class="fw-medium mb-0">{!! $ikm->first()->merk ?? 'N/A' !!}</p>
                             </div>
                             <div class="col-md-4 col-xl-3">
                                 <h6 class="mb-1 text-muted text-uppercase">Nama Usaha:</h6>
-                                <p class="fw-medium mb-0">{{ $ikm->first()->namaUsaha ?? 'N/A' }}</p>
+                                <p class="fw-medium mb-0">{!! $ikm->first()->namaUsaha ?? 'N/A' !!}</p>
                             </div>
                         </div>
 
@@ -474,8 +481,8 @@ td:focus-within {
                                             'namaUsaha' => 'Nama Perusahaan',
                                             'noPIRT' => 'PIRT',
                                             'noHalal' => 'Halal',
-                                            'lainnya' => 'Legalitas lainnya',
-                                            'saranPenyajian' => 'Saran Penyajian',
+                                            'legalitasLain' => 'Legalitas lainnya',
+                                            'other' => 'Saran Penyajian',
                                             'segmentasi' => 'Segmentasi',
                                             'jenisKemasan' => 'Jenis Kemasan',
                                             'harga' => 'Kemasan Pendukung',
@@ -505,9 +512,9 @@ td:focus-within {
                                 padding-right: 40px;" contenteditable="true" data-placeholder="{{ $label }}">
                                                             {!! $ikm->first()->$key ?? '' !!}
                                                         </div>
-                                                        <button type="button" class="btn btn-soft-primary btn-sm ai-generate-btn position-absolute" style="top: 50%; right: 0; transform: translateY(-50%); border: none;" data-field="{{ $key }}" data-label="{{ $label }}" title="Generate dengan AI">
+                                                        <a type="button" class=" ai-generate-btn position-absolute" style="top: 50%; right: 0; transform: translateY(-50%); border: none;" data-field="{{ $key }}" data-label="{{ $label }}" title="Generate dengan AI">
                                                             <i class="ti ti-sparkles"></i>
-                                                        </button>
+                                                        </a>
                                                     </div>
                                                     <input type="hidden" name="{{ $key }}" id="{{ $key }}_input">
                                                 </td>
@@ -924,39 +931,19 @@ td:focus-within {
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-
     const fields = [
-        'jenisProduk',
-        'merk',
-        'komposisi',
-        'varian',
-        'kelebihan',
-        'namaUsaha',
-        'noPIRT',
-        'noHalal',
-        'lainnya',
-        'saranPenyajian',
-        'segmentasi',
-        'jenisKemasan',
-        'harga',
-        'tagline',
-        'redaksi',
-        'gramasi'
+        'jenisProduk', 'merk', 'komposisi', 'varian', 'kelebihan',
+        'namaUsaha', 'noPIRT', 'noHalal', 'legalitasLain', 'other',
+        'segmentasi', 'jenisKemasan', 'harga', 'tagline', 'redaksi', 'gramasi'
     ];
 
     const cotsFields = [
-        'sejarahSingkat',
-        'produkjual',
-        'carapemasaran',
-        'bahanbaku',
-        'prosesproduksi',
-        'omset',
-        'kapasitasProduksi',
-        'kendala',
-        'solusi'
+        'sejarahSingkat', 'produkjual', 'carapemasaran', 'bahanbaku',
+        'prosesproduksi', 'omset', 'kapasitasProduksi', 'kendala', 'solusi'
     ];
 
-    fields.forEach(function(id){
+    // Initialize TinyMCE for all fields
+    fields.forEach(function(id) {
         tinymce.init({
             selector: '#' + id,
             inline: true,
@@ -964,7 +951,6 @@ document.addEventListener("DOMContentLoaded", function () {
             plugins: 'lists wordcount',
             toolbar: 'bold italic underline | bullist numlist',
             setup: function (editor) {
-
                 editor.on('init', function () {
                     const hidden = document.getElementById(id + '_input');
                     hidden.value = editor.getContent();
@@ -978,42 +964,166 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Enable COTS edit functionality
-    document.getElementById('enableCots')?.addEventListener('click', function () {
-        cotsFields.forEach(id => {
-            document.getElementById(id).removeAttribute('readonly');
-        });
-        document.getElementById('cotsActions').style.display = 'flex';
-    });
+    // COTS Edit functionality
+    const enableCotsBtn = document.getElementById('enableCots');
+    const batalCotsBtn = document.getElementById('batalCots');
+    const cotsActionsDiv = document.getElementById('cotsActions');
 
-    // Cancel COTS edit
-    document.getElementById('batalCots')?.addEventListener('click', function () {
-        cotsFields.forEach(id => {
-            document.getElementById(id).setAttribute('readonly', 'readonly');
+    if (enableCotsBtn) {
+        enableCotsBtn.addEventListener('click', function () {
+            cotsFields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.removeAttribute('readonly');
+            });
+            if (cotsActionsDiv) cotsActionsDiv.style.display = 'flex';
         });
-        document.getElementById('cotsActions').style.display = 'none';
-    });
+    }
+
+    if (batalCotsBtn) {
+        batalCotsBtn.addEventListener('click', function () {
+            cotsFields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.setAttribute('readonly', 'readonly');
+            });
+            if (cotsActionsDiv) cotsActionsDiv.style.display = 'none';
+        });
+    }
 
     // AI Generate Button Event Listeners
     document.querySelectorAll('.ai-generate-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
             const fieldId = this.getAttribute('data-field');
             const fieldLabel = this.getAttribute('data-label');
-            document.getElementById('aiTargetField').value = fieldId;
 
-            // Pre-fill prompt dengan label field
+            document.getElementById('aiTargetField').value = fieldId;
             const promptInput = document.getElementById('aiPrompt');
             promptInput.value = `Tuliskan konten untuk field "${fieldLabel}" yang menarik dan profesional untuk produk IKM ini.`;
 
-            // Show modal
             const modal = new bootstrap.Modal(document.getElementById('aiGenerateModal'));
             modal.show();
         });
     });
-
 });
 
-// AI Generate Multiple Options Function
+// AI Field Rules Configuration
+    const aiFieldRules = {
+
+        merk: {
+            title: 'Nama Merek',
+            instruction: `Buatkan 10 ide nama merek unik untuk sebuah produk [sebutkan jenis produk, misal: cemilan sehat, aplikasi, fashion, dsb].
+Kriteria:
+1. Nama merek harus **mudah diingat, catchy, dan terdengar profesional**.
+2. Nama boleh terinspirasi dari **bahasa asing (Inggris, Latin, Jepang, dsb)**, bahasa Indonesia, atau gabungan keduanya menjadi satu kata atau frasa yang unik.
+3. Nama terdengar **modern, elegan, dan relevan** dengan tipe produk dan target audiens (misal: anak muda, profesional, keluarga).
+4. Panjangnya **tidak lebih dari 2 kata atau 1 kata gabungan**.
+5. Sertakan **tagline singkat (opsional)** yang menggambarkan nilai atau keunggulan produk secara jelas.
+6. Hindari nama yang terlalu generik, sulit dieja, atau terdengar murahan.
+7. Format output harus:
+<p><strong>Nama Merek</strong><br><em>Tagline singkat (opsional)</em></p>
+8. Tambahkan **alasan singkat** kenapa nama tersebut cocok untuk produk.  `
+        },
+
+        jenisProduk: {
+            title: 'Jenis Produk',
+            instruction: `Buatkan 4 variasi <strong>deskripsi jenis produk</strong>
+yang jelas dan menarik.
+Fokus pada fungsi utama produk dan keunggulannya.`
+        },
+
+        komposisi: {
+            title: 'Komposisi',
+            instruction: `Buatkan 4 variasi <strong>komposisi produk</strong>.
+Gunakan <ul><li> untuk daftar bahan.
+Bahasa harus rapi, aman, dan profesional.`
+        },
+
+        varian: {
+            title: 'Varian Produk',
+            instruction: `Buatkan 4 variasi <strong>varian produk</strong>.
+Sebutkan perbedaan rasa, ukuran, atau keunikan.
+Gunakan <ul><li>.`
+        },
+
+        kelebihan: {
+            title: 'Kelebihan Produk',
+            instruction: `Buatkan 5 poin <strong>kelebihan produk</strong>.
+Fokus pada manfaat dan nilai tambah.
+Gunakan <ul><li>.`
+        },
+
+        namaUsaha: {
+            title: 'Nama Usaha',
+            instruction: `Buatkan 3 rekomendasi <strong>nama usaha</strong> yang:
+- Relevan dengan produk
+- Cocok untuk branding jangka panjang
+- Mudah dipakai sebagai domain / media sosial`
+        },
+
+        segmentasi: {
+            title: 'Segmentasi Pasar',
+            instruction: `Buatkan 4 variasi <strong>segmentasi target pasar</strong>.
+Jelaskan usia, kebiasaan, dan kebutuhan konsumen.`
+        },
+
+        other: {
+            title: 'Saran Penyajian',
+            instruction: `Buatkan <strong>saran penyajian produk</strong>
+yang menarik, aman, dan mudah dipahami.`
+        },
+
+        jenisKemasan: {
+            title: 'Jenis Kemasan',
+            instruction: `Buatkan 3 deskripsi <strong>jenis kemasan</strong>.
+Jelaskan bahan, ukuran, dan keunggulannya.`
+        },
+
+        harga: {
+            title: 'Harga Produk',
+            instruction: `Buatkan <strong>deskripsi harga produk</strong>
+yang wajar dan menarik.
+Boleh sertakan kisaran harga.`
+        },
+
+        gramasi: {
+            title: 'Gramasi',
+            instruction: `Buatkan <strong>deskripsi berat / gramasi produk</strong>
+dan alasan gramasi tersebut sesuai untuk konsumen.`
+        },
+
+        tagline: {
+            title: 'Tagline',
+            instruction: `Buatkan 5 opsi <strong>tagline</strong>
+yang singkat, kuat, dan mudah diingat.`
+        },
+
+        redaksi: {
+    title: 'Redaksi Label',
+    instruction: `Buatkan deskripsi produk makanan berdasarkan jenis produk dengan bahasa Indonesia yang menarik, profesional, dan menggugah selera.
+Sesuaikan redaksi dengan karakter jenis produk (tekstur, cara konsumsi, fungsi).
+Tulis 3–4 kalimat, cocok untuk website, marketplace, dan katalog brand.`
+},
+
+        noPIRT: {
+            title: 'Nomor PIRT',
+            instruction: `Buatkan <strong>keterangan Nomor PIRT</strong>.
+Jika belum ada, gunakan redaksi "dalam proses pengajuan".`
+        },
+
+        noHalal: {
+            title: 'Nomor Halal',
+            instruction: `Buatkan <strong>keterangan status halal</strong>
+dengan bahasa aman dan profesional.`
+        },
+
+        legalitasLain: {
+            title: 'Legalitas Lainnya',
+            instruction: `Buatkan <strong>informasi legalitas lainnya</strong>
+seperti sertifikasi, izin, atau pengakuan resmi.`
+        }
+    };
+
+// Generate AI Multiple Options
 async function generateAIMultiple() {
     const targetField = document.getElementById('aiTargetField').value;
     const prompt = document.getElementById('aiPrompt').value;
@@ -1025,17 +1135,19 @@ async function generateAIMultiple() {
         return;
     }
 
-    // Show loading
     loading.style.display = 'block';
     generateBtn.disabled = true;
     generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Generating...';
 
-    // Get existing content from editor
     const editor = tinymce.get(targetField);
     const existingContent = editor ? editor.getContent({format: 'text'}).trim() : '';
 
-    // Build context dari field lain
-    const contextFields = ['jenisProduk', 'merk', 'komposisi', 'namaUsaha', 'segmentasi'];
+    // Build context
+    const contextFields = [
+       'jenisProduk', 'merk', 'komposisi', 'varian', 'kelebihan',
+        'namaUsaha', 'noPIRT', 'noHalal', 'lainnya', 'other',
+        'segmentasi', 'jenisKemasan', 'harga', 'tagline', 'redaksi', 'gramasi'
+    ];
     let contextText = '';
 
     contextFields.forEach(field => {
@@ -1051,54 +1163,45 @@ async function generateAIMultiple() {
         }
     });
 
-    // Enhanced prompt untuk menghasilkan 4 opsi dengan HTML formatting
-    const enhancedPrompt = contextText
-        ? `${contextText}\n\nPrompt: ${prompt}\n\nTolong hasilkan 4 variasi deskripsi yang berbeda dan menarik. Setiap variasi harus menggunakan format HTML dengan:
-- <strong> untuk teks penting/utama
-- <em> untuk penekanan
-- <p> untuk paragraf
-- <br> untuk baris baru jika diperlukan
-- <ul> dan <li> untuk list jika perlu\n\nPisahkan setiap variasi dengan marker ===OPTION_START=== dan ===OPTION_END===`
-        : `${prompt}\n\nTolong hasilkan 4 variasi deskripsi yang berbeda dan menarik. Setiap variasi harus menggunakan format HTML dengan:
-- <strong> untuk teks penting/utama
-- <em> untuk penekanan
-- <p> untuk paragraf
-- <br> untuk baris baru jika diperlukan
-- <ul> dan <li> untuk list jika perlu\n\nPisahkan setiap variasi dengan marker ===OPTION_START=== dan ===OPTION_END===`;
+    const fieldRule = aiFieldRules[targetField];
+    const enhancedPrompt = `
+${contextText}
 
-    const abortController = new AbortController();
+Konteks kolom: ${fieldRule?.title || targetField}
+
+${fieldRule?.instruction || prompt}
+
+Gunakan format HTML:
+- <strong> untuk teks penting
+- <em> untuk penekanan
+- <p> untuk paragraf
+- <ul><li> jika berupa daftar
+
+Pisahkan setiap variasi dengan:
+===OPTION_START===
+dan
+===OPTION_END===
+`;
 
     try {
         const res = await fetch('https://myollama.scrollwebid.com/api/generate', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 model: 'gpt-oss:120b-cloud',
                 prompt: enhancedPrompt,
                 stream: true,
-                web_search: {
-                    enabled: true,
-                    search_depth: 'high'
-                },
-                options: {
-                    temperature: 0.8,
-                    top_p: 0.95
-                }
-            }),
-            signal: abortController.signal
+                web_search: { enabled: true, search_depth: 'high' },
+                options: { temperature: 0.8, top_p: 0.95 }
+            })
         });
 
-        if (!res.ok) {
-            throw new Error('API request failed');
-        }
+        if (!res.ok) throw new Error('API request failed');
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let result = '';
 
-        // Update button to show streaming
         generateBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Receiving...';
 
         while (true) {
@@ -1106,74 +1209,46 @@ async function generateAIMultiple() {
             if (done) break;
 
             const chunk = decoder.decode(value);
-            try {
-                const data = JSON.parse(chunk);
-                if (data.response) {
-                    result += data.response;
-                }
-                if (data.done) {
-                    break;
-                }
-            } catch (e) {
-                // Handle partial JSON chunks
-                const lines = chunk.split('\n');
-                for (const line of lines) {
-                    if (line.trim()) {
-                        try {
-                            const data = JSON.parse(line);
-                            if (data.response) {
-                                result += data.response;
-                            }
-                            if (data.done) {
-                                break;
-                            }
-                        } catch (e) {
-                            // Ignore parse errors for partial chunks
-                        }
+            const lines = chunk.split('\n');
+
+            for (const line of lines) {
+                if (line.trim()) {
+                    try {
+                        const data = JSON.parse(line);
+                        if (data.response) result += data.response;
+                        if (data.done) break;
+                    } catch (e) {
+                        // Ignore parse errors
                     }
                 }
             }
         }
 
-        // Parse options from result
         const options = parseOptions(result);
+        displayOptions(options.length > 0 ? options : [result]);
 
-        if (options.length === 0) {
-            // Fallback: if no options parsed, use the whole result as one option
-            displayOptions([result]);
-        } else {
-            displayOptions(options);
-        }
-
-        // Close first modal and show options modal
         const generateModalEl = document.getElementById('aiGenerateModal');
         const generateModal = bootstrap.Modal.getInstance(generateModalEl);
-        if (generateModal) {
-            generateModal.hide();
-        }
+        if (generateModal) generateModal.hide();
 
-        // Show options modal
         document.getElementById('aiOptionsTargetField').value = targetField;
         const optionsModal = new bootstrap.Modal(document.getElementById('aiOptionsModal'));
         optionsModal.show();
 
     } catch (error) {
         console.error('AI Generation Error:', error);
-        alert('Gagal menghasilkan opsi. Silakan coba lagi. Error: ' + error.message);
+        alert('Gagal menghasilkan opsi. Error: ' + error.message);
     } finally {
-        // Reset loading
         loading.style.display = 'none';
         generateBtn.disabled = false;
         generateBtn.innerHTML = '<i class="ti ti-sparkles me-1"></i> Generate Opsi';
     }
 }
 
-// Parse options from AI response
+// Parse Options from AI Response
 function parseOptions(result) {
-    // Clean up result
     result = result.trim();
 
-    // Try to extract options using markers
     const optionStartMarker = '===OPTION_START===';
     const optionEndMarker = '===OPTION_END===';
 
@@ -1187,55 +1262,35 @@ function parseOptions(result) {
                 option = option.split(optionEndMarker)[0];
             }
             option = option.trim();
-            if (option) {
-                options.push(formatHTML(option));
-            }
+            if (option) options.push(formatHTML(option));
         }
-
         return options;
     }
 
-    // Fallback: try to parse numbered list
     const numberedPattern = /^(\d+)[\.\)]\s*(.+)$/gm;
     const matches = result.match(numberedPattern);
     if (matches && matches.length > 0) {
-        return matches.map(m => {
-            const clean = m.replace(/^(\d+)[\.\)]\s*/, '').trim();
-            return formatHTML(clean);
-        });
+        return matches.map(m => formatHTML(m.replace(/^(\d+)[\.\)]\s*/, '').trim()));
     }
 
-    // If still no options, split by double newlines
     const paragraphs = result.split(/\n\n+/);
     return paragraphs.filter(p => p.trim().length > 20).map(p => formatHTML(p.trim()));
 }
 
-// Format text to HTML with proper styling
+// Format Text to HTML
 function formatHTML(text) {
-    // Apply HTML formatting
     let formatted = text;
-
-    // Convert **text** to <strong>text</strong>
     formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-
-    // Convert *text* to <em>text</em>
     formatted = formatted.replace(/(?<!\*)\*([^\*]+)\*(?!\*)/g, '<em>$1</em>');
-
-    // Convert _text_ to <em>text</em>
     formatted = formatted.replace(/_(.+?)_/g, '<em>$1</em>');
-
-    // Convert numbered lists
     formatted = formatted.replace(/^(\d+)[\.\)]\s*(.+)$/gm, '<li>$2</li>');
 
-    // Wrap consecutive <li> elements in <ul>
     if (formatted.includes('<li>')) {
         formatted = '<ul>' + formatted + '</ul>';
     }
 
-    // Convert newlines to <br>
     formatted = formatted.replace(/\n/g, '<br>');
 
-    // Wrap in paragraph if no HTML tags
     if (!formatted.includes('<') && !formatted.includes('>')) {
         formatted = '<p>' + formatted + '</p>';
     }
@@ -1243,7 +1298,7 @@ function formatHTML(text) {
     return formatted;
 }
 
-// Display options in the modal
+// Display Options in Modal
 function displayOptions(options) {
     const container = document.getElementById('aiOptionsContainer');
     container.innerHTML = '';
@@ -1255,56 +1310,42 @@ function displayOptions(options) {
         card.className = 'ai-option-card position-relative';
         card.setAttribute('data-index', index);
         card.onclick = function() { selectOption(this, targetField); };
-
         card.innerHTML = `
             <span class="option-number">${index + 1}</span>
             <div class="option-content">${option}</div>
         `;
-
         container.appendChild(card);
     });
 }
 
-// Select an option and insert into editor
+// Select Option and Insert into Editor
 function selectOption(card, targetField) {
-    // Remove selected class from all cards
     document.querySelectorAll('.ai-option-card').forEach(c => c.classList.remove('selected'));
-
-    // Add selected class to clicked card
     card.classList.add('selected');
 
-    // Get the selected option HTML
     const optionIndex = card.getAttribute('data-index');
     const options = document.querySelectorAll('.ai-option-card');
     const selectedOption = options[optionIndex].querySelector('.option-content').innerHTML;
 
-    // Insert into editor
     const editor = tinymce.get(targetField);
     if (editor) {
         const currentContent = editor.getContent();
         if (currentContent && currentContent !== '<p>&nbsp;</p>') {
-            // Append if there's existing content
             editor.setContent(currentContent + '<br><br>' + selectedOption);
         } else {
             editor.setContent(selectedOption);
         }
 
-        // Update hidden input
         const hiddenInput = document.getElementById(targetField + '_input');
-        if (hiddenInput) {
-            hiddenInput.value = editor.getContent();
-        }
+        if (hiddenInput) hiddenInput.value = editor.getContent();
     }
 
-    // Close modal
     const modalEl = document.getElementById('aiOptionsModal');
     const modal = bootstrap.Modal.getInstance(modalEl);
-    if (modal) {
-        modal.hide();
-    }
+    if (modal) modal.hide();
 }
 
-// Regenerate options
+// Regenerate Options
 async function regenerateOptions() {
     const loading = document.getElementById('aiOptionsLoading');
     const container = document.getElementById('aiOptionsContainer');
@@ -1312,15 +1353,10 @@ async function regenerateOptions() {
     loading.style.display = 'block';
     container.style.opacity = '0.5';
 
-    // Call generateAIMultiple again with same parameters
     const targetField = document.getElementById('aiTargetField').value;
     const prompt = document.getElementById('aiPrompt').value;
 
-    // Get existing content from editor
     const editor = tinymce.get(targetField);
-    const existingContent = editor ? editor.getContent({format: 'text'}).trim() : '';
-
-    // Build context dari field lain
     const contextFields = ['jenisProduk', 'merk', 'komposisi', 'namaUsaha', 'segmentasi'];
     let contextText = '';
 
@@ -1337,45 +1373,40 @@ async function regenerateOptions() {
         }
     });
 
-    const enhancedPrompt = contextText
-        ? `${contextText}\n\nPrompt: ${prompt}\n\nTolong hasilkan 4 variasi BARU yang berbeda dari sebelumnya. Setiap variasi harus menggunakan format HTML dengan:
-- <strong> untuk teks penting/utama
-- <em> untuk penekanan
-- <p> untuk paragraf
-- <br> untuk baris baru jika diperlukan\n\nPisahkan setiap variasi dengan marker ===OPTION_START=== dan ===OPTION_END===`
-        : `${prompt}\n\nTolong hasilkan 4 variasi BARU yang berbeda. Setiap variasi harus menggunakan format HTML dengan:
-- <strong> untuk teks penting/utama
-- <em> untuk penekanan
-- <p> untuk paragraf
-- <br> untuk baris baru jika diperlukan\n\nPisahkan setiap variasi dengan marker ===OPTION_START=== dan ===OPTION_END===`;
+    const fieldRule = aiFieldRules[targetField];
+    const enhancedPrompt = `
+${contextText}
 
-    const abortController = new AbortController();
+Konteks kolom: ${fieldRule?.title || targetField}
+
+${fieldRule?.instruction || prompt}
+
+Gunakan format HTML:
+- <strong> untuk teks penting
+- <em> untuk penekanan
+- <p> untuk paragraf
+- <ul><li> jika berupa daftar
+
+Pisahkan setiap variasi dengan:
+===OPTION_START===
+dan
+===OPTION_END===
+`;
 
     try {
         const res = await fetch('https://myollama.scrollwebid.com/api/generate', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 model: 'gpt-oss:120b-cloud',
                 prompt: enhancedPrompt,
                 stream: true,
-                web_search: {
-                    enabled: true,
-                    search_depth: 'high'
-                },
-                options: {
-                    temperature: 0.9,
-                    top_p: 0.98
-                }
-            }),
-            signal: abortController.signal
+                web_search: { enabled: true, search_depth: 'high' },
+                options: { temperature: 0.9, top_p: 0.98 }
+            })
         });
 
-        if (!res.ok) {
-            throw new Error('API request failed');
-        }
+        if (!res.ok) throw new Error('API request failed');
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
@@ -1386,29 +1417,16 @@ async function regenerateOptions() {
             if (done) break;
 
             const chunk = decoder.decode(value);
-            try {
-                const data = JSON.parse(chunk);
-                if (data.response) {
-                    result += data.response;
-                }
-                if (data.done) {
-                    break;
-                }
-            } catch (e) {
-                const lines = chunk.split('\n');
-                for (const line of lines) {
-                    if (line.trim()) {
-                        try {
-                            const data = JSON.parse(line);
-                            if (data.response) {
-                                result += data.response;
-                            }
-                            if (data.done) {
-                                break;
-                            }
-                        } catch (e) {
-                            // Ignore parse errors
-                        }
+            const lines = chunk.split('\n');
+
+            for (const line of lines) {
+                if (line.trim()) {
+                    try {
+                        const data = JSON.parse(line);
+                        if (data.response) result += data.response;
+                        if (data.done) break;
+                    } catch (e) {
+                        // Ignore parse errors
                     }
                 }
             }
@@ -1425,7 +1443,6 @@ async function regenerateOptions() {
         container.style.opacity = '1';
     }
 }
-
 </script>
 
 <!-- Cropper.js Library -->
@@ -1441,6 +1458,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resetButton = document.getElementById('resetButton');
     const saveButton = document.getElementById('saveButton');
     const croppedImageInput = document.getElementById('croppedImage');
+    const updatePictureModal = document.getElementById('UpdatePicture');
 
     let cropper = null;
 
@@ -1451,7 +1469,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (files && files.length > 0) {
             const file = files[0];
 
-            // Validate file type
             if (!file.type.match('image.*')) {
                 alert('Please select an image file');
                 return;
@@ -1460,35 +1477,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const reader = new FileReader();
 
             reader.onload = function(e) {
-                // Destroy existing cropper if any
-                if (cropper) {
-                    cropper.destroy();
-                }
+                if (cropper) cropper.destroy();
 
-                // Set image source
                 imageToCrop.src = e.target.result;
-
-                // Show cropper container
                 cropperContainer.style.display = 'block';
 
-                // Initialize Cropper
                 cropper = new Cropper(imageToCrop, {
                     aspectRatio: 1,
                     viewMode: 1,
                     autoCropArea: 1,
                     responsive: true,
-                    preview: '.preview',
-                    crop: function(event) {
-                        // Optional: Update preview on crop
-                    }
+                    preview: '.preview'
                 });
 
-                // Show buttons
                 cropButton.style.display = 'inline-block';
                 resetButton.style.display = 'inline-block';
                 saveButton.style.display = 'inline-block';
-
-                // Hide file input (optional)
                 imageInput.parentElement.style.display = 'none';
             };
 
@@ -1499,7 +1503,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle crop button click
     cropButton.addEventListener('click', function() {
         if (cropper) {
-            // Get cropped canvas
             const canvas = cropper.getCroppedCanvas({
                 width: 300,
                 height: 300,
@@ -1508,76 +1511,55 @@ document.addEventListener('DOMContentLoaded', function() {
                 imageSmoothingQuality: 'high'
             });
 
-            // Convert to base64
             const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
-
-            // Set to hidden input
             croppedImageInput.value = croppedDataUrl;
 
-            // Show success message
             alert('Foto berhasil di-crop! Klik Simpan untuk menyimpan.');
 
-            // Update preview
-            document.querySelector('.preview').style.backgroundImage = `url(${croppedDataUrl})`;
-            document.querySelector('.preview').style.backgroundSize = 'cover';
-            document.querySelector('.preview').style.backgroundPosition = 'center';
+            const preview = document.querySelector('.preview');
+            preview.style.backgroundImage = `url(${croppedDataUrl})`;
+            preview.style.backgroundSize = 'cover';
+            preview.style.backgroundPosition = 'center';
         }
     });
 
     // Handle reset button click
     resetButton.addEventListener('click', function() {
-        // Destroy cropper
         if (cropper) {
             cropper.destroy();
             cropper = null;
         }
 
-        // Reset image source
         imageToCrop.src = '';
-
-        // Hide cropper container
         cropperContainer.style.display = 'none';
-
-        // Hide buttons
         cropButton.style.display = 'none';
         resetButton.style.display = 'none';
         saveButton.style.display = 'none';
-
-        // Clear inputs
         imageInput.value = '';
         croppedImageInput.value = '';
-
-        // Show file input
         imageInput.parentElement.style.display = 'block';
 
-        // Reset preview
-        document.querySelector('.preview').style.backgroundImage = '';
+        const preview = document.querySelector('.preview');
+        preview.style.backgroundImage = '';
     });
 
-    // Handle modal close/hide
-    const updatePictureModal = document.getElementById('UpdatePicture');
+    // Handle modal close
     updatePictureModal.addEventListener('hidden.bs.modal', function() {
-        // Reset cropper when modal is closed
         if (cropper) {
             cropper.destroy();
             cropper = null;
         }
 
-        // Reset UI
         cropperContainer.style.display = 'none';
         cropButton.style.display = 'none';
         resetButton.style.display = 'none';
         saveButton.style.display = 'none';
-
-        // Clear inputs
         imageInput.value = '';
         croppedImageInput.value = '';
-
-        // Show file input
         imageInput.parentElement.style.display = 'block';
 
-        // Reset preview
-        document.querySelector('.preview').style.backgroundImage = '';
+        const preview = document.querySelector('.preview');
+        preview.style.backgroundImage = '';
     });
 });
 </script>

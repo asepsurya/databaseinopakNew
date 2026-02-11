@@ -136,6 +136,33 @@
         border-color: #6c757d;
         color: white;
     }
+    /* DARK MODE DATATABLES */
+    [data-bs-theme="dark"] table.dataTable {
+        color: #dee2e6;
+    }
+
+    [data-bs-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) {
+        background-color: rgba(255,255,255,.03);
+    }
+
+    [data-bs-theme="dark"] .dataTables_wrapper .dataTables_length,
+    [data-bs-theme="dark"] .dataTables_wrapper .dataTables_filter,
+    [data-bs-theme="dark"] .dataTables_wrapper .dataTables_info,
+    [data-bs-theme="dark"] .dataTables_wrapper .dataTables_paginate {
+        color: #adb5bd;
+    }
+
+    [data-bs-theme="dark"] .dataTables_wrapper .dataTables_filter input,
+    [data-bs-theme="dark"] .dataTables_wrapper .dataTables_length select {
+        background-color: #212529;
+        color: #dee2e6;
+        border-color: #495057;
+    }
+
+    [data-bs-theme="dark"] .dataTables_wrapper .paginate_button {
+        color: #dee2e6 !important;
+    }
+
 </style>
 @endpush
 
@@ -152,7 +179,18 @@
             </div>
             <div class="card-body">
 
-
+                <!-- Empty State -->
+                @if($dataIkm->isEmpty())
+                <div class="text-center py-5">
+                    <div class="d-flex flex-column align-items-center">
+                        <i class="ti ti-inbox fs-1 d-block mb-2 text-muted"></i>
+                        <p class="mb-3 text-muted">Belum ada data IKM</p>
+                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahIkm">
+                            <i class="ti ti-plus me-2"></i>Tambah IKM Pertama
+                        </a>
+                    </div>
+                </div>
+                @else
                 <!-- Table -->
                 <table data-tables="basic" class="table table-striped dt-responsive align-middle mb-0" id="ikm-table">
                     <thead class="thead-sm text-uppercase fs-xxs">
@@ -169,14 +207,14 @@
                     </thead>
                     <tbody>
                         @php $no = 1; @endphp
-                        @forelse($dataIkm as $data)
+                        @foreach($dataIkm as $data)
                         <tr>
                             <td>{{ $no++ }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-sm me-3">
-                                        @if($data->foto && file_exists(public_path('storage/' . $data->foto)))
-                                            <img src="{{ asset('storage/' . $data->foto) }}" alt="{{ $data->nama }}" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                        @if($data->gambar && file_exists(storage_path('app/public/' . $data->gambar)))
+                                            <img src="{{ asset('storage/' . $data->gambar) }}" alt="{{ $data->nama }}" class="rounded" style="width: 40px; height: 40px; object-fit: cover;" loading="lazy">
                                         @else
                                             <div class="avatar-title bg-light text-muted rounded">
                                                 <i class="ti ti-user"></i>
@@ -189,22 +227,22 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>{{ $data->jenisProduk }}</td>
+                            <td>{!! $data->jenisProduk !!}</td>
                             <td>
                                 @if($data->merk)
-                                    <span class="badge badge-label badge-soft-secondary">{{ $data->merk }}</span>
+                                    <span class="badge badge-label badge-soft-secondary">{!! $data->merk !!}</span>
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
                             <td>
                                 @if($data->telp)
-                                    <a href="https://wa.me/{{ $data->telp }}" target="_blank">{{ $data->telp }}</a>
+                                    <a href="https://wa.me/{{ $data->telp }}" target="_blank">{!! $data->telp !!}</a>
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif
                             </td>
-                            <td>{{ $data->namaUsaha ?? '-' }}</td>
+                            <td>{!! $data->namaUsaha ?? '-' !!}</td>
                             <td>
                                 <span class="badge badge-label badge-soft-success">Aktif</span>
                             </td>
@@ -237,21 +275,10 @@
                                 </div>
                             </td>
                         </tr>
-                        @empty
-                        <tr>
-                            <td colspan="8" class="text-center py-5">
-                                <div class="d-flex flex-column align-items-center">
-                                    <i class="ti ti-inbox fs-1 d-block mb-2 text-muted"></i>
-                                    <p class="mb-3 text-muted">Belum ada data IKM</p>
-                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahIkm">
-                                        <i class="ti ti-plus me-2"></i>Tambah IKM Pertama
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
                 </table>
+                @endif
             </div>
         </div>
     </div>
@@ -306,6 +333,10 @@
         $('#ikm-table').DataTable({
             pageLength: 10,
             lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            columnDefs: [{
+                targets: '_all',
+                defaultContent: ''
+            }],
             language: {
                 search: "Cari:",
                 zeroRecords: "Data tidak ditemukan",

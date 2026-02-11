@@ -349,15 +349,14 @@
                     </div>
 
                     <!-- Notification -->
+                    @auth
+                        @include('layouts.partials.notifications')
+                    @else
                     <div class="topbar-item">
                         <div class="dropdown">
                             <button class="topbar-link dropdown-toggle drop-arrow-none" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="false" aria-expanded="false">
                                 <i class="ti ti-bell topbar-link-icon"></i>
-                                @if(session()->has('Berhasil') || session()->has('UpdateBerhasil') || session()->has('HapusBerhasil'))
-                                <span class="badge text-bg-danger badge-circle topbar-badge">1</span>
-                                @endif
                             </button>
-
                             <div class="dropdown-menu p-0 dropdown-menu-end dropdown-menu-lg">
                                 <div class="px-3 py-2 border-bottom">
                                     <div class="row align-items-center">
@@ -367,58 +366,6 @@
                                     </div>
                                 </div>
                                 <div style="max-height: 300px" data-simplebar>
-                                    @if(session()->has('Berhasil'))
-                                    <div class="dropdown-item notification-item">
-                                        <span class="d-flex align-items-center gap-3">
-                                            <span class="flex-shrink-0 position-relative">
-                                                <span class="avatar-md rounded-circle bg-success d-flex align-items-center justify-content-center">
-                                                    <i class="ti ti-check text-white"></i>
-                                                </span>
-                                            </span>
-                                            <span class="flex-grow-1 text-muted">
-                                                <span class="fw-medium text-body">Berhasil</span>
-                                                <br />
-                                                <span class="fs-xs">{{ session('Berhasil') }}</span>
-                                            </span>
-                                        </span>
-                                    </div>
-                                    @endif
-
-                                    @if(session()->has('UpdateBerhasil'))
-                                    <div class="dropdown-item notification-item">
-                                        <span class="d-flex align-items-center gap-3">
-                                            <span class="flex-shrink-0 position-relative">
-                                                <span class="avatar-md rounded-circle bg-info d-flex align-items-center justify-content-center">
-                                                    <i class="ti ti-pencil text-white"></i>
-                                                </span>
-                                            </span>
-                                            <span class="flex-grow-1 text-muted">
-                                                <span class="fw-medium text-body">Update</span>
-                                                <br />
-                                                <span class="fs-xs">{{ session('UpdateBerhasil') }}</span>
-                                            </span>
-                                        </span>
-                                    </div>
-                                    @endif
-
-                                    @if(session()->has('HapusBerhasil'))
-                                    <div class="dropdown-item notification-item">
-                                        <span class="d-flex align-items-center gap-3">
-                                            <span class="flex-shrink-0 position-relative">
-                                                <span class="avatar-md rounded-circle bg-warning d-flex align-items-center justify-content-center">
-                                                    <i class="ti ti-trash text-white"></i>
-                                                </span>
-                                            </span>
-                                            <span class="flex-grow-1 text-muted">
-                                                <span class="fw-medium text-body">Hapus</span>
-                                                <br />
-                                                <span class="fs-xs">{{ session('HapusBerhasil') }}</span>
-                                            </span>
-                                        </span>
-                                    </div>
-                                    @endif
-
-                                    @if(!session()->has('Berhasil') && !session()->has('UpdateBerhasil') && !session()->has('HapusBerhasil'))
                                     <div class="dropdown-item notification-item">
                                         <span class="d-flex align-items-center gap-3">
                                             <span class="flex-shrink-0 position-relative">
@@ -429,18 +376,15 @@
                                             <span class="flex-grow-1 text-muted">
                                                 <span class="fw-medium text-body">Info</span>
                                                 <br />
-                                                <span class="fs-xs">Tidak ada notifikasi baru</span>
+                                                <span class="fs-xs">Silakan login untuk melihat notifikasi</span>
                                             </span>
                                         </span>
                                     </div>
-                                    @endif
-                                </div>
-                                <div class="dropdown-item text-center text-reset text-decoration-underline link-offset-2 fw-bold border-top border-light py-2">
-                                    Lihat Semua
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @endauth
 
                     <!-- Fullscreen Toggle -->
                     <div class="topbar-item d-none d-md-flex">
@@ -460,7 +404,11 @@
                     <div class="topbar-item nav-user">
                         <div class="dropdown">
                             <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown" href="#!" aria-haspopup="false" aria-expanded="false">
-                                <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image" />
+                                @if(auth()->user()->profile_photo && Storage::disk('public')->exists(auth()->user()->profile_photo))
+                                    <img src="/storage/{{ auth()->user()->profile_photo }}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image" />
+                                @else
+                                    <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image" />
+                                @endif
                                 <div class="d-lg-flex align-items-center gap-1 d-none">
                                     <span>
                                         <h5 class="my-0 lh-1 pro-username">{{ Auth::user()->nama ?? 'User' }}</h5>
