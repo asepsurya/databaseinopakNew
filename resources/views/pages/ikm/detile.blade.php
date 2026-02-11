@@ -1004,6 +1004,23 @@ document.addEventListener("DOMContentLoaded", function () {
             modal.show();
         });
     });
+
+    // Delegated event listener for AI option cards (backup for onclick)
+    const optionsContainer = document.getElementById('aiOptionsContainer');
+    if (optionsContainer) {
+        optionsContainer.addEventListener('click', function(e) {
+            const card = e.target.closest('.ai-option-card');
+            if (card) {
+                const targetField = document.getElementById('aiOptionsTargetField').value;
+                console.log('Delegated click handler - field:', targetField);
+                if (targetField) {
+                    selectOption(card, targetField);
+                } else {
+                    console.error('Target field not set in delegated handler');
+                }
+            }
+        });
+    }
 });
 
 // AI Field Rules Configuration
@@ -1324,24 +1341,60 @@ function displayOptions(options) {
 
 // Select Option and Insert into Editor
 function selectOption(card, targetField) {
-    document.querySelectorAll('.ai-option-card').forEach(c => c.classList.remove('selected'));
-    card.classList.add('selected');
+    try {
+        document.querySelectorAll('.ai-option-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
 
-    const optionIndex = card.getAttribute('data-index');
-    const options = document.querySelectorAll('.ai-option-card');
-    const selectedOption = options[optionIndex].querySelector('.option-content').innerHTML;
+        const optionIndex = card.getAttribute('data-index');
+        const options = document.querySelectorAll('.ai-option-card');
+        const selectedOption = options[optionIndex].querySelector('.option-content').innerHTML;
 
-    const editor = tinymce.get(targetField);
-    if (editor) {
-        const currentContent = editor.getContent();
-        if (currentContent && currentContent !== '<p>&nbsp;</p>') {
-            editor.setContent(currentContent + '<br><br>' + selectedOption);
+        console.log('Selecting option for field:', targetField);
+        console.log('Selected option:', selectedOption);
+
+        // Check if TinyMCE editor exists
+        const editor = typeof tinymce !== 'undefined' ? tinymce.get(targetField) : null;
+        if (editor) {
+            // TinyMCE editor path
+            const currentContent = editor.getContent();
+            if (currentContent && currentContent !== '<p>&nbsp;</p>') {
+                editor.setContent(currentContent + '<br><br>' + selectedOption);
+            } else {
+                editor.setContent(selectedOption);
+            }
+
+            const hiddenInput = document.getElementById(targetField + '_input');
+            if (hiddenInput) hiddenInput.value = editor.getContent();
+            console.log('Content inserted into TinyMCE editor');
         } else {
-            editor.setContent(selectedOption);
-        }
+            // Fallback: Use contenteditable div directly (the actual editor type used in this page)
+            console.log('TinyMCE not available, using contenteditable div');
 
-        const hiddenInput = document.getElementById(targetField + '_input');
-        if (hiddenInput) hiddenInput.value = editor.getContent();
+            const editorElement = document.getElementById(targetField);
+            if (editorElement && editorElement.classList.contains('inline-editor')) {
+                // Get current content from contenteditable div
+                let currentContent = editorElement.innerHTML.trim();
+
+                // Check if content is empty or just whitespace/nbsp
+                const isEmpty = !currentContent || currentContent === '&nbsp;' || currentContent === '<br>';
+
+                if (!isEmpty && currentContent.length > 0) {
+                    // Append with separator
+                    editorElement.innerHTML = currentContent + '<br><br>' + selectedOption;
+                } else {
+                    // Set content directly
+                    editorElement.innerHTML = selectedOption;
+                }
+
+                const hiddenInput = document.getElementById(targetField + '_input');
+                if (hiddenInput) hiddenInput.value = editorElement.innerHTML;
+                console.log('Content inserted into contenteditable div');
+            } else {
+                console.error('Could not find target field:', targetField);
+            }
+        }
+    } catch (error) {
+        console.error('Error in selectOption:', error);
     }
 
     const modalEl = document.getElementById('aiOptionsModal');

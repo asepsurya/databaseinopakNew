@@ -43,7 +43,7 @@
                 <div class="col-xxl-5 col-md-8">
                     <div class="card p-4">
                         <div class="auth-brand text-center mb-4">
-                            <a href="/" class="logo-dark">
+                            <a href="/">
                                 <img src="{{ asset('assets/images/inopak/fav.png') }}" alt="dark logo" style="width: 60px; height: auto;" />
                             </a>
                             <h4 class="fw-bold text-dark mt-3">Database INOPAK</h4>

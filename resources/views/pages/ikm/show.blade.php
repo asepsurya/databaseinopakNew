@@ -181,15 +181,71 @@
 
                 <!-- Empty State -->
                 @if($dataIkm->isEmpty())
-                <div class="text-center py-5">
-                    <div class="d-flex flex-column align-items-center">
-                        <i class="ti ti-inbox fs-1 d-block mb-2 text-muted"></i>
-                        <p class="mb-3 text-muted">Belum ada data IKM</p>
-                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#tambahIkm">
-                            <i class="ti ti-plus me-2"></i>Tambah IKM Pertama
-                        </a>
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body text-center py-5">
+
+                            <!-- Icon -->
+                            <div class="mb-4">
+                                <div class="empty-icon mx-auto">
+                                    <i class="ti ti-inbox"></i>
+                                </div>
+                            </div>
+
+                            <!-- Title -->
+                            <h5 class="fw-bold mb-2">Belum Ada Data IKM</h5>
+
+                            <!-- Description -->
+                            <p class="text-muted mb-4">
+                                Saat ini belum ada data IKM yang tersedia.
+                                Silakan tambahkan data pertama untuk mulai mengelola IKM Anda.
+                            </p>
+
+                            <!-- Button -->
+                            <button class="btn btn-primary rounded-pill px-4"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#tambahIkm">
+                                <i class="ti ti-plus me-2"></i>
+                                Tambah IKM Pertama
+                            </button>
+
+                        </div>
                     </div>
                 </div>
+
+                <style>
+                .empty-icon {
+                    width: 85px;
+                    height: 85px;
+                    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 38px;
+                    color: #4f46e5;
+                    transition: 0.3s ease;
+                }
+
+                .empty-icon:hover {
+                    transform: scale(1.08);
+                }
+
+                .card {
+                    animation: fadeFade 0.4s ease-in-out;
+                }
+
+                @keyframes fadeFade {
+                    from {
+                        opacity: 0;
+                        transform: translateY(8px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                </style>
                 @else
                 <!-- Table -->
                 <table data-tables="basic" class="table table-striped dt-responsive align-middle mb-0" id="ikm-table">
