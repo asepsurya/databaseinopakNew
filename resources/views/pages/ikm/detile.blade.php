@@ -1052,13 +1052,24 @@ yang jelas dan menarik.
 Fokus pada fungsi utama produk dan keunggulannya.`
         },
 
-        komposisi: {
-            title: 'Komposisi',
-            instruction: `Buatkan 4 variasi <strong>komposisi produk</strong>.
-Gunakan <ul><li> untuk daftar bahan.
-Bahasa harus rapi, aman, dan profesional.`
-        },
+ komposisi: {
+    title: 'Komposisi',
+    instruction: `
+Buatkan 4 variasi <strong>komposisi produk</strong> dengan format berikut:
 
+Format wajib:
+Komposisi : bahan1, bahan2, bahan3.baris baru
+tambah keterangan italic Mengandung alergen, lihat yang dicetak tebal.
+
+Aturan:
+- Jika suatu bahan termasuk alergen, maka nama bahan tersebut harus dicetak tebal (<strong>) di dalam komposisi.
+- Hanya bahan yang mengandung alergen yang dicetak tebal.
+- Daftar alergen tidak perlu dicetak tebal.
+- Pisahkan bahan dengan koma.
+- Gunakan bahasa Indonesia yang rapi dan profesional.
+- Output dalam format HTML menggunakan <p> untuk setiap variasi.
+`
+},
         varian: {
             title: 'Varian Produk',
             instruction: `Buatkan 4 variasi <strong>varian produk</strong>.
@@ -1066,12 +1077,26 @@ Sebutkan perbedaan rasa, ukuran, atau keunikan.
 Gunakan <ul><li>.`
         },
 
-        kelebihan: {
-            title: 'Kelebihan Produk',
-            instruction: `Buatkan 5 poin <strong>kelebihan produk</strong>.
-Fokus pada manfaat dan nilai tambah.
-Gunakan <ul><li>.`
-        },
+ kelebihan: {
+    title: 'Kelebihan Produk',
+    instruction: `
+Buatkan 5 poin kelebihan produk dengan format PERSIS seperti berikut:
+
+1. Poin pertama
+2. Poin kedua
+3. Poin ketiga
+4. Poin keempat
+5. Poin kelima
+
+Aturan wajib:
+- Gunakan angka 1 sampai 5 diikuti titik dan spasi.
+- Setiap poin maksimal 6 kata.
+- Tidak boleh menggunakan HTML.
+- Tidak boleh menggunakan tanda bullet (- atau •).
+- Tidak boleh menambahkan teks pembuka atau penutup.
+- Fokus pada manfaat singkat dan jelas.
+`
+},
 
         namaUsaha: {
             title: 'Nama Usaha',
@@ -1112,12 +1137,20 @@ Boleh sertakan kisaran harga.`
 dan alasan gramasi tersebut sesuai untuk konsumen.`
         },
 
-        tagline: {
-            title: 'Tagline',
-            instruction: `Buatkan 5 opsi <strong>tagline</strong>
-yang singkat, kuat, dan mudah diingat.`
-        },
+tagline: {
+    title: 'Tagline',
+    instruction: `
+Buatkan 5 opsi <strong>tagline</strong> yang singkat, kuat, dan mudah diingat.
 
+Aturan:
+- Tidak terpaku pada jumlah kata atau format tertentu.
+- Bisa berupa satu kalimat utuh atau frasa kreatif.
+- Gunakan bahasa yang natural, menarik, dan memiliki daya jual.
+- Hindari kalimat terlalu panjang.
+- Tidak menggunakan emoji.
+- Output dalam format HTML menggunakan <p> untuk setiap tagline.
+`
+},
         redaksi: {
     title: 'Redaksi Label',
     instruction: `Buatkan deskripsi produk makanan berdasarkan jenis produk dengan bahasa Indonesia yang menarik, profesional, dan menggugah selera.
