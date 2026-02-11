@@ -1019,9 +1019,13 @@ Kriteria:
 4. Panjangnya **tidak lebih dari 2 kata atau 1 kata gabungan**.
 5. Sertakan **tagline singkat (opsional)** yang menggambarkan nilai atau keunggulan produk secara jelas.
 6. Hindari nama yang terlalu generik, sulit dieja, atau terdengar murahan.
-7. Format output harus:
+7. Pastikan nama tersebut **belum umum digunakan** untuk produk sejenis di pasar Indonesia.
+8.Nama harus cocok untuk branding jangka panjang dan mudah dipakai sebagai domain atau media sosial.
+9.Nama harus mencerminkan karakter produk, seperti rasa, fungsi, atau keunikan produk.
+10.Nama Boleh terinspirasi dari **Nama IKM atau lokasi**
+11. Format output harus:
 <p><strong>Nama Merek</strong><br><em>Tagline singkat (opsional)</em></p>
-8. Tambahkan **alasan singkat** kenapa nama tersebut cocok untuk produk.  `
+12. Tambahkan **alasan singkat** kenapa nama tersebut cocok untuk produk.  `
         },
 
         jenisProduk: {
@@ -1182,13 +1186,13 @@ Pisahkan setiap variasi dengan:
 dan
 ===OPTION_END===
 `;
-
+// ollama run gemini-3-flash-preview  gpt-oss:120b-cloud
     try {
         const res = await fetch('https://myollama.scrollwebid.com/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gpt-oss:120b-cloud',
+                model: 'gemini-3-flash-preview',
                 prompt: enhancedPrompt,
                 stream: true,
                 web_search: { enabled: true, search_depth: 'high' },
@@ -1604,7 +1608,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- AI Description Options Modal -->
 <div class="modal fade" id="aiOptionsModal" tabindex="-1" aria-labelledby="aiOptionsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="aiOptionsModalLabel"><i class="ti ti-list-check me-2"></i>Pilih Opsi Deskripsi</h5>

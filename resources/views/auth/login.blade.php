@@ -27,9 +27,9 @@
         </label>
         <div class="input-group">
             <input type="password" class="form-control @error('password') is-invalid @enderror"
-                   id="userPassword" placeholder="••••••••" required name="password" />
-            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()">
-                <i class="mdi mdi-eye" id="eyeIcon"></i>
+                   id="userPassword" placeholder="Masukkan password" required name="password" />
+            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword()" tabindex="-1">
+                <i class="ti ti-eye" id="eyeIcon"></i>
             </button>
             @error('password')
                 <span class="invalid-feedback d-block">{{ $message }}</span>
@@ -65,12 +65,12 @@ function togglePassword() {
 
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
-        eyeIcon.classList.remove('mdi-eye');
-        eyeIcon.classList.add('mdi-eye-off');
+        eyeIcon.classList.remove('ti-eye');
+        eyeIcon.classList.add('ti-eye-off');
     } else {
         passwordInput.type = 'password';
-        eyeIcon.classList.remove('mdi-eye-off');
-        eyeIcon.classList.add('mdi-eye');
+        eyeIcon.classList.remove('ti-eye-off');
+        eyeIcon.classList.add('ti-eye');
     }
 }
 

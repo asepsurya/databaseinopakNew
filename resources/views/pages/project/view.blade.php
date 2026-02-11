@@ -18,7 +18,7 @@
 
         <div class="row mb-3">
             <div class="col-lg-12">
-                <form class="bg-light-subtle rounded border p-3">
+                <form class="bg-light-subtle rounded border p-3" action="/project" method="GET">
                     <div class="row gap-3">
                         <div class="col">
                             <div class="row gap-3">
@@ -32,40 +32,44 @@
                                     <div class="d-flex flex-wrap align-items-center gap-2">
                                         <span class="me-2 fw-semibold">Filter By:</span>
 
+                                        <!-- Year Filter -->
+                                        <div class="app-search">
+                                            <select class="form-select form-control my-1 my-md-0" name="year">
+                                                <option value="">Tahun</option>
+                                                @php
+                                                    $currentYear = date('Y');
+                                                    for($y = $currentYear; $y >= $currentYear - 10; $y--):
+                                                @endphp
+                                                <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                                @php
+                                                    endfor;
+                                                @endphp
+                                            </select>
+                                            <i class="ti ti-calendar app-search-icon text-muted"></i>
+                                        </div>
+
                                         <!-- Status Filter -->
                                         <div class="app-search">
-                                            <select class="form-select form-control my-1 my-md-0">
-                                                <option selected="">Status</option>
-                                                <option value="On Track">On Track</option>
-                                                <option value="Delayed">Delayed</option>
-                                                <option value="At Risk">At Risk</option>
-                                                <option value="Completed">Completed</option>
+                                            <select class="form-select form-control my-1 my-md-0" name="status">
+                                                <option value="">Status</option>
+                                                <option value="On Track" {{ request('status') == 'On Track' ? 'selected' : '' }}>On Track</option>
+                                                <option value="Delayed" {{ request('status') == 'Delayed' ? 'selected' : '' }}>Delayed</option>
+                                                <option value="At Risk" {{ request('status') == 'At Risk' ? 'selected' : '' }}>At Risk</option>
+                                                <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
                                             </select>
                                             <i class="ti ti-activity app-search-icon text-muted"></i>
                                         </div>
 
-                                        <!-- Team Filter -->
+                                        <!-- UKM Count Filter -->
                                         <div class="app-search">
-                                            <select class="form-select form-control my-1 my-md-0">
-                                                <option selected="">Team</option>
-                                                <option value="Design">Design</option>
-                                                <option value="Development">Development</option>
-                                                <option value="Marketing">Marketing</option>
-                                                <option value="QA">QA</option>
+                                            <select class="form-select form-control my-1 my-md-0" name="ukm_count">
+                                                <option value="">Jumlah IKM</option>
+                                                <option value="0" {{ request('ukm_count') == '0' ? 'selected' : '' }}>0 Peserta</option>
+                                                <option value="1" {{ request('ukm_count') == '1' ? 'selected' : '' }}>1+ Peserta</option>
+                                                <option value="5" {{ request('ukm_count') == '5' ? 'selected' : '' }}>5+ Peserta</option>
+                                                <option value="10" {{ request('ukm_count') == '10' ? 'selected' : '' }}>10+ Peserta</option>
                                             </select>
                                             <i class="ti ti-users app-search-icon text-muted"></i>
-                                        </div>
-
-                                        <!-- Deadline Filter -->
-                                        <div class="app-search">
-                                            <select class="form-select form-control my-1 my-md-0">
-                                                <option selected="">Deadline</option>
-                                                <option value="This Week">This Week</option>
-                                                <option value="This Month">This Month</option>
-                                                <option value="Next Month">Next Month</option>
-                                                <option value="No Deadline">No Deadline</option>
-                                            </select>
-                                            <i class="ti ti-calendar-clock app-search-icon text-muted"></i>
                                         </div>
 
                                         <button type="submit" class="btn btn-secondary">Apply</button>
@@ -85,10 +89,15 @@
             </div>
         </div>
 
-        <!-- Projects Grid -->
+
+
         <div class="row" id="projectsGrid">
             @foreach ($projects as $project)
-            <div class="col-md-6 col-xxl-3 project-card" data-project-name="{{ strtolower($project->NamaProjek) }}">
+            <div class="col-md-6 col-xxl-3 project-card"
+                 data-project-name="{{ strtolower($project->NamaProjek) }}"
+                 data-project-year="{{ $project->created_at->format('Y') }}"
+                 data-ikms-count="{{ $project->ikms_count ?? 0 }}"
+                 data-files-count="{{ $project->produk_designs_count ?? 0 }}">
             <div class="card position-relative">
                 <div class="position-absolute top-0 end-0" style="width: 180px">
                 <img src="{{ asset('assets/images/auth-card-bg.svg') }}" class="auth-card-bg-img" alt="auth-card-bg">
@@ -124,7 +133,7 @@
                         <h5 class="mb-1 lh-sm flex-grow-1">
                         <a href="/project/dataikm/{{ $project->id }}" class="link-reset project-title">{{ $project->NamaProjek }}</a>
                         </h5>
-                        <span class="badge badge-soft-success fs-xxs badge-label align-self-start">In Progress</span>
+                        {{-- <span class="badge badge-soft-success fs-xxs badge-label align-self-start">In Progress</span> --}}
                     </div>
                     <p class="text-muted fs-xxs mb-0">Updated {{ $project->updated_at->diffForHumans() }}</p>
                     </div>
@@ -169,8 +178,8 @@
                     <div class="d-flex align-items-center gap-2">
                         <i class="ti ti-list-check text-muted fs-lg"></i>
                         <div>
-                        <div class="fw-medium">--</div>
-                        <small class="text-muted fs-xs">Assets & docs</small>
+                        <div class="fw-medium">{{ $project->ikms_count ?? 0 }}</div>
+                        <small class="text-muted fs-xs">IKM Created</small>
                         </div>
                     </div>
                     </div>
@@ -178,7 +187,7 @@
                     <div class="d-flex align-items-center gap-2">
                         <i class="ti ti-paperclip text-muted fs-lg"></i>
                         <div>
-                        <div class="fw-medium">--</div>
+                        <div class="fw-medium">{{ $project->produk_designs_count ?? 0 }}</div>
                         <small class="text-muted fs-xs">Files</small>
                         </div>
                     </div>
@@ -204,15 +213,7 @@
                 </div>
 
                 <!-- Progress -->
-                <div class="mt-auto">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                    <p class="mb-0 text-muted fw-semibold fs-xs">Progress</p>
-                    <p class="fw-semibold mb-0">0%</p>
-                    </div>
-                    <div class="progress" style="height: 5px">
-                    <div class="progress-bar bg-success" style="width: 0%"></div>
-                    </div>
-                </div>
+
                 </div>
             </div>
             </div>
@@ -222,10 +223,14 @@
         <!-- No Results Message -->
         <div id="noResults" class="text-center text-muted mt-5 my-5" style="display: none;">
             <div class="mb-3">
-                <i class="ti ti-search fa-3x text-secondary"></i>
+                <i class="ti ti-search-off fa-3x text-secondary"></i>
             </div>
-            <h5 class="fw-bold">Oops!</h5>
-            <p class="mb-0">Tidak ada proyek yang cocok dengan pencarianmu.</p>
+            <h5 class="fw-bold">Tidak Ada Data Ditemukan</h5>
+            <p class="mb-2">Tidak ada project yang cocok dengan kriteria pencarian Anda.</p>
+            <p class="text-muted fs-sm mb-3">Coba ubah kata kunci atau filter yang digunakan.</p>
+            <a href="/project" class="btn btn-outline-primary btn-sm">
+                <i class="ti ti-refresh me-1"></i>Tampilkan Semua Project
+            </a>
         </div>
 
         <!-- Add Project Modal -->
@@ -304,62 +309,148 @@
         @endforeach
 
         <!-- Pagination -->
-        {{-- <ul class="pagination pagination-rounded pagination-boxed justify-content-center mt-4">
-            <li class="page-item">
-                <a class="page-link" href="javascript: void(0);" aria-label="Previous">
-                    <span aria-hidden="true">«</span>
-                </a>
-            </li>
-            <li class="page-item active">
-                <a class="page-link" href="javascript: void(0);">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="javascript: void(0);">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="javascript: void(0);">3</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="javascript: void(0);">4</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="javascript: void(0);">5</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="javascript: void(0);" aria-label="Next">
-                    <span aria-hidden="true">»</span>
-                </a>
-            </li>
-        </ul> --}}
+        @if($projects->hasPages())
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-rounded pagination-boxed justify-content-center">
+                    {{-- Previous Page Link --}}
+                    @if($projects->onFirstPage())
+                    <li class="page-item disabled">
+                        <a class="page-link" href="javascript: void(0);" aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    @else
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $projects->previousPageUrl() }}" aria-label="Previous">
+                            <span aria-hidden="true">«</span>
+                        </a>
+                    </li>
+                    @endif
+
+                    {{-- Pagination Elements --}}
+                    @foreach($projects->getUrlRange(1, $projects->lastPage()) as $page => $url)
+                    @if($page == $projects->currentPage())
+                    <li class="page-item active">
+                        <a class="page-link" href="javascript: void(0);">{{ $page }}</a>
+                    </li>
+                    @elseif($page >= $projects->currentPage() - 1 && $page <= $projects->currentPage() + 1)
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                    </li>
+                    @elseif($page == 1 || $page == $projects->lastPage())
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                    </li>
+                    @endif
+                    @endforeach
+
+                    {{-- Next Page Link --}}
+                    @if($projects->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $projects->nextPageUrl() }}" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                    @else
+                    <li class="page-item disabled">
+                        <a class="page-link" href="javascript: void(0);" aria-label="Next">
+                            <span aria-hidden="true">»</span>
+                        </a>
+                    </li>
+                    @endif
+                </ul>
+            </nav>
+        </div>
+        @endif
+
+        <!-- Showing info -->
+        @if($projects->total() > 0)
+        <div class="text-center mt-3 mb-4">
+            <small class="text-muted">
+                Menampilkan {{ $projects->firstItem() ?? 0 }} - {{ $projects->lastItem() ?? 0 }} dari {{ $projects->total() }} project
+            </small>
+        </div>
+        @endif
 
     <!-- container -->
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.querySelector('input[name="search"]');
-    const projectCards = document.querySelectorAll('.project-card');
-    const noResults = document.getElementById('noResults');
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.querySelector('input[name="search"]');
+        const yearFilter = document.querySelector('select[name="year"]');
+        const ukmCountFilter = document.querySelector('select[name="ukm_count"]');
+        const projectCards = document.querySelectorAll('.project-card');
+        const noResults = document.getElementById('noResults');
+        const totalUkmEl = document.getElementById('total-ukm');
+        const totalFilesEl = document.getElementById('total-files');
 
-    // Search functionality
-    if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            const keyword = this.value.toLowerCase();
+        // Function to filter cards based on all criteria
+        function filterCards() {
+            const keyword = searchInput ? searchInput.value.toLowerCase() : '';
+            const selectedYear = yearFilter ? yearFilter.value : '';
+            const selectedUkmCount = ukmCountFilter ? parseInt(ukmCountFilter.value) : 0;
+
             let visibleCount = 0;
 
             projectCards.forEach(card => {
                 const projectName = card.dataset.projectName || '';
-                const isVisible = projectName.includes(keyword);
+                const projectYear = card.dataset.projectYear || '';
+                const ikmsCount = parseInt(card.dataset.ikmsCount || 0);
+
+                // Check all filter conditions
+                const matchesSearch = projectName.includes(keyword);
+                const matchesYear = !selectedYear || projectYear === selectedYear;
+                const matchesUkmCount = !selectedUkmCount || ikmsCount >= selectedUkmCount;
+
+                const isVisible = matchesSearch && matchesYear && matchesUkmCount;
 
                 card.style.display = isVisible ? '' : 'none';
 
                 if (isVisible) visibleCount++;
             });
 
+            // Update totals based on filtered results
+            updateTotals();
+
+            // Show/hide no results message
             if (noResults) {
                 noResults.style.display = visibleCount === 0 ? 'block' : 'none';
             }
-        });
-    }
+        }
+
+        // Function to update totals based on visible cards
+        function updateTotals() {
+            let totalUkm = 0;
+            let totalFiles = 0;
+
+            projectCards.forEach(card => {
+                if (card.style.display !== 'none') {
+                    totalUkm += parseInt(card.dataset.ikmsCount || 0);
+                    totalFiles += parseInt(card.dataset.filesCount || 0);
+                }
+            });
+
+            if (totalUkmEl) totalUkmEl.textContent = totalUkm;
+            if (totalFilesEl) totalFilesEl.textContent = totalFiles;
+        }
+
+        // Initialize totals on page load
+        updateTotals();
+
+        // Add event listeners for real-time filtering
+        if (searchInput) {
+            searchInput.addEventListener('input', filterCards);
+        }
+
+        if (yearFilter) {
+            yearFilter.addEventListener('change', filterCards);
+        }
+
+        if (ukmCountFilter) {
+            ukmCountFilter.addEventListener('change', filterCards);
+        }
+    });
 
     // SweetAlert2 for session flash messages - consolidated handling
     @php

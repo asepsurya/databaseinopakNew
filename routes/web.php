@@ -3,11 +3,12 @@
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MyController;
-use App\Http\Controllers\IkmController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\CotsController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\IkmController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
@@ -38,7 +39,7 @@ Route::post('/getdesa',[RegisterController::class,'getdesa'])->name('getdesa');
 Route::get('/login',[LoginController::class,'index'])->name('login')->middleware('guest');
 Route::post('/logout',[LoginController::class,'logout']);
 Route::post('/login',[LoginController::class,'login'])->middleware('guest')->name('login.process');
-Route::get('/dashboard',[LoginController::class,'dashboard'])->middleware('auth');
+Route::get('/dashboard',[DashboardController::class,'index'])->middleware('auth')->name('dashboard');
 //Profile
 Route::resource('/profile', ProfileController::class)->middleware('auth');
 Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update')->middleware('auth');
@@ -53,12 +54,13 @@ Route::get('/ajax/search-ikm', [MyController::class, 'searchIkm'])->name('ajax.s
 
 Route::get('/kurasi',[MyController::class,'kurasi'])->middleware('auth');
 //Menu Project
-Route::get('/project',[ProjectController::class,'index'])->middleware('auth');
+Route::get('/project',[ProjectController::class,'index'])->middleware('auth')->name('project.index');
+Route::get('/api/project/search', [ProjectController::class, 'searchProjects'])->name('api.project.search')->middleware('auth');
 Route::post('/project/create',[ProjectController::class,'store'])->middleware('auth');
 Route::post('/project/update',[ProjectController::class,'update'])->middleware('auth');
 Route::post('/project/hapus/{id}',[ProjectController::class,'hapus'])->middleware('auth');
 //menu Ikm
-Route::get('/project/dataikm/{project:id}',[IkmController::class,'index'])->middleware('auth');
+Route::get('/project/dataikm/{project:id}',[IkmController::class,'index'])->middleware('auth')->name('project.ikm');
 Route::post('/project/dataikm/createIkm',[IkmController::class,'createIkm'])->middleware('auth');
 Route::post('/project/dataikm/tambahIkm',[IkmController::class,'tambahIkm'])->middleware('auth');
 Route::post('/project/dataikm/UpdateIkm',[IkmController::class,'UpdateIkm'])->middleware('auth');
@@ -70,6 +72,12 @@ Route::post('/project/dataikm/{id}/update',[IkmController::class,'getmemberUpdat
 // detile Ikm
 // Route::get('/project/ikms/{id}',[DetileIkmController::class,'index'])->middleware('auth')->name('detail');
 Route::get('/project/ikms/{id_ikm}/{id_project}',[DetileIkmController::class,'index'])->middleware('auth')->name('detail');
+
+// Encrypted route variants for secure ID handling
+Route::get('/e/ikm/{encrypted_id}/{encrypted_project}',[DetileIkmController::class,'encryptedIndex'])->middleware('auth')->name('detail.encrypted');
+
+// API endpoint for decrypting IDs (used by JavaScript)
+Route::post('/api/decrypt-ids', [DetileIkmController::class, 'decryptIds'])->middleware('auth')->name('api.decrypt-ids');
 Route::post('/project/ikms/{id}/update',[DetileIkmController::class,'ubahFotoIkm'])->name('updatePhoto');
 Route::post('/project/ikms/{id}/bencmark',[DetileIkmController::class,'bencmark'])->middleware('auth');
 Route::post('/project/ikms/{id}/cots',[DetileIkmController::class,'cots'])->middleware('auth');
@@ -131,7 +139,19 @@ Route::prefix('notifications')->middleware('auth')->group(function () {
     Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     Route::post('/initialize-preferences', [NotificationController::class, 'initializePreferences']);
 
-        // Page route for settings
+    // New endpoints
+    Route::get('/statistics', [NotificationController::class, 'statistics']);
+    Route::get('/by-category', [NotificationController::class, 'byCategory']);
+    Route::get('/by-type', [NotificationController::class, 'byType']);
+    Route::get('/search', [NotificationController::class, 'search']);
+    Route::get('/activity-timeline', [NotificationController::class, 'activityTimeline']);
+    Route::get('/recent-activities', [NotificationController::class, 'recentActivities']);
+    Route::post('/mark-read-by-category', [NotificationController::class, 'markAllReadByCategory']);
+    Route::post('/mark-read-by-type', [NotificationController::class, 'markAllReadByType']);
+    Route::delete('/delete-read', [NotificationController::class, 'deleteRead']);
+    Route::get('/export', [NotificationController::class, 'export']);
+
+    // Page route for settings
     Route::get('/settings', function() {
         return view('pages.notifications.preferences');
     })->name('notifications.settings');
@@ -145,3 +165,8 @@ Route::prefix('notifications')->middleware('auth')->group(function () {
     Route::delete('/', [NotificationController::class, 'destroyAll']);
 });
 
+// Dashboard API Routes
+Route::prefix('api/dashboard')->middleware('auth')->group(function () {
+    Route::get('/refresh-chart', [DashboardController::class, 'refreshChartData']);
+    Route::get('/export', [DashboardController::class, 'export']);
+});

@@ -7,11 +7,12 @@
     <meta name="description" content="Database INOPAK - Sistem Pengelolaan Informasi" />
     <meta name="keywords" content="inopak, database, ikm, admin dashboard" />
     <meta name="author" content="INOPAK" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Authentication') | Database INOPAK</title>
 
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
-
+      <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <!-- Theme Config Js -->
     <script src="{{ asset('assets/js/config.js') }}"></script>
 
@@ -20,6 +21,9 @@
 
     <!-- App css -->
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
+
+    <!-- Select2 CSS -->
+    <link href="{{ asset('assets/plugins/select2/select2.min.css') }}" rel="stylesheet" type="text/css" />
 
     @stack('styles')
 </head>
@@ -87,6 +91,9 @@
 
     <!-- Vendor js -->
     <script src="{{ asset('assets/js/vendors.min.js') }}"></script>
+
+    <!-- Select2 JS -->
+    <script src="{{ asset('assets/plugins/select2/select2.min.js') }}"></script>
 
     <!-- App js -->
     <script src="{{ asset('assets/js/app.js') }}"></script>

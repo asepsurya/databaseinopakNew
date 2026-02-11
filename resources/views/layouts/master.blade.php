@@ -162,6 +162,30 @@
             border-color: #1a1a1a !important;
         }
 
+        /* Footer spacing fix - reduce excessive space */
+        .footer {
+            margin-top: auto !important;
+            padding: 1rem 0 !important;
+        }
+
+        /* Make wrapper use flexbox to push footer down */
+        .wrapper {
+            min-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        /* Main content area should grow to fill space */
+        .page-content {
+            flex: 1 0 auto !important;
+        }
+
+        /* Reduce page container padding */
+        .page-content .container-fluid {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+
         /* Neo theme accent color variant */
         .btn-neo-add.btn-neo-primary {
             background: linear-gradient(135deg, #435ebe 0%, #2c4a9e 100%) !important;
@@ -213,6 +237,183 @@
             justify-content: center;
             margin-right: 12px;
         }
+
+        /* Search Autocomplete Dropdown Styles */
+        .search-autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e9ecef;
+            border-top: none;
+            z-index: 1050;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-autocomplete-dropdown.show {
+            display: block;
+        }
+
+        .search-autocomplete-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f5;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-autocomplete-item:hover {
+            background: #f8f9fa;
+        }
+
+        .search-autocomplete-item.highlighted {
+            background: #e7f1ff;
+        }
+
+        .search-autocomplete-item .item-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .search-autocomplete-item .item-icon.project {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .search-autocomplete-item .item-icon.ikm {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .search-autocomplete-item .item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-autocomplete-item .item-title {
+            font-weight: 600;
+            color: #343a40;
+            font-size: 14px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-autocomplete-item .item-subtitle {
+            font-size: 12px;
+            color: #6c757d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-autocomplete-item .item-type {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: #f1f3f5;
+            color: #495057;
+            flex-shrink: 0;
+        }
+
+        .search-autocomplete-item .item-type.project {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .search-autocomplete-item .item-type.ikm {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .search-autocomplete-dropdown .no-results {
+            padding: 20px 16px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .search-autocomplete-dropdown .loading {
+            padding: 20px 16px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .search-autocomplete-dropdown .loading .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f1f3f5;
+            border-top-color: #435ebe;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .search-autocomplete-dropdown .error-message {
+            padding: 16px;
+            text-align: center;
+            color: #dc3545;
+            font-size: 13px;
+        }
+
+        /* Dark mode support */
+        [data-theme="dark"] .search-autocomplete-dropdown,
+        .dark .search-autocomplete-dropdown {
+            background: #2c3036;
+            border-color: #40484f;
+        }
+
+        [data-theme="dark"] .search-autocomplete-item,
+        .dark .search-autocomplete-item {
+            border-color: #40484f;
+        }
+
+        [data-theme="dark"] .search-autocomplete-item:hover,
+        .dark .search-autocomplete-item:hover {
+            background: #343a40;
+        }
+
+        [data-theme="dark"] .search-autocomplete-item.highlighted,
+        .dark .search-autocomplete-item.highlighted {
+            background: #1e3a5f;
+        }
+
+        [data-theme="dark"] .search-autocomplete-item .item-title,
+        .dark .search-autocomplete-item .item-title {
+            color: #f8f9fa;
+        }
+
+        [data-theme="dark"] .search-autocomplete-item .item-subtitle,
+        .dark .search-autocomplete-item .item-subtitle {
+            color: #adb5bd;
+        }
+
+        [data-theme="dark"] .search-autocomplete-dropdown .no-results,
+        .dark .search-autocomplete-dropdown .no-results {
+            color: #adb5bd;
+        }
     </style>
 
     @stack('styles')
@@ -254,62 +455,14 @@
                     </button>
 
                     <!-- Search Box -->
-                    <div id="search-box" class="app-search d-none d-xl-flex">
-                        <input type="search" class="form-control rounded-pill topbar-search" name="search" placeholder="Search..." id="topSearch" />
+                    <div id="search-box" class="app-search d-none d-xl-flex position-relative">
+                        <input type="search" class="form-control rounded-pill topbar-search" name="search" placeholder="Search..." id="topSearch" autocomplete="off" />
                         <i class="ti ti-search app-search-icon text-muted"></i>
+                        <!-- Autocomplete Dropdown -->
+                        <div id="search-autocomplete-dropdown" class="search-autocomplete-dropdown"></div>
                     </div>
 
-                    <div id="megamenu-columns" class="topbar-item d-none d-md-flex">
-                        <div class="dropdown">
-                            <button class="topbar-link btn fw-medium btn-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown" type="button" aria-haspopup="false" aria-expanded="false">
-                                Mega Menu
-                                <i class="ti ti-chevron-down ms-1"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-xxl p-0">
-                                <div class="h-100" style="max-height: 380px" data-simplebar>
-                                    <div class="row g-0">
-                                        <div class="col-md-4">
-                                            <div class="p-2">
-                                                <h5 class="mb-1 fw-semibold fs-sm dropdown-header">Quick Links</h5>
-                                                <ul class="list-unstyled megamenu-list">
-                                                    <li>
-                                                        <a href="/dashboard" class="dropdown-item">
-                                                            <i class="ti ti-chevron-right align-middle me-1 text-muted"></i>
-                                                            Dashboard
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="/project" class="dropdown-item">
-                                                            <i class="ti ti-chevron-right align-middle me-1 text-muted"></i>
-                                                            Project
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="/project/dataikm/1" class="dropdown-item">
-                                                            <i class="ti ti-chevron-right align-middle me-1 text-muted"></i>
-                                                            Data IKM
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="/cots" class="dropdown-item">
-                                                            <i class="ti ti-chevron-right align-middle me-1 text-muted"></i>
-                                                            COTS
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="/report" class="dropdown-item">
-                                                            <i class="ti ti-chevron-right align-middle me-1 text-muted"></i>
-                                                            Report
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
@@ -346,6 +499,15 @@
                         <button class="topbar-link" type="button" id="sidebarShowHideBtn" title="Show/Hide Sidebar">
                             <i class="ti ti-layout-sidebar-left-collapse topbar-link-icon"></i>
                         </button>
+                    </div>
+
+                    <!-- UMKM Counter Badge -->
+                    <div class="topbar-item">
+                        <div class="d-flex align-items-center gap-2 px-2 py-1 rounded bg-primary bg-opacity-10 border border-primary border-opacity-25">
+                            <i class="ti ti-building-skyscraper text-primary fs-lg"></i>
+                            <span class="fw-semibold text-primary">{{ $totalUmkm ?? 0 }}</span>
+                            <span class="text-muted fs-xs d-none d-lg-inline">IKM</span>
+                        </div>
                     </div>
 
                     <!-- Notification -->
@@ -404,11 +566,16 @@
                     <div class="topbar-item nav-user">
                         <div class="dropdown">
                             <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown" href="#!" aria-haspopup="false" aria-expanded="false">
-                                @if(auth()->user()->profile_photo && Storage::disk('public')->exists(auth()->user()->profile_photo))
-                                    <img src="/storage/{{ auth()->user()->profile_photo }}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image" />
+                               @if(auth()->user()->profile_photo && Storage::disk('public')->exists(auth()->user()->profile_photo))
+                                    <img src="/storage/{{ auth()->user()->profile_photo }}" width="32"
+                                        class="rounded-circle me-lg-2 d-flex" alt="user-image" />
                                 @else
-                                    <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" width="32" class="rounded-circle me-lg-2 d-flex" alt="user-image" />
+                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-lg-2"
+                                        style="width:32px;height:32px;">
+                                        <i class="ti ti-user fs-5 text-muted"></i>
+                                    </div>
                                 @endif
+
                                 <div class="d-lg-flex align-items-center gap-1 d-none">
                                     <span>
                                         <h5 class="my-0 lh-1 pro-username">{{ Auth::user()->nama ?? 'User' }}</h5>
@@ -787,113 +954,7 @@
             </div>
         </div>
 
-        <!-- Sidebar Guide Modal -->
-        <div class="modal fade sidebar-guide-modal" id="sidebarGuideModal" tabindex="-1" aria-labelledby="sidebarGuideModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="sidebarGuideModalLabel">
-                            <i class="ti ti-help me-2"></i>Panduan Penggunaan Sidebar
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-12 mb-4">
-                                <h6 class="fw-bold text-primary mb-3">
-                                    <i class="ti ti-layout-sidebar me-2"></i>Navigasi Sidebar
-                                </h6>
-                                <div class="guide-item d-flex align-items-center">
-                                    <div class="guide-icon bg-primary-subtle text-primary">
-                                        <i class="ti ti-dashboard fs-5"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Dashboard</strong>
-                                        <p class="text-muted mb-0 small">Halaman utama untuk melihat ringkasan sistem</p>
-                                    </div>
-                                </div>
-                                <div class="guide-item d-flex align-items-center">
-                                    <div class="guide-icon bg-success-subtle text-success">
-                                        <i class="ti ti-folder fs-5"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Project</strong>
-                                        <p class="text-muted mb-0 small">Kelola dan pantau project yang sedang berjalan</p>
-                                    </div>
-                                </div>
-                                <div class="guide-item d-flex align-items-center">
-                                    <div class="guide-icon bg-info-subtle text-info">
-                                        <i class="ti ti-users fs-5"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Data IKM</strong>
-                                        <p class="text-muted mb-0 small">Kelola data Industri Kecil Menengah (IKM)</p>
-                                    </div>
-                                </div>
-                                <div class="guide-item d-flex align-items-center">
-                                    <div class="guide-icon bg-warning-subtle text-warning">
-                                        <i class="ti ti-bulb fs-5"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Brainstorming</strong>
-                                        <p class="text-muted mb-0 small">Fitur untuk ide dan brainstorming project</p>
-                                    </div>
-                                </div>
-                                <div class="guide-item d-flex align-items-center">
-                                    <div class="guide-icon bg-secondary-subtle text-secondary">
-                                        <i class="ti ti-palette fs-5"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Kurasi</strong>
-                                        <p class="text-muted mb-0 small">Kelola kurasi produk dan design</p>
-                                    </div>
-                                </div>
-                                <div class="guide-item d-flex align-items-center">
-                                    <div class="guide-icon bg-danger-subtle text-danger">
-                                        <i class="ti ti-file-text fs-5"></i>
-                                    </div>
-                                    <div>
-                                        <strong>COTS</strong>
-                                        <p class="text-muted mb-0 small">Kelola Commercial Off-The-Shelf</p>
-                                    </div>
-                                </div>
-                                <div class="guide-item d-flex align-items-center">
-                                    <div class="guide-icon bg-dark-subtle text-dark">
-                                        <i class="ti ti-chart-bar fs-5"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Report</strong>
-                                        <p class="text-muted mb-0 small">Lihat laporan dan statistik system</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <h6 class="fw-bold text-primary mb-3">
-                                    <i class="ti ti-plus-circle me-2"></i>Tombol Tambah
-                                </h6>
-                                <div class="guide-item d-flex align-items-center">
-                                    <div class="guide-icon" style="background: linear-gradient(135deg, #435ebe 0%, #2c4a9e 100%);">
-                                        <i class="ti ti-plus text-white fs-5"></i>
-                                    </div>
-                                    <div>
-                                        <strong>Tambah Data Baru</strong>
-                                        <p class="text-muted mb-0 small">Klik tombol "Tambah" untuk menambahkan data baru ke sistem</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="ti ti-x me-1"></i>Tutup
-                        </button>
-                        <a href="/dashboard" class="btn btn-primary">
-                            <i class="ti ti-home me-1"></i>Ke Dashboard
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <!-- Sidenav Menu -->
         <div class="sidenav-menu" id="sidenavMenu">
@@ -943,60 +1004,22 @@
                         </a>
                     </li>
 
-                    <li class="side-nav-item">
+                    {{-- <li class="side-nav-item">
                         <a href="/project/dataikm/1" class="side-nav-link">
                             <span class="menu-icon"><i class="ti ti-users"></i></span>
                             <span class="menu-text">Data IKM</span>
                         </a>
-                    </li>
-
-                    <li class="side-nav-item">
-                        <a href="/brainstorming" class="side-nav-link">
-                            <span class="menu-icon"><i class="ti ti-bulb"></i></span>
-                            <span class="menu-text">Brainstorming</span>
-                        </a>
-                    </li>
-
-                    <li class="side-nav-item">
-                        <a href="/kurasi" class="side-nav-link">
-                            <span class="menu-icon"><i class="ti ti-palette"></i></span>
-                            <span class="menu-text">Kurasi</span>
-                        </a>
-                    </li>
-
-                    <li class="side-nav-item">
-                        <a href="/cots" class="side-nav-link">
-                            <span class="menu-icon"><i class="ti ti-file-text"></i></span>
-                            <span class="menu-text">COTS</span>
-                        </a>
-                    </li>
-
-                    <li class="side-nav-item">
-                        <a href="/report" class="side-nav-link">
-                            <span class="menu-icon"><i class="ti ti-chart-bar"></i></span>
-                            <span class="menu-text">Report</span>
-                        </a>
-                    </li>
-
-                    <!-- Sidebar Guide -->
-                    <li class="side-nav-title mt-2">Panduan</li>
-                    <li class="side-nav-item">
-                        <a href="#" class="side-nav-link" data-bs-toggle="modal" data-bs-target="#sidebarGuideModal">
-                            <span class="menu-icon"><i class="ti ti-help"></i></span>
-                            <span class="menu-text">Panduan</span>
-                        </a>
-                    </li>
+                    </li> --}}
 
 
-
-                    @if(Auth::user())
+                    {{-- @if(Auth::user())
                     <li class="side-nav-item">
                         <a href="/profile" class="side-nav-link">
                             <span class="menu-icon"><i class="ti ti-user"></i></span>
                             <span class="menu-text">Profile</span>
                         </a>
                     </li>
-                    @endif
+                    @endif --}}
 
                     <li class="side-nav-title mt-2">Akun</li>
 
@@ -1161,16 +1184,444 @@
         location.reload();
     });
 
-    // Search functionality
-    document.getElementById('topSearch').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            const query = this.value.trim();
-            if (query) {
-                // Implement search logic here
-                alert('Search: ' + query);
+    // Search functionality with autocomplete
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('topSearch');
+        const dropdown = document.getElementById('search-autocomplete-dropdown');
+        let debounceTimer;
+        let currentHighlightIndex = -1;
+        let currentResults = [];
+
+        // Debounce function
+        function debounce(func, wait) {
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(debounceTimer);
+                    func(...args);
+                };
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(later, wait);
+            };
+        }
+
+        // Get CSRF token
+        function getCsrfToken() {
+            return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        }
+
+        // Show loading state
+        function showLoading() {
+            dropdown.innerHTML = '<div class="loading"><span class="spinner"></span>Mencari...</div>';
+            dropdown.classList.add('show');
+        }
+
+        // Show no results
+        function showNoResults(query) {
+            dropdown.innerHTML = '<div class="no-results">Tidak ditemukan hasil untuk "' + escapeHtml(query) + '"</div>';
+            dropdown.classList.add('show');
+        }
+
+        // Show error
+        function showError(message) {
+            dropdown.innerHTML = '<div class="error-message">' + escapeHtml(message) + '</div>';
+            dropdown.classList.add('show');
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render results
+        function renderResults(results, query) {
+            if (!results || results.length === 0) {
+                showNoResults(query);
+                return;
+            }
+
+            let html = '';
+            results.forEach((item, index) => {
+                const iconClass = item.type === 'project' ? 'ti ti-folder' : 'ti ti-building-skyscraper';
+                const iconType = item.type;
+                const typeLabel = item.type === 'project' ? 'Project' : 'IKM';
+
+                html += `
+                    <div class="search-autocomplete-item" data-index="${index}" data-route="${escapeHtml(item.route)}">
+                        <div class="item-icon ${iconType}">
+                            <i class="${iconClass}"></i>
+                        </div>
+                        <div class="item-content">
+                            <div class="item-title">${escapeHtml(item.type === 'ikm' ? item.nama_ikm : item.nama_project)}</div>
+                            ${item.nama_project && item.type === 'ikm' ? '<div class="item-subtitle">' + escapeHtml(item.nama_project) + '</div>' : ''}
+                        </div>
+                        <span class="item-type ${iconType}">${typeLabel}</span>
+                    </div>
+                `;
+            });
+
+            dropdown.innerHTML = html;
+            dropdown.classList.add('show');
+            currentResults = results;
+            currentHighlightIndex = -1;
+
+            // Add click event listeners
+            dropdown.querySelectorAll('.search-autocomplete-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const route = this.getAttribute('data-route');
+                    if (route) {
+                        window.location.href = route;
+                    }
+                });
+            });
+        }
+
+        // Close dropdown
+        function closeDropdown() {
+            dropdown.classList.remove('show');
+            currentHighlightIndex = -1;
+            currentResults = [];
+        }
+
+        // Perform search
+        async function performSearch(query) {
+            if (!query || query.length < 1) {
+                closeDropdown();
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch(`/api/project/search?q=${encodeURIComponent(query)}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': getCsrfToken(),
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    renderResults(data, query);
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                showError('Terjadi kesalahan saat melakukan pencarian');
             }
         }
+
+        // Debounced search function
+        const debouncedSearch = debounce(performSearch, 300);
+
+        // Input event handler
+        searchInput.addEventListener('input', function(e) {
+            const query = this.value.trim();
+            debouncedSearch(query);
+        });
+
+        // Keyboard navigation
+        searchInput.addEventListener('keydown', function(e) {
+            const items = dropdown.querySelectorAll('.search-autocomplete-item');
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (currentHighlightIndex < items.length - 1) {
+                    if (currentHighlightIndex >= 0) {
+                        items[currentHighlightIndex].classList.remove('highlighted');
+                    }
+                    currentHighlightIndex++;
+                    items[currentHighlightIndex].classList.add('highlighted');
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (currentHighlightIndex > 0) {
+                    items[currentHighlightIndex].classList.remove('highlighted');
+                    currentHighlightIndex--;
+                    items[currentHighlightIndex].classList.add('highlighted');
+                }
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (currentHighlightIndex >= 0 && items[currentHighlightIndex]) {
+                    const route = items[currentHighlightIndex].getAttribute('data-route');
+                    if (route) {
+                        window.location.href = route;
+                    }
+                }
+            } else if (e.key === 'Escape') {
+                closeDropdown();
+                searchInput.blur();
+            }
+        });
+
+        // Focus handler
+        searchInput.addEventListener('focus', function() {
+            const query = this.value.trim();
+            if (query && currentResults.length > 0) {
+                dropdown.classList.add('show');
+            }
+        });
+
+        // Click outside to close
+        document.addEventListener('click', function(e) {
+            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                closeDropdown();
+            }
+        });
     });
+
+    // Search functionality with autocomplete - standalone version
+    (function() {
+        'use strict';
+
+        function initSearch() {
+            const searchInput = document.getElementById('topSearch');
+            const dropdown = document.getElementById('search-autocomplete-dropdown');
+
+            if (!searchInput || !dropdown) {
+                console.warn('Search elements not found');
+                return;
+            }
+
+            let debounceTimer;
+            let currentHighlightIndex = -1;
+            let currentResults = [];
+
+            function debounce(func, wait) {
+                return function(...args) {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function showLoading() {
+                dropdown.innerHTML = '<div class="loading"><span class="spinner"></span>Mencari...</div>';
+                dropdown.classList.add('show');
+            }
+
+            function showNoResults(query) {
+                dropdown.innerHTML = '<div class="no-results">Tidak ditemukan hasil untuk "' + escapeHtml(query) + '"</div>';
+                dropdown.classList.add('show');
+            }
+
+            function showError(message) {
+                dropdown.innerHTML = '<div class="error-message">' + escapeHtml(message) + '</div>';
+                dropdown.classList.add('show');
+            }
+
+            function closeDropdown() {
+                dropdown.classList.remove('show');
+                currentHighlightIndex = -1;
+                currentResults = [];
+            }
+
+            function renderResults(results, query) {
+                if (!results || results.length === 0) {
+                    showNoResults(query);
+                    return;
+                }
+
+                let html = '';
+                results.forEach((item, index) => {
+                    const iconClass = item.type === 'project' ? 'ti ti-folder' : 'ti ti-building-skyscraper';
+                    const iconType = item.type;
+                    const typeLabel = item.type === 'project' ? 'Project' : 'IKM';
+                    const title = item.type === 'ikm' ? item.nama_ikm : item.nama_project;
+
+                    html += '<div class="search-autocomplete-item" data-index="' + index + '" data-route="' + escapeHtml(item.route) + '">';
+                    html += '<div class="item-icon ' + iconType + '"><i class="' + iconClass + '"></i></div>';
+                    html += '<div class="item-content"><div class="item-title">' + escapeHtml(title) + '</div>';
+                    if (item.nama_project && item.type === 'ikm') {
+                        html += '<div class="item-subtitle">' + escapeHtml(item.nama_project) + '</div>';
+                    }
+                    html += '</div><span class="item-type ' + iconType + '">' + typeLabel + '</span></div>';
+                });
+
+                dropdown.innerHTML = html;
+                dropdown.classList.add('show');
+                currentResults = results;
+                currentHighlightIndex = -1;
+
+                dropdown.querySelectorAll('.search-autocomplete-item').forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const route = this.getAttribute('data-route');
+                        if (route) {
+                            window.location.href = route;
+                        }
+                    });
+                });
+            }
+
+            async function performSearch(query) {
+                if (!query || query.length < 1) {
+                    closeDropdown();
+                    return;
+                }
+
+                showLoading();
+
+                try {
+                    console.log('Fetching search results for:', query);
+                    const response = await fetch('/api/project/search?q=' + encodeURIComponent(query));
+
+                    if (!response.ok) {
+                        if (response.status === 401) {
+                            showError('Silakan login untuk melakukan pencarian');
+                            return;
+                        }
+                        throw new Error('Network response was not ok: ' + response.status);
+                    }
+
+                    const data = await response.json();
+                    console.log('Search results:', data);
+
+                    if (data.error) {
+                        showError(data.error);
+                    } else {
+                        renderResults(data, query);
+                    }
+                } catch (error) {
+                    console.error('Search error:', error);
+                    showError('Terjadi kesalahan saat melakukan pencarian');
+                }
+            }
+
+            const debouncedSearch = debounce(performSearch, 300);
+
+            searchInput.addEventListener('input', function() {
+                debouncedSearch(this.value.trim());
+            });
+
+            searchInput.addEventListener('keydown', function(e) {
+                const items = dropdown.querySelectorAll('.search-autocomplete-item');
+
+                if (e.key === 'ArrowDown' && items.length > 0) {
+                    e.preventDefault();
+                    if (currentHighlightIndex < items.length - 1) {
+                        if (currentHighlightIndex >= 0) items[currentHighlightIndex].classList.remove('highlighted');
+                        currentHighlightIndex++;
+                        items[currentHighlightIndex].classList.add('highlighted');
+                    }
+                } else if (e.key === 'ArrowUp' && items.length > 0) {
+                    e.preventDefault();
+                    if (currentHighlightIndex > 0) {
+                        items[currentHighlightIndex].classList.remove('highlighted');
+                        currentHighlightIndex--;
+                        items[currentHighlightIndex].classList.add('highlighted');
+                    }
+                } else if (e.key === 'Enter' && currentHighlightIndex >= 0 && items[currentHighlightIndex]) {
+                    e.preventDefault();
+                    const route = items[currentHighlightIndex].getAttribute('data-route');
+                    if (route) window.location.href = route;
+                } else if (e.key === 'Escape') {
+                    closeDropdown();
+                    searchInput.blur();
+                }
+            });
+
+            searchInput.addEventListener('focus', function() {
+                if (this.value.trim() && currentResults.length > 0) {
+                    dropdown.classList.add('show');
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSearch);
+        } else {
+            initSearch();
+        }
+    })();
+
+    // Encrypted ID click handler - decrypts IDs before navigation
+    (function() {
+        'use strict';
+
+        function initEncryptedLinks() {
+            // Find all links with encrypted ID data attributes
+            const encryptedLinks = document.querySelectorAll('[data-encrypted-ikm]');
+
+            if (encryptedLinks.length === 0) {
+                return;
+            }
+
+            console.log('Encrypted link handler initialized for ' + encryptedLinks.length + ' links');
+
+            encryptedLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const encryptedIkm = this.getAttribute('data-encrypted-ikm');
+                    const encryptedProject = this.getAttribute('data-encrypted-project');
+
+                    console.log('Click on encrypted link:', { encryptedIkm, encryptedProject });
+
+                    // Create form for POST request to decrypt endpoint
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/decrypt-ids';
+                    form.style.display = 'none';
+
+                    // Add CSRF token
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    if (csrfToken) {
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = csrfToken;
+                        form.appendChild(csrfInput);
+                    }
+
+                    // Add encrypted IDs
+                    if (encryptedIkm) {
+                        const ikmInput = document.createElement('input');
+                        ikmInput.type = 'hidden';
+                        ikmInput.name = 'encrypted_ikm';
+                        ikmInput.value = encryptedIkm;
+                        form.appendChild(ikmInput);
+                    }
+
+                    if (encryptedProject) {
+                        const projectInput = document.createElement('input');
+                        projectInput.type = 'hidden';
+                        projectInput.name = 'encrypted_project';
+                        projectInput.value = encryptedProject;
+                        form.appendChild(projectInput);
+                    }
+
+                    document.body.appendChild(form);
+                    form.submit();
+                });
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initEncryptedLinks);
+        } else {
+            initEncryptedLinks();
+        }
+    })();
 
     // SweetAlert2 - Global notification handler for all pages
     @php
@@ -1271,6 +1722,53 @@
             }
         });
     </script>
+    <script>
+const texts = [
+    "Cari Nama IKM...",
+    "Cari Nama Project...",
+    "Ayo mulai dari sekarang!",
+    "Jangan tunda kesuksesanmu!",
+    "Langkah kecil, hasil besar!",
+    "Ide hebat dimulai di sini!",
+    "Bersama menuju sukses!",
+    "Yuk wujudkan mimpimu!",
+    "Saatnya berkembang!",
+    "Gas terus pantang mundur!"
+];
+
+let index = 0;
+let charIndex = 0;
+let isDeleting = false;
+
+const input = document.getElementById("topSearch");
+
+function typeEffect() {
+    const currentText = texts[index];
+
+    if (isDeleting) {
+        charIndex--;
+    } else {
+        charIndex++;
+    }
+
+    input.placeholder = currentText.substring(0, charIndex);
+
+    if (!isDeleting && charIndex === currentText.length) {
+        isDeleting = true;
+        setTimeout(typeEffect, 1500); // pause setelah selesai ngetik
+        return;
+    }
+
+    if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        index = (index + 1) % texts.length;
+    }
+
+    setTimeout(typeEffect, isDeleting ? 50 : 80);
+}
+
+typeEffect();
+</script>
 
     <!-- Toastr CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">

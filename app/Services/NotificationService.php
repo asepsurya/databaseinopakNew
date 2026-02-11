@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Enums\NotificationType;
+use App\Events\NotificationCreated;
 use App\Models\Notification;
 use App\Models\NotificationPreference;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 
 class NotificationService
 {
@@ -31,22 +33,35 @@ class NotificationService
             // as they might want to see it in their preferences later
         }
 
-        return Notification::create([
+        // Merge type information into data
+        $notificationData = array_merge([
+            'icon' => $type->getIcon(),
+            'color' => $type->getColor(),
+            'title' => $type->getTitle(),
+            'message' => $data['message'] ?? $type->getTitle(),
+            'status' => $type->isSuccess() ? 'success' : ($type->isFailure() ? 'failure' : 'info'),
+        ], $data);
+
+        // Create the notification
+        $notification = Notification::create([
             'id' => \Illuminate\Support\Str::uuid()->toString(),
             'type' => $type->value,
             'notifiable_type' => User::class,
             'notifiable_id' => $user->id,
-            'data' => array_merge([
-                'icon' => $type->getIcon(),
-                'color' => $type->getColor(),
-                'title' => $type->getTitle(),
-                'message' => $data['message'] ?? $type->getTitle(),
-                'status' => $type->isSuccess() ? 'success' : ($type->isFailure() ? 'failure' : 'info'),
-            ], $data),
+            'data' => $notificationData,
             'url' => $url,
             'source_type' => $sourceType,
             'source_id' => $sourceId,
         ]);
+
+        // Fire the notification created event for broadcasting
+        try {
+            Event::dispatch(new NotificationCreated($notification, $user));
+        } catch (\Exception $e) {
+            // Broadcasting might not be configured, silently fail
+        }
+
+        return $notification;
     }
 
     /**
@@ -85,6 +100,25 @@ class NotificationService
     }
 
     /**
+     * Create a notification for a role.
+     */
+    public function createForRole(
+        string $role,
+        NotificationType $type,
+        array $data = [],
+        ?string $url = null,
+        ?string $sourceType = null,
+        ?int $sourceId = null
+    ): void
+    {
+        $users = User::whereHas('role', function ($query) use ($role) {
+            $query->where('name', $role);
+        })->get();
+
+        $this->createForUsers($users, $type, $data, $url, $sourceType, $sourceId);
+    }
+
+    /**
      * Get unread notification count for a user.
      */
     public function getUnreadCount(User $user): int
@@ -97,8 +131,35 @@ class NotificationService
      */
     public function getRecent(User $user, int $limit = 10)
     {
-        // Use orderBy directly instead of mostRecent() scope
         return $user->notifications()
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Get notifications by type for a user.
+     */
+    public function getByType(User $user, NotificationType $type, int $limit = 20)
+    {
+        return $user->notifications()
+            ->where('type', $type->value)
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Get notifications by category for a user.
+     */
+    public function getByCategory(User $user, string $category, int $limit = 20)
+    {
+        $types = NotificationType::cases();
+        $typeValues = array_filter($types, fn($t) => $t->getCategory() === $category);
+        $typeValues = array_map(fn($t) => $t->value, $typeValues);
+
+        return $user->notifications()
+            ->whereIn('type', $typeValues)
             ->orderBy('created_at', 'desc')
             ->limit($limit)
             ->get();
@@ -107,10 +168,9 @@ class NotificationService
     /**
      * Mark all notifications as read for a user.
      */
-    public function markAllAsRead(User $user): void
+    public function markAllAsRead(User $user): int
     {
-        // Use the relationship method with parentheses to get the query builder
-        $user->unreadNotifications()->update(['read_at' => now()]);
+        return $user->unreadNotifications()->update(['read_at' => now()]);
     }
 
     /**
@@ -130,11 +190,59 @@ class NotificationService
     }
 
     /**
+     * Mark notifications as read by type.
+     */
+    public function markAllAsReadByType(User $user, NotificationType $type): int
+    {
+        return $user->unreadNotifications()
+            ->where('type', $type->value)
+            ->update(['read_at' => now()]);
+    }
+
+    /**
+     * Mark notifications as read by category.
+     */
+    public function markAllAsReadByCategory(User $user, string $category): int
+    {
+        $types = NotificationType::cases();
+        $typeValues = array_filter($types, fn($t) => $t->getCategory() === $category);
+        $typeValues = array_map(fn($t) => $t->value, $typeValues);
+
+        return $user->unreadNotifications()
+            ->whereIn('type', $typeValues)
+            ->update(['read_at' => now()]);
+    }
+
+    /**
+     * Delete a notification.
+     */
+    public function delete(Notification $notification): bool
+    {
+        return $notification->delete();
+    }
+
+    /**
      * Delete old notifications.
      */
     public function deleteOlderThan(int $days = 30): int
     {
         return Notification::where('created_at', '<', now()->subDays($days))->delete();
+    }
+
+    /**
+     * Delete all notifications for a user.
+     */
+    public function deleteAllForUser(User $user): int
+    {
+        return $user->notifications()->delete();
+    }
+
+    /**
+     * Delete read notifications for a user.
+     */
+    public function deleteReadForUser(User $user): int
+    {
+        return $user->notifications()->whereNotNull('read_at')->delete();
     }
 
     /**
@@ -201,5 +309,108 @@ class NotificationService
         }
 
         return $preference->enabled;
+    }
+
+    /**
+     * Get notification statistics for a user.
+     */
+    public function getStatistics(User $user): array
+    {
+        $total = $user->notifications()->count();
+        $unread = $user->unreadNotifications()->count();
+        $read = $total - $unread;
+
+        // Get counts by category
+        $categories = [];
+        foreach (['authentication', 'data_operation', 'form', 'profile', 'project', 'ikm', 'cots', 'system', 'user_activity'] as $category) {
+            $types = NotificationType::cases();
+            $typeValues = array_filter($types, fn($t) => $t->getCategory() === $category);
+            $typeValues = array_map(fn($t) => $t->value, $typeValues);
+
+            $categories[$category] = $user->notifications()
+                ->whereIn('type', $typeValues)
+                ->count();
+        }
+
+        return [
+            'total' => $total,
+            'unread' => $unread,
+            'read' => $read,
+            'by_category' => $categories,
+        ];
+    }
+
+    /**
+     * Search notifications for a user.
+     */
+    public function search(User $user, string $search, int $limit = 20)
+    {
+        return $user->notifications()
+            ->where(function ($query) use ($search) {
+                $query->where('data->message', 'like', "%{$search}%")
+                    ->orWhere('data->title', 'like', "%{$search}%")
+                    ->orWhere('type', 'like', "%{$search}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Get activity timeline for a user.
+     */
+    public function getActivityTimeline(User $user, int $days = 7)
+    {
+        return $user->notifications()
+            ->where('created_at', '>=', now()->subDays($days))
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy(function ($notification) {
+                return $notification->created_at->format('Y-m-d');
+            });
+    }
+
+    /**
+     * Create a log entry for audit trail.
+     */
+    public function logActivity(
+        User $user,
+        string $action,
+        string $modelType,
+        ?int $modelId = null,
+        array $properties = []
+    ): void
+    {
+        try {
+            DB::table('activity_logs')->insert([
+                'user_id' => $user->id,
+                'action' => $action,
+                'model_type' => $modelType,
+                'model_id' => $modelId,
+                'properties' => json_encode($properties),
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        } catch (\Exception $e) {
+            // Silently fail if activity log table doesn't exist
+        }
+    }
+
+    /**
+     * Get recent activities for audit trail.
+     */
+    public function getRecentActivities(User $user, int $limit = 50)
+    {
+        try {
+            return DB::table('activity_logs')
+                ->where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->limit($limit)
+                ->get();
+        } catch (\Exception $e) {
+            return collect();
+        }
     }
 }

@@ -14,6 +14,8 @@ use App\Models\Regency;
 use App\Models\District;
 use App\Models\Village;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class DetileIkmController extends Controller
 {
@@ -31,6 +33,93 @@ class DetileIkmController extends Controller
             'cotsview'=>cots::where('id_ikm',$id_ikm)->get(),
             'searchIkm'=>ikm::all()
         ]);
+    }
+
+    /**
+     * Handle encrypted ID click from JavaScript
+     * Decrypts IDs and redirects to the detail page
+     */
+    public function decryptIds(Request $request)
+    {
+        try {
+            $encryptedIkm = $request->get('encrypted_ikm');
+            $encryptedProject = $request->get('encrypted_project');
+
+            if (!$encryptedIkm || !$encryptedProject) {
+                Log::warning('Decrypt IDs: Missing encrypted parameters', [
+                    'encrypted_ikm' => $encryptedIkm,
+                    'encrypted_project' => $encryptedProject
+                ]);
+
+                return redirect()->back()->with('error', 'Parameter tidak lengkap');
+            }
+
+            // Decrypt the IDs
+            $id_ikm = Crypt::decryptString($encryptedIkm);
+            $id_project = Crypt::decryptString($encryptedProject);
+
+            Log::info('Decrypt IDs: Success', [
+                'encrypted_ikm' => $encryptedIkm,
+                'encrypted_project' => $encryptedProject,
+                'decrypted_ikm' => $id_ikm,
+                'decrypted_project' => $id_project
+            ]);
+
+            // Redirect to the detail page with decrypted IDs
+            return redirect()->route('detail', [
+                'id_ikm' => $id_ikm,
+                'id_project' => $id_project
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Decrypt IDs failed: ' . $e->getMessage(), [
+                'encrypted_ikm' => $request->get('encrypted_ikm'),
+                'encrypted_project' => $request->get('encrypted_project'),
+                'exception' => $e
+            ]);
+
+            return redirect()->back()->with('error', 'Gagal mendekripsi ID. Silakan coba lagi.');
+        }
+    }
+
+    /**
+     * Direct encrypted route - accepts already encrypted IDs in URL
+     * Example: /e/ikm/{encrypted_id}/{encrypted_project}
+     */
+    public function encryptedIndex($encrypted_id, $encrypted_project)
+    {
+        try {
+            // Decrypt the IDs
+            $id_ikm = Crypt::decryptString($encrypted_id);
+            $id_project = Crypt::decryptString($encrypted_project);
+
+            Log::info('Encrypted route access', [
+                'encrypted_id' => $encrypted_id,
+                'encrypted_project' => $encrypted_project,
+                'decrypted_ikm' => $id_ikm,
+                'decrypted_project' => $id_project
+            ]);
+
+            return view('pages.ikm.detile',[
+                'title'=>'Detile IKM',
+                'project'=>Project::Firstwhere('id',$id_project),
+                'ikm'=>ikm::with(['province','district','village','regency','bencmark'])->where('id',$id_ikm)->get(),
+                'dokumentasicots'=>DokumentasiCots::where('id_ikm',$id_ikm)->get(),
+                'dokumentasicotscek'=>DokumentasiCots::where('id_ikm',$id_ikm)->count(),
+                'cots'=>cots::where('id_ikm',$id_ikm)->count(),
+                'cotsview'=>cots::where('id_ikm',$id_ikm)->get(),
+                'searchIkm'=>ikm::all()
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Encrypted route decryption failed: ' . $e->getMessage(), [
+                'encrypted_id' => $encrypted_id,
+                'encrypted_project' => $encrypted_project,
+                'exception' => $e
+            ]);
+
+            return redirect()->route('dashboard')->with('error', 'ID tidak valid atau sudah kadaluarsa');
+        }
     }
     public function ubahFotoIkm(request $request){
 

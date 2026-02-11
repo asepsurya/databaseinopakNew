@@ -46,10 +46,7 @@ class LoginController extends Controller
     }
 
     public function dashboard(){
-        return view('pages.dashboard.index',[
-            'title'=>'Dashboard',
-            'searchIkm'=>ikm::all()
-        ]);
+        return redirect()->route('dashboard');
     }
 
     public function index(){

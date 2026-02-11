@@ -25,7 +25,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
-                <select name="gender" class="form-select" required>
+                <select name="gender" class="form-select select2" required>
                     <option value="">Pilih</option>
                     <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Laki-laki</option>
                     <option value="P" {{ old('gender') == 'P' ? 'selected' : '' }}>Perempuan</option>
@@ -48,28 +48,28 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Provinsi <span class="text-danger">*</span></label>
-                <select name="id_provinsi" class="form-select" id="provinsi" required>
+                <select name="id_provinsi" class="form-select select2" id="provinsi" required>
                     <option value="">Pilih Provinsi</option>
                     @foreach($provinsi as $p)
-                        <option value="{{ $p->id }}">{{ $p->name }}</option>
+                        <option value="{{ $p->id }}" {{ old('id_provinsi') == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="mb-3">
                 <label class="form-label">Kota/Kabupaten <span class="text-danger">*</span></label>
-                <select name="id_kota" class="form-select" id="kota" required>
+                <select name="id_kota" class="form-select select2" id="kabupaten" required>
                     <option value="">Pilih Kota/Kabupaten</option>
                 </select>
             </div>
             <div class="mb-3">
                 <label class="form-label">Kecamatan <span class="text-danger">*</span></label>
-                <select name="id_kecamatan" class="form-select" id="kecamatan" required>
+                <select name="id_kecamatan" class="form-select select2" id="kecamatan" required>
                     <option value="">Pilih Kecamatan</option>
                 </select>
             </div>
             <div class="mb-3">
                 <label class="form-label">Desa/Kelurahan <span class="text-danger">*</span></label>
-                <select name="id_desa" class="form-select" id="desa" required>
+                <select name="id_desa" class="form-select select2" id="desa" required>
                     <option value="">Pilih Desa/Kelurahan</option>
                 </select>
             </div>
@@ -87,14 +87,24 @@
         <div class="col-md-6">
             <div class="mb-3">
                 <label class="form-label">Password <span class="text-danger">*</span></label>
-                <input type="password" name="password" class="form-control" required minlength="6">
+                <div class="input-group">
+                    <input type="password" name="password" class="form-control" required minlength="6" id="passwordInput">
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('passwordInput', 'passwordEye')" tabindex="-1">
+                        <i class="ti ti-eye" id="passwordEye"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="mb-3">
                 <label class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
-                <input type="password" name="confirmPassword" class="form-control" required>
+                <div class="input-group">
+                    <input type="password" name="confirmPassword" class="form-control" required id="confirmPasswordInput">
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirmPasswordInput', 'confirmPasswordEye')" tabindex="-1">
+                        <i class="ti ti-eye" id="confirmPasswordEye"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -113,40 +123,113 @@
 </form>
 
 <script>
-document.getElementById('provinsi').addEventListener('change', function() {
-    var id_provinsi = this.value;
-    if(id_provinsi) {
-        fetch('/getkabupaten?id_provinsi=' + id_provinsi)
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('kota').innerHTML = data;
-                document.getElementById('kecamatan').innerHTML = '<option value="">Pilih Kecamatan</option>';
-                document.getElementById('desa').innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
-            });
-    }
-});
+// Toggle password visibility
+function togglePassword(inputId, eyeIconId) {
+    const passwordInput = document.getElementById(inputId);
+    const eyeIcon = document.getElementById(eyeIconId);
 
-document.getElementById('kota').addEventListener('change', function() {
-    var id_kabupaten = this.value;
-    if(id_kabupaten) {
-        fetch('/getkecamatan?id_kabupaten=' + id_kabupaten)
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('kecamatan').innerHTML = data;
-                document.getElementById('desa').innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
-            });
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('ti-eye');
+        eyeIcon.classList.add('ti-eye-off');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('ti-eye-off');
+        eyeIcon.classList.add('ti-eye');
     }
-});
+}
 
-document.getElementById('kecamatan').addEventListener('change', function() {
-    var id_kecamatan = this.value;
-    if(id_kecamatan) {
-        fetch('/getdesa?id_kecamatan=' + id_kecamatan)
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('desa').innerHTML = data;
+$(document).ready(function() {
+    // Initialize Select2 with Tabler theme configuration
+    $('.select2').select2({
+        placeholder: 'Pilih opsi',
+        allowClear: false,
+        width: '100%',
+        minimumResultsForSearch: 5,
+        dropdownCssClass: 'select2--tabler', // Custom class for Tabler styling
+        escapeMarkup: function(markup) {
+            return markup;
+        }
+    });
+
+    // Setup CSRF token for AJAX requests
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
+    // Province change handler - load kabupatens
+    $('#provinsi').on('change', function() {
+        var id_provinsi = $(this).val();
+
+        if (id_provinsi) {
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('getkabupaten') }}",
+                data: { id_provinsi: id_provinsi },
+                cache: false,
+                success: function(msg) {
+                    $('#kabupaten').html(msg).trigger('change');
+                    $('#kecamatan').html('<option value="">Pilih Kecamatan</option>').trigger('change');
+                    $('#desa').html('<option value="">Pilih Desa/Kelurahan</option>').trigger('change');
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error loading kabupatens:', error);
+                }
             });
-    }
+        } else {
+            $('#kabupaten').html('<option value="">Pilih Kota/Kabupaten</option>').trigger('change');
+            $('#kecamatan').html('<option value="">Pilih Kecamatan</option>').trigger('change');
+            $('#desa').html('<option value="">Pilih Desa/Kelurahan</option>').trigger('change');
+        }
+    });
+
+    // Kabupaten change handler - load kecamatans
+    $('#kabupaten').on('change', function() {
+        var id_kabupaten = $(this).val();
+
+        if (id_kabupaten) {
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('getkecamatan') }}",
+                data: { id_kabupaten: id_kabupaten },
+                cache: false,
+                success: function(msg) {
+                    $('#kecamatan').html(msg).trigger('change');
+                    $('#desa').html('<option value="">Pilih Desa/Kelurahan</option>').trigger('change');
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error loading kecamatans:', error);
+                }
+            });
+        } else {
+            $('#kecamatan').html('<option value="">Pilih Kecamatan</option>').trigger('change');
+            $('#desa').html('<option value="">Pilih Desa/Kelurahan</option>').trigger('change');
+        }
+    });
+
+    // Kecamatan change handler - load desas
+    $('#kecamatan').on('change', function() {
+        var id_kecamatan = $(this).val();
+
+        if (id_kecamatan) {
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('getdesa') }}",
+                data: { id_kecamatan: id_kecamatan },
+                cache: false,
+                success: function(msg) {
+                    $('#desa').html(msg).trigger('change');
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error loading desas:', error);
+                }
+            });
+        } else {
+            $('#desa').html('<option value="">Pilih Desa/Kelurahan</option>').trigger('change');
+        }
+    });
 });
 </script>
 @endsection
