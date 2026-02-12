@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Project;
 use App\Models\ikm;
+use GuzzleHttp\Client;
+use App\Models\Project;
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
+use ImageSearch\Models\ImageSearch;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProjectController extends Controller
 {
@@ -160,4 +164,93 @@ class ProjectController extends Controller
             ], 500);
         }
     }
+    public function aiImageSearch(Request $request)
+{
+  public function aiImageSearch(Request $request)
+{
+    $request->validate([
+        'keyword' => 'required|string'
+    ]);
+
+    try {
+
+        $client = new Client([
+            'verify' => false,
+            'timeout' => 15,
+        ]);
+
+        $query = urlencode($request->keyword);
+
+        $response = $client->get("https://www.google.com/search?tbm=isch&q={$query}", [
+            'headers' => [
+                'User-Agent' => 'Mozilla/5.0'
+            ]
+        ]);
+
+        $html = (string) $response->getBody();
+
+        preg_match_all('/"ou":"(.*?)"/', $html, $matches);
+
+        $images = [];
+
+        if (isset($matches[1])) {
+
+            foreach (array_slice($matches[1], 0, 8) as $img) {
+
+                $images[] = [
+                    'title' => $request->keyword,
+                    'image_url' => stripslashes($img),
+                    'source_url' => '',
+                    'source_name' => 'Google'
+                ];
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'results' => $images
+        ]);
+
+    } catch (\Exception $e) {
+
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+}
+}
+
+/*
+|--------------------------------------------------------------------------
+| PROXY IMAGE (ANTI HOTLINK)
+|--------------------------------------------------------------------------
+*/
+
+public function proxyImage(Request $request)
+{
+    $url = $request->query('url');
+
+    if (!$url) abort(404);
+
+    try {
+
+        $client = new Client([
+            'verify' => false,
+            'timeout' => 10,
+        ]);
+
+        $response = $client->get($url, [
+            'headers' => [
+                'User-Agent' => 'Mozilla/5.0'
+            ]
+        ]);
+
+        return response($response->getBody())
+            ->header('Content-Type', $response->getHeaderLine('Content-Type'));
+
+    } catch (\Exception $e) {
+        abort(404);
+    }
+}
 }
