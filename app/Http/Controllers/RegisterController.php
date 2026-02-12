@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\AppSetting;
 use Illuminate\Http\Request;
 use App\Models\Province;
 use App\Models\Regency;
@@ -19,15 +20,22 @@ class RegisterController extends Controller
      */
     public function index()
     {
-        // Get semua data
+        // Check if registration is enabled
+        $registrationEnabled = AppSetting::get('registration_enabled', true);
+
+        if (!$registrationEnabled) {
+            return redirect('/login')->with(
+                'loginError',
+                'Pendaftaran pengguna baru telah dinonaktifkan. Silakan hubungi administrator untuk membuat akun.'
+            );
+        }
+
+        // Get all data
         $provinces = Province::all();
-        
-       
+
         return view('authentication.register',[
             'provinsi'=> $provinces,
-           
         ]);
-
     }
 
     /**
@@ -37,7 +45,7 @@ class RegisterController extends Controller
      */
     public function create()
     {
-        
+
     }
 
     /**
@@ -48,7 +56,17 @@ class RegisterController extends Controller
      */
     public function store(Request $request)
     {
-         $validatedData = $request->validate([
+        // Double-check if registration is enabled
+        $registrationEnabled = AppSetting::get('registration_enabled', true);
+
+        if (!$registrationEnabled) {
+            return redirect('/login')->with(
+                'loginError',
+                'Pendaftaran pengguna baru telah dinonaktifkan.'
+            );
+        }
+
+        $validatedData = $request->validate([
             'nik'=>'required|min:16',
             'nama'=>'required|max:255',
             'telp'=>'required|unique:users',
@@ -63,22 +81,21 @@ class RegisterController extends Controller
             'rw'=>'required',
             'email'=>'required|email|unique:users',
             'password'=>'required|same:confirmPassword|min:6',
-            
         ]);
-        
-        // // enkripsi password
-        $validatedData['password'] = Hash::make($validatedData['password'] );
+
+        // enkripsi password using bcrypt
+        $validatedData['password'] = Hash::make($validatedData['password']);
 
         User::create($validatedData);
 
         $request->session()->flash('Berhasil', 'Pendaftaran Berhasil, Silahkan Login pada Form yang tersedia');
         return redirect('/login');
-        
+
     }
 
     /**
      * Display the specified resource.
-     *  
+     *
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
@@ -123,7 +140,7 @@ class RegisterController extends Controller
 
     public function getkabupaten(request $request){
         $id_provinsi = $request->id_provinsi;
-       
+
         $option = "<option value=''> Kota/Kabupaten </option>";
         $kabupatens = Regency::where('province_id',$id_provinsi)->get();
         foreach($kabupatens as $kabupaten){
@@ -133,7 +150,7 @@ class RegisterController extends Controller
     }
     public function getkecamatan(request $request){
         $id_kabupaten = $request->id_kabupaten;
-       
+
         $option = "<option value=''> Kecamatan </option>";
         $kecamatans = District::where('regency_id',$id_kabupaten)->get();
         foreach($kecamatans as $kecamatan){
@@ -144,7 +161,7 @@ class RegisterController extends Controller
 
     public function getdesa(request $request){
         $id_kecamatan = $request->id_kecamatan;
-       
+
         $option = "<option value=''> Kelurahan/Desa </option>";
         $desas = Village::where('district_id',$id_kecamatan)->get();
         foreach($desas as $desa){
@@ -152,5 +169,5 @@ class RegisterController extends Controller
         }
         echo $option;
     }
-    
+
 }

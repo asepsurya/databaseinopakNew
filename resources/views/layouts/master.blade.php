@@ -4,14 +4,19 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Database INOPAK - Sistem Pengelolaan Informasi" />
-    <meta name="keywords" content="inopak, database, ikm, admin dashboard" />
-    <meta name="author" content="INOPAK" />
+    <meta name="description" content="{{ $metaDescription ?? 'Database INOPAK - Sistem Pengelolaan Informasi' }}" />
+    <meta name="keywords" content="{{ $metaKeywords ?? 'inopak, database, ikm, admin dashboard' }}" />
+    <meta name="author" content="{{ $companyName ?? 'INOPAK' }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') | Database INOPAK</title>
+    <title>@yield('title', 'Dashboard') | {{ $appName ?? 'Database INOPAK' }}</title>
 
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+    <!-- App favicon - Dynamic from settings -->
+    @php $faviconLogo = $logos['favicon'] ?? null; @endphp
+    @if($faviconLogo && $faviconLogo->is_active && $faviconLogo->image_url)
+        <link rel="shortcut icon" href="{{ asset($faviconLogo->image_url) }}" />
+    @else
+        <link rel="shortcut icon" href="{{ asset('assets/images/inopak/Fav.png') }}" />
+    @endif
 
     <!-- Theme Config Js -->
     <script src="{{ asset('assets/js/config.js') }}"></script>
@@ -428,23 +433,38 @@
                 <div class="d-flex align-items-center gap-2">
                     <!-- Topbar Brand Logo -->
                     <div class="logo-topbar">
-                        <!-- Logo light -->
-                        <a href="/dashboard" class="logo-light">
-                            <span class="logo-lg">
-                                <img src="{{ asset('assets/images/logo.png') }}" alt="logo" />
-                            </span>
-                            <span class="logo-sm">
-                                <img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo" />
-                            </span>
-                        </a>
+                        @php
+                        $headerLogo = $logos['header'] ?? null;
+                        $faviconLogo = $logos['favicon'] ?? null;
+                        @endphp
 
-                        <!-- Logo Dark -->
-                        <a href="/dashboard" class="logo-dark">
+                        <!-- Single logo element that handles light/dark mode via CSS/data attributes -->
+                        <a href="/dashboard" class="logo">
                             <span class="logo-lg">
-                                <img src="{{ asset('assets/images/logo-black.png') }}" alt="dark logo" />
+                                @if($headerLogo && $headerLogo->is_active && $headerLogo->image_url)
+                                    <img src="{{ asset($headerLogo->image_url) }}"
+                                         alt="{{ $headerLogo->name ?? 'Logo' }}"
+                                         data-light="{{ asset($headerLogo->image_url) }}"
+                                         data-dark="{{ asset($headerLogo->image_url) }}"
+                                         style="{{ $headerLogo->width ? 'width:'.$headerLogo->width.'px;' : '' }}{{ $headerLogo->height ? 'height:'.$headerLogo->height.'px;' : '' }}" />
+                                @else
+                                    <img src="{{ asset('assets/images/inopak/logo_light.png') }}"
+                                         alt="Logo"
+                                         data-light="{{ asset('assets/images/inopak/logo_light.png') }}"
+                                         data-dark="{{ asset('assets/images/inopak/logo_dark.png') }}"
+                                         style="height: 40px;" />
+                                @endif
                             </span>
                             <span class="logo-sm">
-                                <img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo" />
+                                @if($faviconLogo && $faviconLogo->is_active && $faviconLogo->image_url)
+                                    <img src="{{ asset($faviconLogo->image_url) }}"
+                                         alt="{{ $faviconLogo->name ?? 'Favicon' }}"
+                                         style="width: 30px; height: 30px;" />
+                                @else
+                                    <img src="{{ asset('assets/images/inopak/fav.png') }}"
+                                         alt="Logo"
+                                         style="width: 30px; height: 30px;" />
+                                @endif
                             </span>
                         </a>
                     </div>
@@ -495,11 +515,11 @@
                     </div>
 
                     <!-- Sidebar Show/Hide Toggle -->
-                    <div class="topbar-item d-none d-sm-flex">
+                    {{-- <div class="topbar-item d-none d-sm-flex">
                         <button class="topbar-link" type="button" id="sidebarShowHideBtn" title="Show/Hide Sidebar">
                             <i class="ti ti-layout-sidebar-left-collapse topbar-link-icon"></i>
                         </button>
-                    </div>
+                    </div> --}}
 
                     <!-- UMKM Counter Badge -->
                     <div class="topbar-item">
@@ -556,10 +576,15 @@
                     </div>
 
                     <!-- Settings Toggle -->
-                    <div class="topbar-item d-none d-sm-flex">
+                    {{-- <div class="topbar-item d-none d-sm-flex">
                         <button class="topbar-link btn-theme-setting" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" type="button">
                             <i class="ti ti-settings topbar-link-icon"></i>
                         </button>
+                    </div> --}}
+                    <div class="topbar-item d-none d-sm-flex">
+                        <a class="topbar-link " type="button" href="/settings">
+                            <i class="ti ti-settings topbar-link-icon"></i>
+                        </a>
                     </div>
 
                     <!-- User Profile -->
@@ -959,15 +984,41 @@
         <!-- Sidenav Menu -->
         <div class="sidenav-menu" id="sidenavMenu">
             <!-- Brand Logo -->
+            @php $sidebarLogo = $logos['sidebar'] ?? null; @endphp
             <a href="/dashboard" class="logo">
-                <span class="logo logo-light">
-                    <span class="logo-lg"><img src="{{ asset('assets/images/logo.png') }}" alt="logo" /></span>
-                    <span class="logo-sm"><img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo" /></span>
-                </span>
-                <span class="logo logo-dark">
-                    <span class="logo-lg"><img src="{{ asset('assets/images/logo-black.png') }}" alt="dark logo" /></span>
-                    <span class="logo-sm"><img src="{{ asset('assets/images/logo-sm.png') }}" alt="small logo" /></span>
-                </span>
+                @php $sidebarLogo = $logos['sidebar'] ?? null; @endphp
+
+                <!-- Sidebar logo using favicon/logo_dark.png as primary -->
+                @if($sidebarLogo && $sidebarLogo->is_active && $sidebarLogo->image_url)
+                    <span class="logo-lg">
+                        <img src="{{ asset($sidebarLogo->image_url) }}"
+                             alt="{{ $sidebarLogo->name ?? 'Logo' }}"
+                            style="height: 50px;"/>
+
+                    </span>
+                    <span class="logo-sm">
+                         @if($faviconLogo && $faviconLogo->is_active && $faviconLogo->image_url)
+                                    <img src="{{ asset($faviconLogo->image_url) }}"
+                                         alt="{{ $faviconLogo->name ?? 'Favicon' }}"
+                                         style="width: 30px; height: 30px;" />
+                                @else
+                                    <img src="{{ asset('assets/images/inopak/fav.png') }}"
+                                         alt="Logo"
+                                         style="width: 30px; height: 30px;" />
+                                @endif
+                    </span>
+                @else
+                    <span class="logo-lg">
+                        <img src="{{ asset('assets/images/inopak/logo_dark.png') }}"
+                             alt="Logo"
+                             style="height: 40px;" />
+                    </span>
+                    <span class="logo-sm">
+                        <img src="{{ asset('assets/images/inopak/fav.png') }}"
+                             alt="Logo"
+                             style="width: 30px; height: 30px;" />
+                    </span>
+                @endif
             </a>
 
             <!-- Sidebar User -->
@@ -1001,6 +1052,12 @@
                         <a href="/project" class="side-nav-link">
                             <span class="menu-icon"><i class="ti ti-folder"></i></span>
                             <span class="menu-text">Project</span>
+                        </a>
+                    </li>
+                    <li class="side-nav-item">
+                        <a href="https://tidessa.inopakinstitute.or.id/login" class="side-nav-link" target="_Blank">
+                            <span class="menu-icon"><i class="ti ti-folders"></i></span>
+                            <span class="menu-text">TIDESSA</span>
                         </a>
                     </li>
 

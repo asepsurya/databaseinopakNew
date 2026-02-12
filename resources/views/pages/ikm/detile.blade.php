@@ -44,7 +44,6 @@ td:focus-within {
 }
 
 
-
     .dark input { color: #9fa6bc; }
     .mytr { background-color: #f8f8f8; }
     .dark .mytr { background-color: transparent; }
@@ -364,9 +363,20 @@ td:focus-within {
                             <a href="{{ url()->previous() }}" class="btn btn-light">
                                 <i class="ti ti-arrow-left me-1"></i> Kembali
                             </a>
-                            <a href="/project/dataikm/{{ $project->id }}/update" class="btn btn-light">
-                                <i class="ti ti-pencil me-1"></i> Edit
-                            </a>
+                              <form action="/project/dataikm/{{ $project->id }}/update" method="POST" class="d-inline">
+                                        @csrf
+                                        <input type="text" value="{{ $ikm->first()->id_provinsi }}" name="getId_provinsi" hidden>
+                                        <input type="text" value="{{ $ikm->first()->id_kota }}" name="getId_kota" hidden>
+                                        <input type="text" value="{{ $ikm->first()->id_kecamatan }}" name="getId_kecamatan" hidden>
+                                        <input type="text" value="{{ $ikm->first()->id_desa }}" name="getId_desa" hidden>
+                                        <input type="text" value="{{ $project->id }}" name="getId_project" hidden>
+                                        <input type="text" value="{{ $ikm->first()->id }}" name="getId_IKM" hidden>
+                                        <input type="text" value="{{ $project->NamaProjek }}" name="get_Nmproject" hidden>
+                                        <button type="submit" class="btn btn-light" title="Ubah">
+                                            <i class="ti ti-pencil me-2"></i> Edit
+                                        </button>
+                                    </form>
+
                                <a class="btn btn-soft-secondary btn-sm" href="/report/brainstorming/{{ $ikm->first()->id }}/{{ $ikm->first()->nama }}" target="_blank">
                                                 <i class="far fa-file-pdf me-1"></i> Export
                                             </a>
@@ -878,6 +888,59 @@ td:focus-within {
     </div>
     <!-- end col-xxl-12 -->
 </div>
+<style>
+.pro-upload{
+    border:2px dashed #e0e6ed;
+    padding:35px;
+    border-radius:14px;
+    text-align:center;
+    cursor:pointer;
+    transition:.3s;
+
+    position:relative;
+}
+.pro-upload:hover{
+    border-color:#0d6efd;
+}
+.pro-upload.drag{
+    border-color:#0d6efd;
+
+}
+.pro-input{
+    position:absolute;
+    width:100%;
+    height:100%;
+    opacity:0;
+    cursor:pointer;
+    top:0;
+    left:0;
+}
+
+.pro-preview img{
+    height:110px;
+    width:100%;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.preview-card{
+    position:relative;
+}
+
+.remove-btn{
+    position:absolute;
+    top:6px;
+    right:6px;
+    background:red;
+    color:white;
+    border:none;
+    border-radius:50%;
+    width:24px;
+    height:24px;
+    font-size:13px;
+    line-height:20px;
+}
+</style>
 
 <!-- Upload Bencmark Modal -->
 <div class="modal fade" id="verticallyCentered" tabindex="-1" aria-labelledby="verticallyCenteredModalLabel" aria-hidden="true">
@@ -896,10 +959,21 @@ td:focus-within {
                     <input type="text" name="id_Project" value="{{ $project->id }}" hidden>
 
                     <div class="mb-3">
-                        <label for="bencmarkFiles" class="form-label">Pilih Gambar Bencmark:</label>
-                        <input class="form-control" type="file" id="bencmarkFiles" name="gambar[]" multiple accept="image/*">
-                        <small class="text-muted">Bisa upload lebih dari 1 gambar</small>
+                        <label class="form-label">Pilih Gambar Benchmark:</label>
+
+                        <div class="pro-upload">
+                            <input type="file" name="gambar[]" multiple accept="image/*" class="pro-input">
+
+                            <div class="pro-upload-box">
+                                <i class="ti ti-cloud-upload fs-1 text-primary"></i>
+                                <h6 class="mt-2">Drag & Drop Gambar</h6>
+                                <small class="text-muted">atau klik untuk memilih</small>
+                            </div>
+
+                            <div class="pro-preview row g-2 mt-3"></div>
+                        </div>
                     </div>
+
 
                     <div class="alert alert-soft-info" role="alert">
                         <small><i class="ti ti-info-circle me-1"></i> Format yang didukung: JPG, PNG, GIF</small>
@@ -931,10 +1005,21 @@ td:focus-within {
                     <input type="text" name="id_project" value="{{ $project->id }}" hidden>
 
                     <div class="mb-3">
-                        <label for="designFiles" class="form-label">Pilih Gambar Desain:</label>
-                        <input class="form-control" type="file" id="designFiles" name="gambar[]" multiple accept="image/*">
-                        <small class="text-muted">Bisa upload lebih dari 1 gambar</small>
+                        <label class="form-label">Pilih Gambar Desain:</label>
+
+                        <div class="pro-upload">
+                            <input type="file" name="gambar[]" multiple accept="image/*" class="pro-input">
+
+                            <div class="pro-upload-box">
+                                <i class="ti ti-cloud-upload fs-1 text-primary"></i>
+                                <h6 class="mt-2">Drag & Drop Gambar</h6>
+                                <small class="text-muted">atau klik untuk memilih</small>
+                            </div>
+
+                            <div class="pro-preview row g-2 mt-3"></div>
+                        </div>
                     </div>
+
 
                     <div class="alert alert-soft-info" role="alert">
                         <small><i class="ti ti-info-circle me-1"></i> Format yang didukung: JPG, PNG, GIF</small>
@@ -962,14 +1047,23 @@ td:focus-within {
             <div class="modal-body">
                 <form action="/project/ikms/{{ $ikm->first()->id }}/dokumentasi" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <label for="foto" class="form-label">Pilih Photo :</label>
-                    <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                <div class="mb-3">
+                    <label class="form-label">Pilih Photo:</label>
+                     <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
                     <input type="text" name="id_project" value="{{ $project->id }}" hidden>
-                    <input type="file" name="gambar[]" id="gambar" class="form-control" multiple>
-                    <br>
-                    <div class="alert alert-soft-primary" role="alert">
-                        <small>Upload max 3 foto secara bertahap</small>
+                    <div class="pro-upload">
+                        <input type="file" name="gambar[]" multiple accept="image/*" class="pro-input">
+
+                        <div class="pro-upload-box">
+                            <i class="ti ti-cloud-upload fs-1 text-primary"></i>
+                            <h6 class="mt-2">Drag & Drop Gambar</h6>
+                            <small class="text-muted">atau klik untuk memilih</small>
+                        </div>
+
+                        <div class="pro-preview row g-2 mt-3"></div>
                     </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-primary" type="submit"><i class="ti ti-upload me-1"></i> Upload</button>
@@ -1042,6 +1136,71 @@ td:focus-within {
     </div>
 </div>
 
+<script>
+    document.querySelectorAll('.pro-upload').forEach(zone => {
+
+        const input = zone.querySelector('.pro-input');
+        const preview = zone.querySelector('.pro-preview');
+        let filesArray = [];
+
+        // DRAG EVENTS
+        zone.addEventListener('dragover', e => {
+            e.preventDefault();
+            zone.classList.add('drag');
+        });
+
+        zone.addEventListener('dragleave', () => {
+            zone.classList.remove('drag');
+        });
+
+        zone.addEventListener('drop', e => {
+            e.preventDefault();
+            zone.classList.remove('drag');
+            addFiles(e.dataTransfer.files);
+        });
+
+        input.addEventListener('change', () => {
+            addFiles(input.files);
+        });
+
+        function addFiles(files){
+            for(let file of files){
+                if(!file.type.startsWith("image/")) continue;
+                filesArray.push(file);
+            }
+            updateInput();
+            renderPreview();
+        }
+
+        function renderPreview(){
+            preview.innerHTML = '';
+
+            filesArray.forEach((file,index)=>{
+                const url = URL.createObjectURL(file);
+
+                preview.innerHTML += `
+                <div class="col-md-3">
+                    <div class="preview-card">
+                        <img src="${url}">
+                        <button type="button" class="remove-btn" onclick="removeFile(this, ${index})">×</button>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function updateInput(){
+            const dt = new DataTransfer();
+            filesArray.forEach(f => dt.items.add(f));
+            input.files = dt.files;
+        }
+
+        window.removeFile = function(btn, index){
+            filesArray.splice(index,1);
+            updateInput();
+            renderPreview();
+        }
+    });
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

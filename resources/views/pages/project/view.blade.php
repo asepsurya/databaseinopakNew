@@ -629,6 +629,6 @@
             });
         });
     });
-});
+
 </script>
 @endsection

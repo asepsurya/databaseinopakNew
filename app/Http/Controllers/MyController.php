@@ -95,4 +95,5 @@ class MyController extends Controller
 
     return response()->json($results);
     }
+
 }

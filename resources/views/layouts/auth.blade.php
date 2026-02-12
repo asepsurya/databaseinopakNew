@@ -4,14 +4,15 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Database INOPAK - Sistem Pengelolaan Informasi" />
-    <meta name="keywords" content="inopak, database, ikm, admin dashboard" />
-    <meta name="author" content="INOPAK" />
+    <meta name="description" content="{{ $metaDescription ?? 'Database INOPAK - Sistem Pengelolaan Informasi' }}" />
+    <meta name="keywords" content="{{ $metaKeywords ?? 'inopak, database, ikm, admin dashboard' }}" />
+    <meta name="author" content="{{ $companyName ?? 'INOPAK' }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Authentication') | Database INOPAK</title>
+    <title>@yield('title', 'Authentication') | {{ $appName ?? 'Database INOPAK' }}</title>
 
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+    <!-- App favicon - Dynamic from settings -->
+    @php $faviconLogo = $logos['favicon'] ?? null; @endphp
+    <link rel="shortcut icon" href="{{ $faviconLogo && $faviconLogo->is_active ? $faviconLogo->getUrl() : asset('assets/images/favicon.ico') }}" />
       <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <!-- Theme Config Js -->
     <script src="{{ asset('assets/js/config.js') }}"></script>
@@ -43,11 +44,16 @@
                 <div class="col-xxl-5 col-md-8">
                     <div class="card p-4">
                         <div class="auth-brand text-center mb-4">
+                            @php $loginLogo = $logos['login'] ?? null; @endphp
                             <a href="/">
-                                <img src="{{ asset('assets/images/inopak/fav.png') }}" alt="dark logo" style="width: 60px; height: auto;" />
+                                @if($loginLogo && $loginLogo->is_active && $loginLogo->image_url)
+                                    <img src="{{ $loginLogo->getUrl() }}" alt="logo" style="{{ $loginLogo->width ? 'width:'.$loginLogo->width.'px;' : '' }}{{ $loginLogo->height ? 'height:'.$loginLogo->height.'px;' : '' }}{{ $loginLogo->getStyles() }}" />
+                                @else
+                                    <img src="{{ asset('assets/images/inopak/fav.png') }}" alt="dark logo" style="width: 60px; height: auto;" />
+                                @endif
                             </a>
-                            <h4 class="fw-bold text-dark mt-3">Database INOPAK</h4>
-                            <p class="text-muted">Sistem Pengelolaan Informasi Database INOPAK</p>
+                            <h4 class="fw-bold text-dark mt-3">{{ $appName ?? 'Database INOPAK' }}</h4>
+                            <p class="text-muted">{{ $appTagline ?? 'Sistem Pengelolaan Informasi Database INOPAK' }}</p>
                         </div>
 
                         <!-- Flash Messages -->
@@ -81,7 +87,7 @@
 
                         <!-- Footer -->
                         <div class="text-center mt-4">
-                            <p class="text-muted">{{ date('Y') }} &copy; Database INOPAK</p>
+                            <p class="text-muted">{{ $copyrightText ?? date('Y') . ' © Database INOPAK' }}</p>
                         </div>
                     </div>
                 </div>

@@ -14,6 +14,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DetileIkmController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,7 @@ Route::delete('/profile/photo', [ProfileController::class, 'removePhoto'])->name
 Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update')->middleware('auth');
 //backEnd
 Route::get('/brainstorming',[MyController::class,'brainstorming'])->middleware('auth');
+
 Route::get('/brainstorming',[MyController::class,'brainstorming'])->middleware('auth');
 Route::get('/brainstorming/create',[MyController::class,'brainstormingInsert'])->middleware('auth');
 
@@ -60,7 +62,9 @@ Route::post('/project/create',[ProjectController::class,'store'])->middleware('a
 Route::post('/project/update',[ProjectController::class,'update'])->middleware('auth');
 Route::post('/project/hapus/{id}',[ProjectController::class,'hapus'])->middleware('auth');
 //menu Ikm
-Route::get('/project/dataikm/{project:id}',[IkmController::class,'index'])->middleware('auth')->name('project.ikm');
+Route::get('/project/dataikm/{project:id}',[IkmController::class,'index'])->middleware('auth')->name('ikm.index');
+Route::get('/project/dataikm/ikm/{ikm}/edit',[IkmController::class,'edit'])->middleware('auth')->name('ikm.edit');
+Route::POST('/project/dataikm/ikm/{ikm}/update',[IkmController::class,'UpdateIkm'])->middleware('auth')->name('ikm.update');
 Route::post('/project/dataikm/createIkm',[IkmController::class,'createIkm'])->middleware('auth');
 Route::post('/project/dataikm/tambahIkm',[IkmController::class,'tambahIkm'])->middleware('auth');
 Route::post('/project/dataikm/UpdateIkm',[IkmController::class,'UpdateIkm'])->middleware('auth');
@@ -171,4 +175,40 @@ Route::prefix('notifications')->middleware('auth')->group(function () {
 Route::prefix('api/dashboard')->middleware('auth')->group(function () {
     Route::get('/refresh-chart', [DashboardController::class, 'refreshChartData']);
     Route::get('/export', [DashboardController::class, 'export']);
+});
+
+// Settings Routes
+Route::prefix('settings')->middleware('auth')->group(function () {
+    // Main settings page
+    Route::get('/', [SettingsController::class, 'index'])->name('settings.index');
+
+    // Branding settings page
+    Route::get('/branding', [SettingsController::class, 'branding'])->name('settings.branding');
+
+    // Branding image update
+    Route::put('/branding/image/{type}', [SettingsController::class, 'updateBrandingImage'])->name('settings.branding.image');
+
+    // Branding text update
+    Route::put('/branding/text/{key}', [SettingsController::class, 'updateBrandingText'])->name('settings.branding.text');
+
+    // Branding toggle update
+    Route::put('/branding/toggle/{key}', [SettingsController::class, 'updateBrandingToggle'])->name('settings.branding.toggle');
+
+    // Logo settings
+    Route::put('/logo/{type}', [SettingsController::class, 'updateLogo'])->name('settings.logo.update');
+    Route::get('/logo/{type}/reset', [SettingsController::class, 'resetLogo'])->name('settings.logo.reset');
+    Route::get('/logo/{type}/preview', [SettingsController::class, 'logoPreview'])->name('settings.logo.preview');
+    Route::delete('/logo/{type}', [SettingsController::class, 'deleteLogo'])->name('settings.logo.delete');
+
+    // Registration settings
+    Route::put('/registration', [SettingsController::class, 'updateRegistration'])->name('settings.registration.update');
+
+    // General settings
+    Route::put('/general', [SettingsController::class, 'updateSettings'])->name('settings.general.update');
+
+    // Activity logs
+    Route::get('/activity-logs', [SettingsController::class, 'activityLogs'])->name('settings.activity-logs');
+
+    // Seed defaults (admin only)
+    Route::post('/seed', [SettingsController::class, 'seedDefaults'])->name('settings.seed');
 });

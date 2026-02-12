@@ -41,7 +41,7 @@ class ProjectController extends Controller
              });
          }
 
-         $data = $query->orderBy('id', 'DESC')->paginate(8)->appends(request()->query());
+         $data = $query->orderBy('id', 'DESC')->paginate(20)->appends(request()->query());
 
          return view('pages.project.view',[
              'title'=>'Project',
