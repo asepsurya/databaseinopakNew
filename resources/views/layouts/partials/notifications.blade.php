@@ -334,7 +334,7 @@ $unreadCount = auth()->user()->unreadNotifications()->count();
     }
 </style>
 
-<div class="dropdown notification-dropdown">
+<div class="dropdown topbar-item">
     {{-- Notification Toggle Button --}}
     <button class="topbar-link dropdown-toggle drop-arrow-none position-relative"
             data-bs-toggle="dropdown"
@@ -344,7 +344,7 @@ $unreadCount = auth()->user()->unreadNotifications()->count();
             id="notificationToggle">
         <i class="ti ti-bell topbar-link-icon"></i>
         @if($unreadCount > 0)
-            <span class="unread-badge" id="unreadBadge">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
+            <span class="badge text-bg-danger badge-circle topbar-badge" id="unreadBadge">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>
         @endif
     </button>
 
@@ -784,7 +784,7 @@ $unreadCount = auth()->user()->unreadNotifications()->count();
     function viewAllNotifications(event) {
         event.preventDefault();
         // Open full notification page or scroll to notification section
-        window.location.href = '{{ route('profile') }}#notifications';
+
     }
 
     function startNotificationPolling() {

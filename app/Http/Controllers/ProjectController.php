@@ -164,62 +164,7 @@ class ProjectController extends Controller
             ], 500);
         }
     }
-    public function aiImageSearch(Request $request)
-{
-  public function aiImageSearch(Request $request)
-{
-    $request->validate([
-        'keyword' => 'required|string'
-    ]);
 
-    try {
-
-        $client = new Client([
-            'verify' => false,
-            'timeout' => 15,
-        ]);
-
-        $query = urlencode($request->keyword);
-
-        $response = $client->get("https://www.google.com/search?tbm=isch&q={$query}", [
-            'headers' => [
-                'User-Agent' => 'Mozilla/5.0'
-            ]
-        ]);
-
-        $html = (string) $response->getBody();
-
-        preg_match_all('/"ou":"(.*?)"/', $html, $matches);
-
-        $images = [];
-
-        if (isset($matches[1])) {
-
-            foreach (array_slice($matches[1], 0, 8) as $img) {
-
-                $images[] = [
-                    'title' => $request->keyword,
-                    'image_url' => stripslashes($img),
-                    'source_url' => '',
-                    'source_name' => 'Google'
-                ];
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'results' => $images
-        ]);
-
-    } catch (\Exception $e) {
-
-        return response()->json([
-            'success' => false,
-            'error' => $e->getMessage()
-        ], 500);
-    }
-}
-}
 
 /*
 |--------------------------------------------------------------------------
