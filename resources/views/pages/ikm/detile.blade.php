@@ -227,6 +227,106 @@ td:focus-within {
     padding-right: 40px;
 }
 
+/* Auto-save Indicator Styles */
+.autosave-indicator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.autosave-indicator.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.autosave-indicator.saving {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.autosave-indicator.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.autosave-indicator.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.autosave-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.autosave-icon {
+    font-size: 18px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Status indicator in tab header */
+.autosave-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.autosave-status .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.autosave-status .dot.saved {
+    background-color: #28a745;
+}
+
+.autosave-status .dot.saving {
+    background-color: #ffc107;
+    animation: pulse 1s infinite;
+}
+
+.autosave-status .dot.error {
+    background-color: #dc3545;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
 </style>
 @endsection
 
@@ -524,12 +624,26 @@ td:focus-within {
                                         </tbody>
                                     </table>
 
-                                    <div class="text-end mt-3">
-                                        <a href="{{ url()->previous() }}" class="btn btn-secondary">Cancel</a>
-                                        <button type="submit" class="btn btn-primary">Simpan Data</button>
-                                    </div>
-                                </form>
+                                <div class="d-flex justify-content-end align-items-center gap-2 mt-3 flex-wrap">
 
+                                        <a href="{{ url()->previous() }}" class="btn btn-secondary">
+                                            Cancel
+                                        </a>
+
+                                        <button type="submit" class="btn btn-primary">
+                                            Simpan Data
+                                        </button>
+
+                                    </div>
+                                       <!-- Auto-save Indicator -->
+                                        <div id="autosaveIndicator" class="autosave-indicator d-flex align-items-center me-2">
+                                            <div class="autosave-icon me-1">
+                                                <span id="autosaveIconContent"></span>
+                                                  <span id="autosaveMessage">Menyimpan...</span>
+                                            </div>
+
+                                        </div>
+                                </form>
                                 </div>
 
 
@@ -1819,5 +1933,356 @@ document.addEventListener('DOMContentLoaded', function() {
     <p>Data IKM tidak ditemukan.</p>
 </div>
 @endif
+
+
+<script>
+/**
+ * Auto-save functionality for Brainstorming form
+ * Features:
+ * - Debounced save (5 seconds after last typing)
+ * - Interval save (every 30 seconds)
+ * - Visual indicators (spinner, success, error states)
+ * - Error handling with user-friendly messages
+ */
+
+(function() {
+    'use strict';
+
+    // Configuration
+    const CONFIG = {
+        debounceDelay: 5000,        // Save 5 seconds after user stops typing
+        intervalDelay: 30000,        // Save every 30 seconds regardless
+        maxRetries: 3,               // Maximum retry attempts
+        retryDelay: 2000             // Delay between retries (ms)
+    };
+
+    // State
+    let saveTimeout = null;
+    let intervalId = null;
+    let isSaving = false;
+    let lastSavedContent = {};
+    let retryCount = 0;
+
+    // Brainstorming fields to auto-save
+    const brainstormingFields = [
+        'jenisProduk', 'merk', 'komposisi', 'varian', 'kelebihan',
+        'namaUsaha', 'noPIRT', 'noHalal', 'legalitasLain', 'other',
+        'segmentasi', 'jenisKemasan', 'harga', 'tagline', 'redaksi', 'gramasi'
+    ];
+
+    // Get IKM and Project IDs from hidden inputs
+    function getIds() {
+        const idIkmInput = document.querySelector('input[name="id_ikm"]');
+        const idProjectInput = document.querySelector('input[name="id_Project"]');
+
+        return {
+            id_ikm: idIkmInput ? idIkmInput.value : null,
+            id_Project: idProjectInput ? idProjectInput.value : null
+        };
+    }
+
+    // Get current content from all brainstorming fields
+    function getCurrentContent() {
+        const content = {};
+
+        brainstormingFields.forEach(field => {
+            const editor = tinymce.get(field);
+            const hiddenInput = document.getElementById(field + '_input');
+
+            if (editor) {
+                content[field] = editor.getContent();
+            } else if (hiddenInput) {
+                content[field] = hiddenInput.value;
+            }
+        });
+
+        return content;
+    }
+
+    // Show autosave indicator
+    function showIndicator(type, message, duration = 3000) {
+        const indicator = document.getElementById('autosaveIndicator');
+        const iconContent = document.getElementById('autosaveIconContent');
+        const messageEl = document.getElementById('autosaveMessage');
+
+        // Reset classes
+        indicator.className = 'autosave-indicator show ' + type;
+
+        // Set icon
+        if (type === 'saving') {
+            iconContent.innerHTML = '<div class="autosave-spinner"></div>';
+        } else if (type === 'success') {
+            iconContent.innerHTML = '<i class="ti ti-check" style="color: #28a745;"></i>';
+        } else if (type === 'error') {
+            iconContent.innerHTML = '<i class="ti ti-alert-triangle" style="color: #dc3545;"></i>';
+        }
+
+        messageEl.textContent = message;
+
+        // Auto-hide after duration (except for error - user must click to dismiss)
+        if (type !== 'error' && duration > 0) {
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, duration);
+        }
+    }
+
+    // Update last saved timestamp in UI
+    function updateLastSavedTimestamp(timestamp) {
+        // Create or update timestamp display if it doesn't exist
+        let timestampEl = document.getElementById('lastAutoSaveTime');
+        if (!timestampEl) {
+            const form = document.querySelector('form[action="/project/ikms/updateBrainstorming"]');
+            if (form) {
+                timestampEl = document.createElement('small');
+                timestampEl.id = 'lastAutoSaveTime';
+                timestampEl.className = 'text-muted d-block mt-2';
+                timestampEl.style.fontSize = '12px';
+                form.appendChild(timestampEl);
+            }
+        }
+        if (timestampEl) {
+            timestampEl.innerHTML = '<i class="ti ti-check-circle me-1" style="color: #28a745;"></i>Terakhir disimpan: ' + timestamp;
+        }
+    }
+
+    // Send data to server
+    async function sendAutoSave(data) {
+        const ids = getIds();
+
+        if (!ids.id_ikm || !ids.id_Project) {
+            console.warn('Auto-save: Missing IKM or Project ID');
+            return { success: false, message: 'ID tidak valid' };
+        }
+
+        const payload = {
+            id_ikm: ids.id_ikm,
+            id_Project: ids.id_Project,
+            ...data
+        };
+
+        try {
+            const response = await fetch('/project/ikms/auto-save-brainstorming', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Server error');
+            }
+
+            return result;
+
+        } catch (error) {
+            console.error('Auto-save fetch error:', error);
+            throw error;
+        }
+    }
+
+    // Perform auto-save
+    async function performAutoSave() {
+        if (isSaving) {
+            console.log('Auto-save already in progress, skipping...');
+            return;
+        }
+
+        const currentContent = getCurrentContent();
+
+        // Check if content has changed
+        const contentChanged = Object.keys(currentContent).some(key => {
+            return lastSavedContent[key] !== currentContent[key];
+        });
+
+        if (!contentChanged) {
+            console.log('No content changes detected, skipping auto-save');
+            return;
+        }
+
+        isSaving = true;
+        showIndicator('saving', 'Menyimpan...');
+
+        try {
+            const result = await sendAutoSave(currentContent);
+
+            if (result.success) {
+                lastSavedContent = { ...currentContent };
+                retryCount = 0;
+
+                // Show success message with timestamp
+                const time = result.saved_at || new Date().toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+
+                showIndicator('success', 'Tersimpan ' + time, 4000);
+                updateLastSavedTimestamp(time);
+
+                console.log('Auto-save successful:', result);
+            } else {
+                throw new Error(result.message || 'Save failed');
+            }
+
+        } catch (error) {
+            retryCount++;
+
+            console.error('Auto-save error:', error);
+
+            if (retryCount <= CONFIG.maxRetries) {
+                showIndicator('saving', `Gagal, mencoba lagi (${retryCount}/${CONFIG.maxRetries})...`);
+
+                // Retry after delay
+                setTimeout(async () => {
+                    isSaving = false;
+                    await performAutoSave();
+                }, CONFIG.retryDelay);
+                return;
+            }
+
+            // Max retries reached
+            showIndicator('error', 'Gagal menyimpan. Klik untuk coba lagi.', 0);
+
+            // Add click handler to dismiss error and retry
+            const indicator = document.getElementById('autosaveIndicator');
+            indicator.style.cursor = 'pointer';
+            indicator.onclick = async function() {
+                indicator.onclick = null;
+                indicator.style.cursor = 'default';
+                retryCount = 0;
+                isSaving = false;
+                await performAutoSave();
+            };
+        } finally {
+            if (retryCount === 0 || retryCount > CONFIG.maxRetries) {
+                isSaving = false;
+            }
+        }
+    }
+
+    // Debounced save trigger
+    function triggerDebouncedSave() {
+        if (saveTimeout) {
+            clearTimeout(saveTimeout);
+        }
+
+        saveTimeout = setTimeout(() => {
+            console.log('Debounce timer fired, triggering save...');
+            performAutoSave();
+        }, CONFIG.debounceDelay);
+    }
+
+    // Initialize auto-save
+    function initAutoSave() {
+        // Check if we're on the brainstorming tab form
+        const form = document.querySelector('form[action="/project/ikms/updateBrainstorming"]');
+        if (!form) {
+            console.log('Auto-save: Brainstorming form not found');
+            return;
+        }
+
+        // Store initial content
+        lastSavedContent = getCurrentContent();
+
+        // Set up TinyMCE change listeners
+        brainstormingFields.forEach(field => {
+            const editor = tinymce.get(field);
+            if (editor) {
+                editor.on('change keyup', triggerDebouncedSave);
+                editor.on('paste', triggerDebouncedSave);
+            }
+        });
+
+        // Also listen for form input changes (fallback)
+        form.addEventListener('input', triggerDebouncedSave);
+
+        // Set up interval save
+        intervalId = setInterval(() => {
+            console.log('Interval timer fired, triggering save...');
+            performAutoSave();
+        }, CONFIG.intervalDelay);
+
+        // Save before unload (optional - to ensure last changes are saved)
+        window.addEventListener('beforeunload', function(e) {
+            if (isSaving) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
+            }
+        });
+
+        console.log('Auto-save initialized');
+
+        // Show initial status
+        showIndicator('success', 'Auto-save aktif', 3000);
+    }
+
+    // Wait for TinyMCE to be ready, then initialize
+    function waitForMCE() {
+        return new Promise((resolve) => {
+            // Check if TinyMCE is already loaded
+            if (typeof tinymce !== 'undefined') {
+                // Check if first editor is ready
+                const firstEditor = tinymce.get(brainstormingFields[0]);
+                if (firstEditor) {
+                    resolve();
+                    return;
+                }
+            }
+
+            // Wait for DOM ready
+            if (document.readyState === 'complete') {
+                checkMCE();
+            } else {
+                window.addEventListener('load', checkMCE);
+            }
+
+            function checkMCE() {
+                if (typeof tinymce !== 'undefined') {
+                    // Give TinyMCE a moment to initialize editors
+                    setTimeout(() => {
+                        const firstEditor = tinymce.get(brainstormingFields[0]);
+                        if (firstEditor) {
+                            resolve();
+                        } else {
+                            // Try again after a bit more time
+                            setTimeout(() => {
+                                resolve();
+                            }, 1000);
+                        }
+                    }, 500);
+                } else {
+                    // TinyMCE not available, initialize anyway
+                    setTimeout(resolve, 1000);
+                }
+            }
+        });
+    }
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', async function() {
+        // Wait for TinyMCE to initialize
+        await waitForMCE();
+
+        // Initialize auto-save
+        initAutoSave();
+    });
+
+    // Also initialize on tab show (in case user switches to this tab later)
+    document.addEventListener('shown.bs.tab', function(e) {
+        if (e.target.getAttribute('href') === '#tab-bencmark') {
+            console.log('Brainstorming tab shown, re-initializing auto-save...');
+            initAutoSave();
+        }
+    });
+
+})();
+</script>
 
 @endsection
