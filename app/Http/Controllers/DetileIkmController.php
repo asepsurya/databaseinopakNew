@@ -180,6 +180,74 @@ class DetileIkmController extends Controller
         $request->session()->flash('UpdateBerhasil', 'Photo Berhasil Diubah');
         return redirect('/project/dataikm/'.$request->id_projek);
     }
+    /**
+     * Auto-save brainstorming data via AJAX
+     * Saves form data without requiring manual submission
+     */
+    public function autoSaveBrainstorming(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'id_ikm' => 'required|exists:ikms,id',
+                'id_Project' => 'required|exists:projects,id',
+            ]);
+
+            // Get all brainstorming fields
+            $fields = [
+                'jenisProduk', 'merk', 'komposisi', 'varian', 'kelebihan',
+                'namaUsaha', 'noPIRT', 'noHalal', 'legalitasLain', 'other',
+                'segmentasi', 'jenisKemasan', 'harga', 'tagline', 'redaksi', 'gramasi'
+            ];
+
+            $updateData = [];
+            foreach ($fields as $field) {
+                if ($request->has($field)) {
+                    $updateData[$field] = $request->input($field);
+                }
+            }
+
+            if (!empty($updateData)) {
+                $ikm = ikm::where('id', $request->id_ikm)->first();
+                if ($ikm) {
+                    $ikm->update($updateData);
+
+                    Log::info('Auto-save brainstorming successful', [
+                        'ikm_id' => $request->id_ikm,
+                        'project_id' => $request->id_Project,
+                        'fields_updated' => array_keys($updateData),
+                        'saved_at' => now()->toISOString()
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Data berhasil disimpan',
+                        'saved_at' => now()->format('H:i:s'),
+                        'fields_updated' => count($updateData)
+                    ], 200);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tidak ada perubahan untuk disimpan',
+                'saved_at' => now()->format('H:i:s')
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Auto-save brainstorming failed: ' . $e->getMessage(), [
+                'ikm_id' => $request->id_ikm ?? null,
+                'project_id' => $request->id_Project ?? null,
+                'exception' => $e
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menyimpan data. Silakan coba lagi atau hubungi administrator.',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
+    }
+
     public function bencmark(request $request){
         $validasiGambar = $request->validate([
             'id_ikm'=>'',

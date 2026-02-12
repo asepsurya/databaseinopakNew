@@ -86,6 +86,8 @@ Route::post('/project/ikms/{id}/dokumentasi',[DetileIkmController::class,'dokume
 Route::post('/project/ikms/{id}/deleteDoc',[DetileIkmController::class,'deleteDoc'])->middleware('auth');
 Route::post('/project/ikms/{id_gambar}/deletebencmark',[DetileIkmController::class,'bencmarkDelete'])->middleware('auth');
 Route::post('/project/ikms/updateBrainstorming',[DetileIkmController::class,'updateBrainstorming'])->middleware('auth');
+// Auto-save endpoint for brainstorming
+Route::post('/project/ikms/auto-save-brainstorming',[DetileIkmController::class,'autoSaveBrainstorming'])->middleware('auth');
 
 Route::post('/project/ikms/{id}/tambahDesain',[DetileIkmController::class,'tambahDesain'])->middleware('auth');
 Route::post('/project/ikms/{id}/deleteDesain',[DetileIkmController::class,'deleteDesain'])->middleware('auth');
