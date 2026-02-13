@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
@@ -88,22 +88,26 @@ class ProfileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function updatePhotoCropped(Request $request)
+   public function updatePhotoCropped(Request $request)
     {
         $user = auth()->user();
 
         \Log::info('updatePhotoCropped called');
-        \Log::info('Request has profile_photo file:', ['exists' => $request->hasFile('profile_photo')]);
-        \Log::info('Request has croppedImage:', ['exists' => $request->has('croppedImage')]);
+        \Log::info('Request has profile_photo file', ['exists' => $request->hasFile('profile_photo')]);
+        \Log::info('Request has croppedImage', ['exists' => $request->has('croppedImage')]);
 
         try {
             $imageData = null;
             $tempPath = null;
 
-            // Check if we have a file upload (from Blob conversion)
+            // 1️⃣ Handle file upload
             if ($request->hasFile('profile_photo')) {
                 $file = $request->file('profile_photo');
-                \Log::info('File upload detected:', ['name' => $file->getClientOriginalName(), 'size' => $file->getSize(), 'type' => $file->getMimeType()]);
+                \Log::info('File upload detected', [
+                    'name' => $file->getClientOriginalName(),
+                    'size' => $file->getSize(),
+                    'type' => $file->getMimeType(),
+                ]);
 
                 if (!$file->isValid()) {
                     return response()->json([
@@ -114,12 +118,11 @@ class ProfileController extends Controller
 
                 $tempPath = $file->getPathname();
             }
-            // Check if we have base64 cropped image data
+            // 2️⃣ Handle base64 image
             elseif ($request->has('croppedImage') && !empty($request->croppedImage)) {
                 \Log::info('Base64 cropped image detected');
                 $base64Data = $request->croppedImage;
 
-                // Validate base64 format
                 if (!preg_match('/^data:image\/(\w+);base64,/', $base64Data, $matches)) {
                     return response()->json([
                         'success' => false,
@@ -127,7 +130,6 @@ class ProfileController extends Controller
                     ], 400);
                 }
 
-                // Decode base64 data
                 $imageData = base64_decode(preg_replace('/^data:image\/\w+;base64,/', '', $base64Data));
 
                 if ($imageData === false) {
@@ -137,7 +139,6 @@ class ProfileController extends Controller
                     ], 400);
                 }
 
-                // Get image info to validate
                 $imageInfo = @getimagesizefromstring($imageData);
                 if ($imageInfo === false) {
                     return response()->json([
@@ -146,10 +147,16 @@ class ProfileController extends Controller
                     ], 400);
                 }
 
-                // Create temp file
+                // Create temp file safely
                 $tempPath = tempnam(sys_get_temp_dir(), 'cropped_');
+                if ($tempPath === false) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Tidak bisa membuat file sementara.'
+                    ], 500);
+                }
                 file_put_contents($tempPath, $imageData);
-                \Log::info('Created temp file:', ['path' => $tempPath, 'size' => strlen($imageData)]);
+                \Log::info('Created temp file', ['path' => $tempPath, 'size' => strlen($imageData)]);
             }
             else {
                 return response()->json([
@@ -158,10 +165,9 @@ class ProfileController extends Controller
                 ], 422);
             }
 
-            // Get image dimensions
-            $imageInfo = getimagesize($tempPath);
+            // 3️⃣ Validate image dimensions
+            $imageInfo = @getimagesize($tempPath);
             if ($imageInfo === false) {
-                // Clean up temp file if exists
                 if ($tempPath && file_exists($tempPath) && !$request->hasFile('profile_photo')) {
                     unlink($tempPath);
                 }
@@ -175,7 +181,6 @@ class ProfileController extends Controller
             $minHeight = 100;
 
             if ($imageInfo[0] < $minWidth || $imageInfo[1] < $minHeight) {
-                // Clean up temp file if exists
                 if ($tempPath && file_exists($tempPath) && !$request->hasFile('profile_photo')) {
                     unlink($tempPath);
                 }
@@ -185,54 +190,49 @@ class ProfileController extends Controller
                 ], 422);
             }
 
-            // Delete old profile photo if exists
+            // 4️⃣ Delete old photo
             if ($user->profile_photo && Storage::disk('public')->exists($user->profile_photo)) {
                 Storage::disk('public')->delete($user->profile_photo);
             }
 
-            // Generate unique filename
+            // 5️⃣ Generate filename & directory
             $filename = 'profile_' . $user->id . '_' . time() . '.jpg';
             $directory = 'profile-photos';
 
-            // Create directory if it doesn't exist
             if (!Storage::disk('public')->exists($directory)) {
                 Storage::disk('public')->makeDirectory($directory);
             }
 
-            // Process and resize image to 200x200
-            $image = Image::make($tempPath);
+            // Store cropped image directly (no Intervention Image processing)
+            $filePath = $directory . '/' . $filename;
+            if ($request->hasFile('profile_photo')) {
+                // Store file directly
+                Storage::disk('public')->put($filePath, file_get_contents($request->file('profile_photo')->getPathname()));
+            } else {
+                // Store temp file content
+                Storage::disk('public')->put($filePath, file_get_contents($tempPath));
+            }
 
-            // Resize maintaining aspect ratio, then crop to 200x200
-            $image->fit(200, 200, function ($constraint) {
-                $constraint->upsize();
-            }, 'center');
-
-            // Save the processed image
-            $path = storage_path('app/public/' . $directory . '/' . $filename);
-            $image->save($path, 90);
-
-            // Clean up temp file if it was created from base64
+            // 7️⃣ Cleanup temp file
             if ($tempPath && file_exists($tempPath) && !$request->hasFile('profile_photo')) {
                 unlink($tempPath);
             }
 
-            // Get relative path for database
             $photoPath = $directory . '/' . $filename;
 
-            // Update user profile photo
-            $user->update([
-                'profile_photo' => $photoPath,
-            ]);
+            // 8️⃣ Update user
+            $user->update(['profile_photo' => $photoPath]);
 
-            // Create notification for profile photo update
-            $this->notifyProfilePhotoUpdated();
+            // 9️⃣ Notify
+            if (method_exists($this, 'notifyProfilePhotoUpdated')) {
+                $this->notifyProfilePhotoUpdated();
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => 'Foto profil berhasil diperbarui.',
                 'photo_url' => asset('storage/' . $photoPath)
             ]);
-
         } catch (\Exception $e) {
             \Log::error('Profile photo upload error: ' . $e->getMessage());
             \Log::error('Stack trace: ' . $e->getTraceAsString());
@@ -306,15 +306,9 @@ class ProfileController extends Controller
             Storage::disk('public')->makeDirectory($directory);
         }
 
-        // Process and resize to 200x200
-        $image = Image::make($file->getPathname());
-        $image->fit(200, 200, function ($constraint) {
-            $constraint->upsize();
-        }, 'center');
-
-        // Save the processed image
-        $path = storage_path('app/public/' . $directory . '/' . $filename);
-        $image->save($path, 90);
+        // Store image directly (no Intervention Image processing)
+        $filePath = $directory . '/' . $filename;
+        Storage::disk('public')->put($filePath, file_get_contents($file->getPathname()));
 
         $photoPath = $directory . '/' . $filename;
 

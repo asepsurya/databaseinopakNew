@@ -139,11 +139,11 @@
     }
 
     /* Cropper Container in Modal */
-    .cropper-container {
+    #cropperContainer {
         display: none;
     }
 
-    .cropper-container.show {
+    #cropperContainer.show {
         display: block;
     }
 
@@ -346,7 +346,7 @@
                                          id="profilePhotoPreview">
                                 @endif
 
-                                <label for="imageInput" class="photo-upload-btn" title="Ubah Foto Profil" data-bs-toggle="modal" data-bs-target="#updateProfilePhoto">
+                                <label class="photo-upload-btn" title="Ubah Foto Profil" data-bs-toggle="modal" data-bs-target="#updateProfilePhoto">
                                     <i class="ti ti-camera"></i>
                                 </label>
 

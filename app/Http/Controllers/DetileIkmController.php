@@ -291,7 +291,7 @@ class DetileIkmController extends Controller
         $validated = $request->validate([
             'id_Ikm' => 'required|string',
             'id_Project' => 'required|string',
-            'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
 
         // Check if files were uploaded
@@ -358,7 +358,7 @@ class DetileIkmController extends Controller
         $validated = $request->validate([
             'id_Ikm' => 'required|string',
             'id_project' => 'required|string',
-            'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif',
         ]);
 
         if (!$request->hasFile('gambar')) {
@@ -412,7 +412,7 @@ class DetileIkmController extends Controller
     $validated = $request->validate([
         'id_Ikm' => 'required|string',
         'id_project' => 'required|string',
-        'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif',
     ]);
 
     if (!$request->hasFile('gambar')) {
