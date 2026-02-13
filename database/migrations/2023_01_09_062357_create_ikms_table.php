@@ -39,16 +39,16 @@ class CreateIkmsTable extends Migration
             $table->text('other')->nullable();
 
             // legalitas usaha
-            $table->string('namaUsaha')->nullable();;
-            $table->string('noNIB')->nullable();
-            $table->string('noISO')->nullable();
-            $table->string('noPIRT')->nullable();
-            $table->string('noHAKI')->nullable();
-            $table->string('noLayakSehat')->nullable();
-            $table->string('noHalal')->nullable();
-            $table->string('CPPOB')->nullable();
-            $table->string('HACCP')->nullable();
-            $table->string('legalitasLain')->nullable();
+            $table->text('namaUsaha')->nullable();;
+            $table->text('noNIB')->nullable();
+            $table->text('noISO')->nullable();
+            $table->text('noPIRT')->nullable();
+            $table->text('noHAKI')->nullable();
+            $table->text('noLayakSehat')->nullable();
+            $table->text('noHalal')->nullable();
+            $table->text('CPPOB')->nullable();
+            $table->text('HACCP')->nullable();
+            $table->text('legalitasLain')->nullable();
             $table->string('id_Project')->nullable();;
             $table->string('gambar')->nullable();
             $table->timestamps();

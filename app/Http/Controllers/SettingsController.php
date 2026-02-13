@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\SettingsService;
-use App\Services\BrandingService;
-use App\Models\LogoSetting;
 use App\Models\AppSetting;
+use App\Models\LogoSetting;
 use Illuminate\Http\Request;
+use App\Services\BrandingService;
+use App\Services\SettingsService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
 {
@@ -236,5 +237,19 @@ class SettingsController extends Controller
         $this->settingsService->seedDefaultLogos();
 
         return redirect()->back()->with('success', 'Default settings have been seeded.');
+    }
+    public function searchImage(Request $request)
+    {
+        $query = $request->q;
+
+        $response = Http::get('https://www.googleapis.com/customsearch/v1', [
+            'key' => env('GOOGLE_SEARCH_API_KEY'),
+            'cx' => env('GOOGLE_SEARCH_ENGINE_ID'),
+            'q' => $query,
+            'searchType' => 'image',
+            'num' => 10
+        ]);
+
+        return response()->json($response->json());
     }
 }

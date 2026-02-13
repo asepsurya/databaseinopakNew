@@ -603,8 +603,8 @@
 
                                 <div class="d-lg-flex align-items-center gap-1 d-none">
                                     <span>
-                                        <h5 class="my-0 lh-1 pro-username">{{ Auth::user()->nama ?? 'User' }}</h5>
-                                        <span class="fs-xs lh-1">Admin</span>
+                                        <h5 class="my-0 lh-1 pro-username">{{ Auth::user()->name ?? 'User' }}</h5>
+                                        <span class="fs-xs lh-1">{{ Auth::user()->phone ?? 'Administration' }}</span>
                                     </span>
                                     <i class="ti ti-chevron-down align-middle"></i>
                                 </div>
@@ -1026,7 +1026,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <a href="#!" class="link-reset">
-                            <img src="{{ asset('assets/images/users/avatar-1.jpg') }}" alt="user-image" class="rounded-circle mb-2 avatar-md" />
+                            <img src="{{ asset('assets/images/inopak/Fav.png') }}" alt="user-image" class="rounded-circle mb-2 avatar-md" />
                             <span class="sidenav-user-name fw-bold">{{ Auth::user()->nama ?? 'User' }}</span>
                             <span class="fs-12 fw-semibold">Admin INOPAK</span>
                         </a>

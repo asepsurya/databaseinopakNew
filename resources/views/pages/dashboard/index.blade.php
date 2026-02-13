@@ -7,7 +7,100 @@
 @endsection
 
 @section('content')
-    <!-- Page Title Start -->
+
+
+    <!-- Nav Tabs -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+     <li class="nav-item" role="presentation">
+    <button class="nav-link active d-flex align-items-center gap-2"
+            id="home-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#home"
+            type="button"
+            role="tab">
+        <i class="ti ti-home"></i>
+        Home
+    </button>
+</li>
+
+<li class="nav-item" role="presentation">
+    <button class="nav-link d-flex align-items-center gap-2"
+            id="profile-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#profile"
+            type="button"
+            role="tab">
+        <i class="ti ti-chart-bar"></i>
+        Statistik
+    </button>
+</li>
+
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content p-3 border border-top-0" id="myTabContent">
+
+        <div class="tab-pane fade show active"
+             id="home"
+             role="tabpanel">
+            <div class="card border-0 shadow-sm h-100 w-100 overflow-hidden position-relative">
+
+ <!-- Background Top Right -->
+<div class="position-absolute top-0 end-0 d-none d-md-block opacity-25"
+     style="background: url('{{ asset('assets/images/32.png') }}') no-repeat top right;
+            width: 300px;
+            height: 300px;
+            background-size: contain;">
+</div>
+
+<!-- Background Bottom Right -->
+<div class="position-absolute bottom-0 end-0 d-none d-xl-block opacity-25"
+     style="background: url('{{ asset('assets/images/21.png') }}') no-repeat bottom right;
+            width: 250px;
+            height: 250px;
+            background-size: contain;">
+</div>
+
+    <div class="card-body px-5 py-5 position-relative">
+
+        <!-- Badge Date Time -->
+        <span class="badge bg-warning text-dark mb-4 fs-6">
+            <span id="date-time"></span>
+            <i class="fas fa-award ms-2"></i>
+        </span>
+
+        <!-- Heading -->
+        <h3 class="mb-4 fw-bold">
+            Selamat Datang, INOPAK INSTITUTE
+        </h3>
+
+        <!-- Text -->
+        <p class="text-secondary fw-semibold">
+            Kami Percaya Pertumbuhan Ekonomi yang
+            <br class="d-none d-sm-block">
+            Kuat ditopang oleh UMKM
+            <br class="d-none d-sm-block">
+            yang Berkelanjutan
+        </p>
+
+    </div>
+
+    <div class="  border-0 px-5 pb-4">
+        <p class="text-secondary fw-semibold mb-0">
+            Follow Us
+            <a href="https://inopakinstitute.or.id" class="fw-bold text-decoration-none">
+                Inopakinstitute.or.id
+            </a>
+        </p>
+    </div>
+
+</div>
+        </div>
+
+        <div class="tab-pane fade"
+             id="profile"
+             role="tabpanel">
+            <!-- Page Title Start -->
     <div class="page-title-head d-flex align-items-center">
         <div class="flex-grow-1">
             <h4 class="fs-18 fw-bold m-0">Dashboard Overview</h4>
@@ -467,6 +560,19 @@
             </div>
         </div>
     </div>
+        </div>
+
+        <div class="tab-pane fade"
+             id="contact"
+             role="tabpanel">
+            <h5>Contact</h5>
+            <p>Ini isi tab Contact.</p>
+        </div>
+
+    </div>
+
+
+
 
     <!-- Hidden data container for JavaScript -->
     <script type="application/json" id="dashboardData">
@@ -1025,4 +1131,20 @@
             window.URL.revokeObjectURL(url);
         }
     </script>
+    <script>
+function updateDateTime() {
+    const now = new Date();
+    document.getElementById("date-time").innerText = now.toLocaleString("id-ID", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+    });
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+</script>
 @endpush

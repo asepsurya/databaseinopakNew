@@ -13,9 +13,9 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         \App\Models\User::create([
-            'name' => 'Admin',
+            'name' => 'INOPAK INSTITUTE',
             'email' => 'admin.inopak@gmail.com',
-            'password' => bcrypt('newinopak'),
+            'password' => bcrypt('tasik2026'),
         ]);
     }
 }

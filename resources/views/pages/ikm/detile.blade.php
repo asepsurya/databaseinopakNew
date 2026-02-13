@@ -626,7 +626,7 @@ td:focus-within {
                                                             <i class="ti ti-sparkles"></i>
                                                         </a>
                                                     </div>
-                                                    <input type="hidden" name="{{ $key }}" id="{{ $key }}_input">
+                                                    <input type="hidden" name="{{ $key }}" id="{{ $key }}_input" data-field="{{ $key }}">
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -1269,7 +1269,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const fieldId = this.getAttribute('data-field');
             const fieldLabel = this.getAttribute('data-label');
 
+            // Set BOTH hidden fields to ensure consistency
             document.getElementById('aiTargetField').value = fieldId;
+            document.getElementById('aiOptionsTargetField').value = fieldId;
             const promptInput = document.getElementById('aiPrompt');
             promptInput.value = `Tuliskan konten untuk field "${fieldLabel}" yang menarik dan profesional untuk produk IKM ini.`;
 
@@ -1278,22 +1280,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Delegated event listener for AI option cards (backup for onclick)
-    const optionsContainer = document.getElementById('aiOptionsContainer');
-    if (optionsContainer) {
-        optionsContainer.addEventListener('click', function(e) {
-            const card = e.target.closest('.ai-option-card');
-            if (card) {
-                const targetField = document.getElementById('aiOptionsTargetField').value;
-                console.log('Delegated click handler - field:', targetField);
-                if (targetField) {
-                    selectOption(card, targetField);
-                } else {
-                    console.error('Target field not set in delegated handler');
-                }
-            }
-        });
-    }
+
 });
 
 // AI Field Rules Configuration
@@ -1676,7 +1663,9 @@ function selectOption(card, targetField) {
             // Fallback: Use contenteditable div directly (the actual editor type used in this page)
             console.log('TinyMCE not available, using contenteditable div');
 
-            const editorElement = document.getElementById(targetField);
+            const editorElement = document.querySelector(
+                `.inline-editor[data-field="${targetField}"]`
+            );
             if (editorElement && editorElement.classList.contains('inline-editor')) {
                 // Get current content from contenteditable div
                 let currentContent = editorElement.innerHTML.trim();
@@ -2020,7 +2009,7 @@ document.addEventListener('DOMContentLoaded', function() {
     padding: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
-    background: #fff;
+
 }
 .dark .ai-option-card {
     background: #2e3344;
@@ -2186,24 +2175,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Update last saved timestamp in UI
-    function updateLastSavedTimestamp(timestamp) {
-        // Create or update timestamp display if it doesn't exist
-        let timestampEl = document.getElementById('lastAutoSaveTime');
-        if (!timestampEl) {
-            const form = document.querySelector('form[action="/project/ikms/updateBrainstorming"]');
-            if (form) {
-                timestampEl = document.createElement('small');
-                timestampEl.id = 'lastAutoSaveTime';
-                timestampEl.className = 'text-muted d-block mt-2';
-                timestampEl.style.fontSize = '12px';
-                form.appendChild(timestampEl);
-            }
-        }
-        if (timestampEl) {
-            timestampEl.innerHTML = '<i class="ti ti-check-circle me-1" style="color: #28a745;"></i>Terakhir disimpan: ' + timestamp;
+// Function untuk mendapatkan waktu Indonesia sekarang
+function getCurrentWIBTime() {
+    const now = new Date();
+
+    return now.toLocaleString('id-ID', {
+        timeZone: 'Asia/Jakarta',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
+
+// Update last saved timestamp in UI
+function updateLastSavedTimestamp() {
+    const timestamp = getCurrentWIBTime();
+
+    let timestampEl = document.getElementById('lastAutoSaveTime');
+    if (!timestampEl) {
+        const form = document.querySelector('form[action="/project/ikms/updateBrainstorming"]');
+        if (form) {
+            timestampEl = document.createElement('small');
+            timestampEl.id = 'lastAutoSaveTime';
+            timestampEl.className = 'text-muted d-block mt-2';
+            timestampEl.style.fontSize = '12px';
+            form.appendChild(timestampEl);
         }
     }
+
+    if (timestampEl) {
+        timestampEl.innerHTML = `
+            <i class="ti ti-check-circle me-1" style="color: #28a745;"></i>
+            Terakhir disimpan: ${timestamp} WIB
+        `;
+    }
+}
 
     // Send data to server
     async function sendAutoSave(data) {

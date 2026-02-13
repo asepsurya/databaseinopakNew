@@ -30,6 +30,7 @@ use App\Http\Controllers\SettingsController;
 Route::get('/', function () {
     return redirect('/login');
     });
+ Route::get('/imagesearch', [SettingsController::class, 'searchImage']);
 
 Route::resource('/register', RegisterController::class);
 //Route Privilage
@@ -211,4 +212,5 @@ Route::prefix('settings')->middleware('auth')->group(function () {
 
     // Seed defaults (admin only)
     Route::post('/seed', [SettingsController::class, 'seedDefaults'])->name('settings.seed');
+
 });
