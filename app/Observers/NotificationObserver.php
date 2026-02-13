@@ -19,14 +19,14 @@ class NotificationObserver
             'deleted' => NotificationType::PROJECT_DELETED,
         ],
         'Ikm' => [
-            'created' => NotificationType::IKM_CREATED,
-            'updated' => NotificationType::IKM_UPDATED,
-            'deleted' => NotificationType::IKM_DELETED,
+            'created' => NotificationType::Ikm_CREATED,
+            'updated' => NotificationType::Ikm_UPDATED,
+            'deleted' => NotificationType::Ikm_DELETED,
         ],
         'Cots' => [
-            'created' => NotificationType::COTS_CREATED,
-            'updated' => NotificationType::COTS_UPDATED,
-            'deleted' => NotificationType::COTS_DELETED,
+            'created' => NotificationType::Cots_CREATED,
+            'updated' => NotificationType::Cots_UPDATED,
+            'deleted' => NotificationType::Cots_DELETED,
         ],
         'BencmarkProduk' => [
             'created' => NotificationType::BENCHMARK_CREATED,
@@ -310,7 +310,7 @@ class NotificationObserver
         // Determine notification type based on field
         $type = match ($field) {
             'is_approved', 'status' => $value ? NotificationType::FORM_APPROVED : NotificationType::FORM_REJECTED,
-            'verified_at' => $value ? NotificationType::IKM_VERIFIED : null,
+            'verified_at' => $value ? NotificationType::Ikm_VERIFIED : null,
             'is_active' => $value ? NotificationType::DATA_UPDATED : NotificationType::DATA_DELETED,
             default => NotificationType::DATA_UPDATED,
         };

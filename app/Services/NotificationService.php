@@ -322,7 +322,7 @@ class NotificationService
 
         // Get counts by category
         $categories = [];
-        foreach (['authentication', 'data_operation', 'form', 'profile', 'project', 'ikm', 'cots', 'system', 'user_activity'] as $category) {
+        foreach (['authentication', 'data_operation', 'form', 'profile', 'project', 'Ikm', 'cots', 'system', 'user_activity'] as $category) {
             $types = NotificationType::cases();
             $typeValues = array_filter($types, fn($t) => $t->getCategory() === $category);
             $typeValues = array_map(fn($t) => $t->value, $typeValues);

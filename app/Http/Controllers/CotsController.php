@@ -4,7 +4,7 @@ text/x-generic CotsController.php ( PHP script, ASCII text )
 
 namespace App\Http\Controllers;
 
-use App\Models\cots;
+use App\Models\Cots;
 use App\Http\Requests\StorecotsRequest;
 use App\Http\Requests\UpdatecotsRequest;
 
@@ -47,7 +47,7 @@ class CotsController extends Controller
      * @param  \App\Models\cots  $cots
      * @return \Illuminate\Http\Response
      */
-    public function show(cots $cots)
+    public function show(Cots $cots)
     {
         //
     }
@@ -58,7 +58,7 @@ class CotsController extends Controller
      * @param  \App\Models\cots  $cots
      * @return \Illuminate\Http\Response
      */
-    public function edit(cots $cots)
+    public function edit(Cots $cots)
     {
         //
     }
@@ -70,7 +70,7 @@ class CotsController extends Controller
      * @param  \App\Models\cots  $cots
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatecotsRequest $request, cots $cots)
+    public function update(UpdatecotsRequest $request, Cots $cots)
     {
         //
     }
@@ -81,7 +81,7 @@ class CotsController extends Controller
      * @param  \App\Models\cots  $cots
      * @return \Illuminate\Http\Response
      */
-    public function destroy(cots $cots)
+    public function destroy(Cots $cots)
     {
         //
     }

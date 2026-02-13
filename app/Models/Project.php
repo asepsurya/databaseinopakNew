@@ -11,10 +11,10 @@ class Project extends Model
     protected $guarded  =['id'];
 
     public function ikms(){
-        return $this->hasMany('App\Models\ikm','id_Project');
+        return $this->hasMany('App\\Models\\Ikm','id_Project');
     }
 
     public function produkDesigns(){
-        return $this->hasManyThrough('App\Models\ProdukDesign', 'App\Models\ikm', 'id_Project', 'id_ikm');
+        return $this->hasManyThrough('App\Models\ProdukDesign', 'App\\Models\\Ikm', 'id_Project', 'id_Ikm');
     }
 }

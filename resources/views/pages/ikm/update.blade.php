@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-title', 'Update IKM - ' . $project->namaProject)
+@section('page-title', 'Update Ikm - ' . ($project->NamaProjek ?? 'Edit IKM'))
 @section('content')
    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
@@ -136,10 +136,10 @@
 
     <div class="row justify-content-between align-items-end g-3 ">
         <div class="col-12 col-sm-auto col-xl-8">
-            <h2>Update IKM</h2>
+            <h2>Update Ikm</h2>
         </div>
         <div class="col-12 col-sm-auto col-xl-4">
-            <div class="d-flex"><a href="/project/dataikm/{{ $project->id }}" class="btn btn-phoenix-primary px-5 me-2">Batal</a>
+            <div class="d-flex"><a href="/project/dataIkm/{{ $project->id }}" class="btn btn-phoenix-primary px-5 me-2">Batal</a>
                 <button type="submit" class="btn btn-primary px-5 w-100 text-nowrap">Simpan</button>
             </div>
         </div>
@@ -157,7 +157,7 @@
     <div class="py-1 mb-5">
         <ul class="nav nav-underline" id="myTab" role="tablist">
             <li class="nav-item" role="presentation"><a class="nav-link active" id="home-tab" data-bs-toggle="tab" href="#tab-Updateinfo" role="tab" aria-controls="tab-home" aria-selected="false" tabindex="-1"><i data-feather="user"></i> Infomasi
-                    IKM</a></li>
+                    Ikm</a></li>
             <li class="nav-item" role="presentation"><a class="nav-link " id="home-tab" data-bs-toggle="tab" href="#tab-Updatehome" role="tab" aria-controls="tab-Updatehome" aria-selected="false" tabindex="-1"><i data-feather="box"></i> Infomasi
                     Product</a></li>
             <!--<li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-bs-toggle="tab"-->
@@ -167,19 +167,19 @@
 
         </ul>
         <div class="tab-content mt-3" id="myTabContent">
-            <div class="tab-pane fade  active show" id="tab-Updateinfo" role="tabpanel" aria-labelledby="home-tab">
+            <div class="tab-pane fade  active show" id="tab-Updateinfo" role="tabpanel" aria-labby="home-tab">
                 <div id="London" class="tabcontent" style="display: block;">
 
                     <div class="section1">
                         {{-- variabel id Ikm --}}
-                        <input type="text" value="{{ $a->id }}" name="id_ikm" hidden>
+                        <input type="text" value="{{ $a->id }}" name="id_Ikm" hidden>
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label class="form-label" for="provinsi">Nama Lengkap<span style="color:red">*</span></label>
                                 <input class="form-control @error('nama') is-invalid @enderror" id="nama" type="text" placeholder="Nama Lengkap" name="nama" value="{{ $a->nama }}" />
                                 @error('nama')
                                 <div class="invalid-feedback">
-                                    {{ $messssage }}
+                                    {{ $message }}
                                 </div>
                                 @enderror
 
@@ -499,76 +499,79 @@ $(document).ready(function() {
 
                 $.ajax({
                     type : 'POST',
-                    url : "{{route('getkabupatenUpdate')}}",
-                    data : {id_provinsi:id_provinsi},
+                    url : '/getkabupatenUpdate',
+                    data : {id_provinsi : id_provinsi},
                     cache : false,
 
                     success: function(msg){
                         $('#kabupatenUpdate').html(msg);
-                        $('#kecamatanUpdate').html('');
-                        $('#desaUpdate').html('');
+                        $('#kecamatanUpdate').html('<option value=""> Kecamatan </option>');
+                        $('#desaUpdate').html('<option value=""> Kelurahan/Desa </option>');
                     },
-                    error: function(data) {
-                        console.log('error:',data)
-                    },
+                    error: function(data){
+                        console.log('error:',data);
+                    }
                 })
             })
+        })
 
-
+        $(function (){
             $('#kabupatenUpdate').on('change',function(){
                 let id_kabupaten = $('#kabupatenUpdate').val();
 
                 $.ajax({
                     type : 'POST',
-                    url : "{{route('getkecamatanUpdate')}}",
-                    data : {id_kabupaten:id_kabupaten},
+                    url : '/getkecamatanUpdate',
+                    data : {id_kabupaten : id_kabupaten},
                     cache : false,
 
                     success: function(msg){
                         $('#kecamatanUpdate').html(msg);
-                        $('#desaUpdate').html('');
-
-
+                        $('#desaUpdate').html('<option value=""> Kelurahan/Desa </option>');
                     },
-                    error: function(data) {
-                        console.log('error:',data)
-                    },
+                    error: function(data){
+                        console.log('error:',data);
+                    }
                 })
             })
-
+        })
+        $(function (){
             $('#kecamatanUpdate').on('change',function(){
                 let id_kecamatan = $('#kecamatanUpdate').val();
 
                 $.ajax({
                     type : 'POST',
-                    url : "{{route('getdesaUpdate')}}",
-                    data : {id_kecamatan:id_kecamatan},
+                    url : '/getdesaUpdate',
+                    data : {id_kecamatan : id_kecamatan},
                     cache : false,
 
                     success: function(msg){
                         $('#desaUpdate').html(msg);
-
-
                     },
-                    error: function(data) {
-                        console.log('error:',data)
-                    },
+                    error: function(data){
+                        console.log('error:',data);
+                    }
                 })
             })
         })
+
+        // Next button handler for Update form
+        $('#next1Update').on('click', function(e) {
+            e.preventDefault();
+            // Switch to the Product tab
+            $('#tab-Updatehome').addClass('active show');
+            $('#tab-Updateinfo').removeClass('active show');
+            // Update nav tabs
+            $('a[href="#tab-Updatehome"]').tab('show');
+        });
+
+        // Tab change handler
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e) {
+            // Refresh Summernote when switching tabs
+            if ($($(e.target).attr('href')).find('.editor').length > 0) {
+                $('.editor').summernote('refresh');
+            }
+        });
     });
-</script>
-<script>
-    $('.select2').select2();
-        $(document).ready(function(){
-                  $('#next1Update').click(function(e){
-                      e.preventDefault();
-                      $('#myTab a[href="#tab-Updatehome"]').tab('show');
-                  });
-                  $('#next2Update').click(function(e){
-                      e.preventDefault();
-                      $('#myTab a[href="#tab-Updateprofile"]').tab('show');
-                  });
-              });
 </script>
 @endsection

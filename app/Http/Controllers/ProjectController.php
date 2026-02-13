@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\ikm;
+use App\Models\Ikm;
 use GuzzleHttp\Client;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -46,7 +46,7 @@ class ProjectController extends Controller
          return view('pages.project.view',[
              'title'=>'Project',
              'projects'=>$data,
-             'searchIkm'=>ikm::all()
+             'searchIkm'=>Ikm::all()
          ]);
        }
     public function store(request $request){
@@ -68,9 +68,30 @@ class ProjectController extends Controller
         return redirect('/project');
     }
     public function hapus(request $request){
-        Project::destroy($request->id);
-        ikm::where('id_project',$request->id)->delete();
-        $request->session()->flash('HapusBerhasil', 'Data Berhasil dihapus');
+        $id = $request->id ?? $request->route('id');
+
+        if (!$id) {
+            $request->session()->flash('gagalSimpan', 'ID Project tidak ditemukan');
+            return redirect('/project');
+        }
+
+        // Get project details before deletion for logging
+        $project = Project::find($id);
+
+        if (!$project) {
+            $request->session()->flash('gagalSimpan', 'Project tidak ditemukan');
+            return redirect('/project');
+        }
+
+        $ikmCount = Ikm::where('id_project', $id)->count();
+
+        // Delete related data first
+        Ikm::where('id_project', $id)->delete();
+
+        // Delete the project
+        Project::destroy($id);
+
+        $request->session()->flash('HapusBerhasil', "Project '$project->NamaProjek' berhasil dihapus bersama $ikmCount data IKM terkait");
         return redirect('/project');
     }
 
@@ -122,7 +143,7 @@ class ProjectController extends Controller
             }
 
             // Search IKM by nama
-            $ikmData = ikm::where('nama', 'like', "%{$query}%")
+            $ikmData = Ikm::where('nama', 'like', "%{$query}%")
                 ->select('id', 'nama', 'namaUsaha', 'id_project')
                 ->limit(10)
                 ->get();
@@ -165,37 +186,91 @@ class ProjectController extends Controller
         }
     }
 
+    /**
+     * Filter projects with live search (returns HTML for DOM update)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function filterProjects(Request $request)
+    {
+        try {
+            $search = $request->get('search', '');
+            $year = $request->get('year', '');
+            $ukm_count = $request->get('ukm_count', '');
 
-/*
-|--------------------------------------------------------------------------
-| PROXY IMAGE (ANTI HOTLINK)
-|--------------------------------------------------------------------------
-*/
+            $query = Project::withCount(['ikms', 'produkDesigns']);
 
-public function proxyImage(Request $request)
-{
-    $url = $request->query('url');
+            // Filter by search (project name)
+            if (!empty($search)) {
+                $query->where('NamaProjek', 'like', '%' . $search . '%');
+            }
 
-    if (!$url) abort(404);
+            // Filter by year
+            if (!empty($year)) {
+                $query->whereYear('created_at', $year);
+            }
 
-    try {
+            // Filter by minimum UKM count
+            if (!empty($ukm_count)) {
+                $query->whereHas('ikms', function (Builder $q) use ($ukm_count) {
+                    $q->select('id_Project')
+                      ->groupBy('id_Project')
+                      ->havingRaw('COUNT(*) >= ?', [$ukm_count]);
+                });
+            }
 
-        $client = new Client([
-            'verify' => false,
-            'timeout' => 10,
-        ]);
+            $projects = $query->orderBy('id', 'DESC')->limit(100)->get();
 
-        $response = $client->get($url, [
-            'headers' => [
-                'User-Agent' => 'Mozilla/5.0'
-            ]
-        ]);
+            // Generate HTML for projects
+            $html = view('pages.project.partials.project-cards', ['projects' => $projects])->render();
 
-        return response($response->getBody())
-            ->header('Content-Type', $response->getHeaderLine('Content-Type'));
+            return response()->json([
+                'success' => true,
+                'html' => $html,
+                'count' => $projects->count()
+            ]);
 
-    } catch (\Exception $e) {
-        abort(404);
+        } catch (\Exception $e) {
+            \Log::error('Filter projects error: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Terjadi kesalahan saat memfilter data'
+            ], 500);
+        }
     }
-}
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PROXY IMAGE (ANTI HOTLINK)
+    |--------------------------------------------------------------------------
+    */
+
+    public function proxyImage(Request $request)
+    {
+        $url = $request->query('url');
+
+        if (!$url) abort(404);
+
+        try {
+
+            $client = new Client([
+                'verify' => false,
+                'timeout' => 10,
+            ]);
+
+            $response = $client->get($url, [
+                'headers' => [
+                    'User-Agent' => 'Mozilla/5.0'
+                ]
+            ]);
+
+            return response($response->getBody())
+                ->header('Content-Type', $response->getHeaderLine('Content-Type'));
+
+        } catch (\Exception $e) {
+            abort(404);
+        }
+    }
 }

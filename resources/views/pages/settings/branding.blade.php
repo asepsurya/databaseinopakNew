@@ -339,7 +339,7 @@
                                         <p class="text-muted small mb-0">Kata kunci untuk SEO (pisahkan dengan koma)</p>
                                     </div>
                                     <div class="col-md-8">
-                                        <input type="text" class="form-control" name="value" value="{{ $metaKeywords ?? 'inopak, database, ikm, admin dashboard' }}">
+                                        <input type="text" class="form-control" name="value" value="{{ $metaKeywords ?? 'inopak, database, Ikm, admin dashboard' }}">
                                         <button type="submit" class="btn btn-primary mt-3">
                                             <i class="ti ti-check me-1"></i> Simpan
                                         </button>

@@ -1,337 +1,156 @@
 @extends('layouts.master')
 
-@section('page-title', 'Detail IKM - ' . ($ikm->first()->nama ?? 'N/A'))
-
-@section('styles')
-
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+@section('page-title', 'Detail Ikm - ' . ($Ikm->first()->nama ?? 'N/A'))
 
 
-
+@section('content')
 <style>
+.design-gallery{
+    padding: 0%;
 
-/* MATIKAN SEMUA FOCUS TABLE */
-table:focus,
-table:focus-within,
-tr:focus,
-tr:focus-within,
-td:focus,
-td:focus-within {
-    outline: none !important;
-    box-shadow: none !important;
-    border-color: inherit !important;
 }
 
-/* MATIKAN CONTENTEDITABLE */
-[contenteditable],
-[contenteditable]:focus,
-[contenteditable]:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
+.empty-box {
+    background: #f8f9fc;
+    border-radius: 14px;
+    padding: 40px 20px;
+    text-align: center;
+    border: 1px dashed #e4e6ef;
+    transition: 0.3s;
 }
 
-/* MATIKAN TINYMCE INLINE TOTAL */
-.tox-tinymce-inline,
-.tox-tinymce-inline *,
-.tox-edit-area,
-.tox-edit-area__iframe {
-    outline: none !important;
-    box-shadow: none !important;
-}
-
-/* EDITOR ITSELF */
-.inline-editor{
-    border: none !important;
-}
-
-
-    .dark input { color: #9fa6bc; }
-    .mytr { background-color: #f8f8f8; }
-    .dark .mytr { background-color: transparent; }
-    .transparent-input {
-        background: transparent;
-        border-top-style: hidden;
-        border-right-style: hidden;
-        border-left-style: hidden;
-        border-bottom-style: hidden;
-        outline: none !important;
-        outline-width: 0 !important;
-        box-shadow: none;
-        -moz-box-shadow: none;
-        -webkit-box-shadow: none;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-    }
-    .transparent-textarea {
-        background: transparent;
-        border-top-style: hidden;
-        border-right-style: hidden;
-        border-left-style: hidden;
-        border-bottom-style: hidden;
-        outline: none !important;
-        outline-width: 0 !important;
-        box-shadow: none;
-        -moz-box-shadow: none;
-        -webkit-box-shadow: none;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        resize: vertical;
-        min-height: 60px;
-    }
-    .ql-container {
-        border-bottom-left-radius: 0.375rem;
-        border-bottom-right-radius: 0.375rem;
-        font-size: 14px;
-    }
-    .ql-toolbar {
-        border-top-left-radius: 0.375rem;
-        border-top-right-radius: 0.375rem;
-    }
-    .editor-wrapper {
-        background: #fff;
-        border-radius: 0.375rem;
-        border: 1px solid #e1e5eb;
-    }
-    .dark .editor-wrapper {
-        background: #2e3344;
-        border-color: #3d4458;
-    }
-    .editor-wrapper:focus-within {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.125rem rgba(13, 110, 253, 0.15);
-    }
-    .image-editor-container {
-        max-height: 400px;
-        background: #f8f9fa;
-    }
-    .dark .image-editor-container {
-        background: #2e3344;
-    }
-    .cropper-view-box,
-    .cropper-face {
-        border-radius: 0;
-    }
-    .discussion-card {
-        transition: all 0.2s ease;
-    }
-    .discussion-card:hover {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-    .dark .discussion-card:hover {
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.25);
-    }
-    .comment-input-wrapper {
-        position: relative;
-    }
-    .comment-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: 14px;
-    }
-    .benchmark-card {
-        position: relative;
-        overflow: hidden;
-        border-radius: 0.5rem;
-    }
-    .benchmark-card img {
-        transition: transform 0.3s ease;
-    }
-    .benchmark-card:hover img {
-        transform: scale(1.05);
-    }
-    .benchmark-actions {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 0.5rem;
-        background: linear-gradient(transparent, rgba(0,0,0,0.7));
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    .benchmark-card:hover .benchmark-actions {
-        opacity: 1;
-    }
-    .design-preview-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 0.75rem;
-    }
-    .design-preview-item {
-        position: relative;
-        aspect-ratio: 1;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        cursor: pointer;
-    }
-    .design-preview-item img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    .design-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.2s ease;
-    }
-    .design-preview-item:hover .design-overlay {
-        opacity: 1;
-    }
-    .tab-content-editor {
-        min-height: 200px;
-    }
-    .color-picker-btn {
-        width: 36px;
-        height: 36px;
-        border-radius: 0.375rem;
-        border: 2px solid #e1e5eb;
-        cursor: pointer;
-    }
-    .dark .color-picker-btn {
-        border-color: #3d4458;
-    }
-    .ai-generate-btn {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .15s ease;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-}
-
-.ai-editor-wrapper:focus-within .ai-generate-btn {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* Hilangkan semua efek fokus */
-.inline-editor {
-    background: transparent;
-    border: none;
-    outline: none !important;
-    box-shadow: none !important;
-    padding-right: 40px;
-}
-
-/* Auto-save Indicator Styles */
-.autosave-indicator {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    z-index: 9999;
+.empty-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #eef2ff;
     display: flex;
     align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-    opacity: 0;
-    transform: translateY(20px);
+    justify-content: center;
 }
 
-.autosave-indicator.show {
-    opacity: 1;
-    transform: translateY(0);
+.empty-icon i {
+    font-size: 32px;
+    color: #6366f1;
 }
 
-.autosave-indicator.saving {
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
+.empty-title {
+    font-weight: 600;
+    margin-bottom: 6px;
 }
 
-.autosave-indicator.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+.empty-desc {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 18px;
 }
 
-.autosave-indicator.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+/* ========================= */
+/* DARK MODE SUPPORT */
+/* ========================= */
+
+[data-bs-theme="dark"] .empty-box {
+    background: #1f1f2e;
+    border-color: #33354a;
 }
 
-.autosave-spinner {
-    width: 18px;
-    height: 18px;
-    border: 2px solid currentColor;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+[data-bs-theme="dark"] .empty-icon {
+    background: #2a2c40;
 }
 
-.autosave-icon {
-    font-size: 18px;
+[data-bs-theme="dark"] .empty-icon i {
+    color: #8b8dff;
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+[data-bs-theme="dark"] .empty-title {
+    color: #e6e7f2;
 }
 
-/* Status indicator in tab header */
-.autosave-status {
-    display: inline-flex;
+[data-bs-theme="dark"] .empty-desc {
+    color: #a1a4c0;
+}
+
+.design-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* jumlah kolom bebas */
+    /* grid-template-rows: repeat(2, 1fr); */
+    gap: 14px;
+}
+
+.gallery-item {
+    position: relative;
+}
+
+.gallery-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #f6f7fb;
+}
+
+.gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.3s;
+}
+
+.gallery-thumb:hover img {
+    transform: scale(1.06);
+}
+
+.gallery-actions {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    margin-left: 10px;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0;
+    transition: 0.25s;
+    flex-wrap: nowrap;
 }
 
-.autosave-status .dot {
-    width: 8px;
-    height: 8px;
+.gallery-thumb:hover .gallery-actions {
+    opacity: 1;
+}
+
+
+.action-btn {
+    width: clamp(28px, 6vw, 38px);
+    height: clamp(28px, 6vw, 38px);
     border-radius: 50%;
+    background: #fff;
+    color: #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    text-decoration: none;
+    font-size: clamp(12px, 2.5vw, 18px);
 }
 
-.autosave-status .dot.saved {
-    background-color: #28a745;
+.action-btn:hover {
+    background: #0d6efd;
+    color: white;
 }
 
-.autosave-status .dot.saving {
-    background-color: #ffc107;
-    animation: pulse 1s infinite;
+.action-btn.danger:hover {
+    background: #dc3545;
 }
 
-.autosave-status .dot.error {
-    background-color: #dc3545;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
+.empty-gallery {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #999;
 }
 
 </style>
-@endsection
-
-@section('content')
-@if($ikm->first())
+@if($Ikm->first())
 <div class="row">
     <div class="col-xxl-12">
         <div class="row g-0">
@@ -341,44 +160,65 @@ td:focus-within {
                     <!-- Profile Header -->
                     <div class="card-header align-items-start p-4">
                         <div class="avatar-xxl me-3 position-relative">
-                            <a data-fslightbox href="{{ asset('storage/'.$ikm->first()->gambar) }}" title="Klik untuk perbesar">
-                                @if($ikm->first()->gambar && file_exists(storage_path('app/public/' . $ikm->first()->gambar)))
-                                <img src="{{ asset('storage/'.$ikm->first()->gambar) }}" alt="{{ $ikm->first()->nama }}" class="rounded" style="width: 72px; height: 72px; object-fit: cover;">
+                            <a data-fslightbox href="{{ asset('storage/'.$Ikm->first()->gambar) }}" title="Klik untuk perbesar">
+                                @if($Ikm->first()->gambar && \App\Helpers\ThumbnailHelper::isValidImage($Ikm->first()->gambar))
+                                    @php
+                                        $thumbnailUrl = \App\Helpers\ThumbnailHelper::thumbnailUrl($Ikm->first()->gambar, 'large', true);
+                                        $originalUrl = \App\Helpers\ThumbnailHelper::originalUrl($Ikm->first()->gambar);
+                                    @endphp
+                                    <img src="{{ $thumbnailUrl ?? asset('storage/'.$Ikm->first()->gambar) }}"
+                                         alt="{{ $Ikm->first()->nama }}"
+                                         class="rounded thumbnail-avatar-lg thumbnail-image"
+                                         style="width: 72px; height: 72px; object-fit: cover;"
+                                         loading="lazy">
                                 @else
-                                <div class="rounded d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; background-color: #e9ecef;">
-                                    <i class="ti ti-user" style="font-size: 32px; color: #6c757d;"></i>
-                                </div>
+                                    <div class="rounded d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; background-color: #e9ecef;">
+                                        <i class="ti ti-user" style="font-size: 32px; color: #6c757d;"></i>
+                                    </div>
                                 @endif
                             </a>
-                            </a>
-                            <button class="btn btn-light btn-sm position-absolute bottom-0 end-0 rounded-circle p-1" data-bs-toggle="modal" data-bs-target="#UpdatePicture" title="Ubah foto" style="width: 24px; height: 24px; line-height: 1;">
-                                <i class="ti ti-pencil" style="font-size: 12px;"></i>
+                            @if($Ikm->first()->gambar && \App\Helpers\ThumbnailHelper::isValidImage($Ikm->first()->gambar))
+                                <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($Ikm->first()->gambar) }}"
+                                   class="btn btn-light btn-sm position-absolute bottom-0 end-0 rounded-circle p-1"
+                                   style="width: 24px; height: 24px; line-height: 1;"
+                                   title="Unduh gambar asli"
+                                   download="{{ basename($Ikm->first()->gambar) }}"
+                                   onclick="event.stopPropagation();">
+                                    <i class="ti ti-download" style="font-size: 10px;"></i>
+                                </a>
+                            @endif
+                            <button class="btn btn-light btn-sm position-absolute bottom-0 start-0 rounded-circle p-1"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#UpdatePicture"
+                                    title="Ubah foto"
+                                    style="width: 24px; height: 24px; line-height: 1; margin-left: -8px;">
+                                <i class="ti ti-pencil" style="font-size: 10px;"></i>
                             </button>
                         </div>
                         <div>
-                            <h3 class="mb-1 d-flex fs-xl align-items-center">{{ $ikm->first()->nama }} - {{ $project->NamaProjek }} </h3>
-                            <p class="text-muted mb-2 fs-xxs">Updated {{ $ikm->first()->updated_at->diffForHumans() }}</p>
+                            <h3 class="mb-1 d-flex fs-xl align-items-center">{{ $Ikm->first()->nama }} - {{ $project->NamaProjek }} </h3>
+                            <p class="text-muted mb-2 fs-xxs">Updated {{ $Ikm->first()->updated_at->diffForHumans() }}</p>
                             <span class="badge badge-soft-success fs-xxs badge-label">In Progress</span>
                         </div>
                         <div class="ms-auto d-flex gap-2">
                             <a href="{{ url()->previous() }}" class="btn btn-light">
                                 <i class="ti ti-arrow-left me-1"></i> Kembali
                             </a>
-                            <form action="/project/dataikm/{{ $project->id }}/update" method="POST" class="d-inline">
+                            <form action="/project/dataIkm/{{ $project->id }}/update" method="POST" class="d-inline">
                                 @csrf
-                                <input type="text" value="{{ $ikm->first()->id_provinsi }}" name="getId_provinsi" hidden>
-                                <input type="text" value="{{ $ikm->first()->id_kota }}" name="getId_kota" hidden>
-                                <input type="text" value="{{ $ikm->first()->id_kecamatan }}" name="getId_kecamatan" hidden>
-                                <input type="text" value="{{ $ikm->first()->id_desa }}" name="getId_desa" hidden>
+                                <input type="text" value="{{ $Ikm->first()->id_provinsi }}" name="getId_provinsi" hidden>
+                                <input type="text" value="{{ $Ikm->first()->id_kota }}" name="getId_kota" hidden>
+                                <input type="text" value="{{ $Ikm->first()->id_kecamatan }}" name="getId_kecamatan" hidden>
+                                <input type="text" value="{{ $Ikm->first()->id_desa }}" name="getId_desa" hidden>
                                 <input type="text" value="{{ $project->id }}" name="getId_project" hidden>
-                                <input type="text" value="{{ $ikm->first()->id }}" name="getId_IKM" hidden>
+                                <input type="text" value="{{ $Ikm->first()->id }}" name="getId_Ikm" hidden>
                                 <input type="text" value="{{ $project->NamaProjek }}" name="get_Nmproject" hidden>
                                 <button type="submit" class="btn btn-light" title="Ubah">
                                     <i class="ti ti-pencil me-2"></i> Edit
                                 </button>
                             </form>
 
-                            <a class="btn btn-soft-secondary btn-sm" href="/report/brainstorming/{{ $ikm->first()->id }}/{{ $ikm->first()->nama }}" target="_blank">
+                            <a class="btn btn-soft-secondary btn-sm" href="/report/brainstorming/{{ $Ikm->first()->id }}/{{ $Ikm->first()->nama }}" target="_blank">
                                 <i class="ti ti-file-export me-1"></i> Export
                             </a>
                         </div>
@@ -388,31 +228,31 @@ td:focus-within {
                     <div class="card-body ">
                         <!-- Project Info -->
                         <div class="mb-4">
-                            <h5 class="fs-base mb-2">Informasi IKM:</h5>
-                            <p class="text-muted">{!! $ikm->first()->jenisProduk !!} - {!! $ikm->first()->namaUsaha ?? 'N/A' !!}</p>
+                            <h5 class="fs-base mb-2">Informasi Ikm:</h5>
+                            <p class="text-muted">{!! $Ikm->first()->jenisProduk !!} - {!! $Ikm->first()->namaUsaha ?? 'N/A' !!}</p>
                             <p class="text-muted">
-                                {{ $ikm->first()->alamat }}{{ $ikm->first()->district->name ?? '' }} {{ $ikm->first()->regency->name ?? '' }} {{ $ikm->first()->province->name ?? '' }}
+                                {{ $Ikm->first()->alamat }}{{ $Ikm->first()->district->name ?? '' }} {{ $Ikm->first()->regency->name ?? '' }} {{ $Ikm->first()->province->name ?? '' }}
                             </p>
                             <p class="text-muted">
-                                Telepon: {{ $ikm->first()->telp }}
+                                Telepon: {{ $Ikm->first()->telp }}
                             </p>
                         </div>
                         <div class="row mb-4">
                             <div class="col-md-4 col-xl-3">
                                 <h6 class="mb-1 text-muted text-uppercase">Tanggal Bergabung:</h6>
-                                <p class="fw-medium mb-0">{{ $ikm->first()->created_at->format('F d, Y') }}</p>
+                                <p class="fw-medium mb-0">{{ $Ikm->first()->created_at->format('F d, Y') }}</p>
                             </div>
                             <div class="col-md-4 col-xl-3">
                                 <h6 class="mb-1 text-muted text-uppercase">Jenis Produk:</h6>
-                                <p class="fw-medium mb-0">{!! $ikm->first()->jenisProduk !!}</p>
+                                <p class="fw-medium mb-0">{!! $Ikm->first()->jenisProduk !!}</p>
                             </div>
                             <div class="col-md-4 col-xl-3">
                                 <h6 class="mb-1 text-muted text-uppercase">Merk:</h6>
-                                <p class="fw-medium mb-0">{!! $ikm->first()->merk ?? 'N/A' !!}</p>
+                                <p class="fw-medium mb-0">{!! $Ikm->first()->merk ?? 'N/A' !!}</p>
                             </div>
                             <div class="col-md-4 col-xl-3">
                                 <h6 class="mb-1 text-muted text-uppercase">Nama Usaha:</h6>
-                                <p class="fw-medium mb-0">{!! $ikm->first()->namaUsaha ?? 'N/A' !!}</p>
+                                <p class="fw-medium mb-0">{!! $Ikm->first()->namaUsaha ?? 'N/A' !!}</p>
                             </div>
                         </div>
 
@@ -421,7 +261,7 @@ td:focus-within {
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link" data-bs-toggle="tab" href="#tab-info" role="tab" aria-selected="false">
                                     <i class="ti ti-user fs-lg me-md-1 align-middle"></i>
-                                    <span class="d-none d-md-inline-block align-middle">Informasi IKM</span>
+                                    <span class="d-none d-md-inline-block align-middle">Informasi Ikm</span>
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
@@ -431,28 +271,28 @@ td:focus-within {
                                 </a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a class="nav-link" data-bs-toggle="tab" href="#tab-cots" role="tab" aria-selected="false" tabindex="-1">
+                                <a class="nav-link" data-bs-toggle="tab" href="#tab-Cots" role="tab" aria-selected="false" tabindex="-1">
                                     <i class="ti ti-home fs-lg me-md-1 align-middle"></i>
-                                    <span class="d-none d-md-inline-block align-middle">COTS</span>
+                                    <span class="d-none d-md-inline-block align-middle">Cots</span>
                                 </a>
                             </li>
                         </ul>
                         <div class="tab-content p-0 m-0">
-                            <!-- IKM Info Tab -->
+                            <!-- Ikm Info Tab -->
                             <div class="tab-pane fade" id="tab-info" role="tabpanel">
                                 <div class="section1">
                                     <div class="row g-3 mb-3">
                                         <div class="col-md-6">
                                             <div class="form-floating">
                                                 <input class="form-control" id="nama" type="text" placeholder="Nama Lengkap"
-                                                    name="nama" required value="{{ $ikm->first()->nama }}" readonly />
+                                                    name="nama" required value="{{ $Ikm->first()->nama }}" readonly />
                                                 <label class="form-label" for="provinsi">Nama Lengkap<span style="color:red">*</span></label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-floating">
                                                 <input required class="form-control" type="text" placeholder="Nomor Telepon"
-                                                    name="telp" id="telp" value="{{ $ikm->first()->telp }}" readonly />
+                                                    name="telp" id="telp" value="{{ $Ikm->first()->telp }}" readonly />
                                                 <label class="form-label" for="name">No Telepon<span style="color:red">*</span></label>
                                             </div>
                                         </div>
@@ -462,7 +302,7 @@ td:focus-within {
                                             <div class="form-floating">
                                                 <select required class="form-control" aria-label="Default select example"
                                                     name="gender" id="gender" disabled>
-                                                    @if ($ikm->first()->gender == 1)
+                                                    @if ($Ikm->first()->gender == 1)
                                                         <option value="1">Laki - Laki</option>
                                                     @else
                                                         <option value="2">Perempuan</option>
@@ -485,7 +325,7 @@ td:focus-within {
                                     <div class="mb-3 text-start">
                                         <div class="form-floating">
                                             <input required class="form-control" id="alamat" name="alamat" type="text"
-                                                placeholder="Alamat" value="{{ $ikm->first()->alamat }}" readonly />
+                                                placeholder="Alamat" value="{{ $Ikm->first()->alamat }}" readonly />
                                             <label class="form-label" for="alamat">Alamat<span style="color:red">*</span></label>
                                         </div>
                                     </div>
@@ -494,8 +334,8 @@ td:focus-within {
                                             <div class="form-floating">
                                                 <select required class="form-control" id="provinsi" name="id_provinsi" disabled>
                                                     <option value="">
-                                                        @if ($ikm->first()->province)
-                                                            {{ $ikm->first()->province->name }}
+                                                        @if ($Ikm->first()->province)
+                                                            {{ $Ikm->first()->province->name }}
                                                         @endif
                                                     </option>
                                                 </select>
@@ -506,8 +346,8 @@ td:focus-within {
                                             <div class="form-floating">
                                                 <select required id="kabupaten" name="id_kota" class="form-control" disabled>
                                                     <option value="">
-                                                        @if ($ikm->first()->regency)
-                                                            {{ $ikm->first()->regency->name }}
+                                                        @if ($Ikm->first()->regency)
+                                                            {{ $Ikm->first()->regency->name }}
                                                         @endif
                                                     </option>
                                                 </select>
@@ -520,8 +360,8 @@ td:focus-within {
                                             <div class="form-floating">
                                                 <select required class="form-select" id="kecamatan" name="id_kecamatan" disabled>
                                                     <option value="">
-                                                        @if ($ikm->first()->district)
-                                                            {{ $ikm->first()->district->name }}
+                                                        @if ($Ikm->first()->district)
+                                                            {{ $Ikm->first()->district->name }}
                                                         @endif
                                                     </option>
                                                 </select>
@@ -532,8 +372,8 @@ td:focus-within {
                                             <div class="form-floating">
                                                 <select required class="form-select" id="desa" name="id_desa" disabled>
                                                     <option value="">
-                                                        @if ($ikm->first()->village)
-                                                            {{ $ikm->first()->village->name }}
+                                                        @if ($Ikm->first()->village)
+                                                            {{ $Ikm->first()->village->name }}
                                                         @endif
                                                     </option>
                                                 </select>
@@ -546,7 +386,7 @@ td:focus-within {
                                             <div class="mb-3 text-start">
                                                 <div class="form-floating">
                                                     <input required class="form-control" id="rt" name="rt" type="text"
-                                                        placeholder="RT" value="{{ $ikm->first()->rt }}" readonly />
+                                                        placeholder="RT" value="{{ $Ikm->first()->rt }}" readonly />
                                                     <label class="form-label" for="rt">RT<span style="color:red">*</span></label>
                                                 </div>
                                             </div>
@@ -555,7 +395,7 @@ td:focus-within {
                                             <div class="mb-3 text-start">
                                                 <div class="form-floating">
                                                     <input required class="form-control" id="rw" name="rw" type="text"
-                                                        placeholder="RW" value="{{ $ikm->first()->rw }}" readonly />
+                                                        placeholder="RW" value="{{ $Ikm->first()->rw }}" readonly />
                                                     <label class="form-label" for="rw">RW<span style="color:red">*</span></label>
                                                 </div>
                                             </div>
@@ -568,11 +408,11 @@ td:focus-within {
                             <div class="tab-pane fade active show" id="tab-bencmark" role="tabpanel">
 
                                 <div class="table-responsive">
-                                    <form action="/project/ikms/updateBrainstorming" method="post">
+                                    <form action="/project/Ikms/updateBrainstorming" method="post">
                                         @csrf
 
-                                        <input type="hidden" name="id_ikm" value="{{ $ikm->first()->id }}">
-                                        <input type="hidden" name="id_Project" value="{{ $ikm->first()->id_Project }}">
+                                        <input type="hidden" name="id_Ikm" value="{{ $Ikm->first()->id }}">
+                                        <input type="hidden" name="id_Project" value="{{ $Ikm->first()->id_Project }}">
 
                                         <table class="table table-bordered table-responsive" >
                                             <thead>
@@ -622,7 +462,7 @@ td:focus-within {
                                                             margin:0;
                                                             padding:0;
                                                             padding-right: 40px;" contenteditable="true" data-placeholder="{{ $label }}">
-                                                                {!! $ikm->first()->$key ?? '' !!}
+                                                                {!! $Ikm->first()->$key ?? '' !!}
                                                             </div>
                                                             <a type="button" class=" ai-generate-btn position-absolute" style="top: 50%; right: 0; transform: translateY(-50%); border: none;" data-field="{{ $key }}" data-label="{{ $label }}" title="Generate dengan AI">
                                                                 <i class="ti ti-sparkles"></i>
@@ -661,22 +501,22 @@ td:focus-within {
                                 </div>
                             </div>
 
-                            <!-- COTS Tab -->
-                            <div class="tab-pane fade" id="tab-cots" role="tabpanel">
-                                @if(isset($cots) && $cots != 0 && isset($cotsview))
-                                    @foreach($cotsview as $a)
+                            <!-- Cots Tab -->
+                            <div class="tab-pane fade" id="tab-Cots" role="tabpanel">
+                                @if(isset($Cots) && $Cots != 0 && isset($Cotsview))
+                                    @foreach($Cotsview as $a)
                                         <div class="row justify-content-between align-items-end g-3 mb-4">
                                             <div class="col-12 col-sm-auto">
-                                                <h5 class="mb-0">Form Coaching on The Spot (COTS)</h5>
+                                                <h5 class="mb-0">Form Coaching on The Spot (Cots)</h5>
                                             </div>
                                             <div class="col-12 col-sm-auto">
                                                 <div class="d-flex gap-2">
-                                                    @if($ikm->first()->id_provinsi != NULL)
-                                                        <a class="btn btn-soft-secondary btn-sm" href="/report/cots/{{ $ikm->first()->id }}/{{ $ikm->first()->nama }}">
+                                                    @if($Ikm->first()->id_provinsi != NULL)
+                                                        <a class="btn btn-soft-secondary btn-sm" href="/report/Cots/{{ $Ikm->first()->id }}/{{ $Ikm->first()->nama }}">
                                                             <i class="far fa-file-pdf me-1"></i> Export
                                                         </a>
                                                     @else
-                                                        <button class="btn btn-soft-secondary btn-sm" onclick="alert('Mohon Lengkapi Data IKM terlebih dahulu!')">
+                                                        <button class="btn btn-soft-secondary btn-sm" onclick="alert('Mohon Lengkapi Data Ikm terlebih dahulu!')">
                                                             <i class="far fa-file-pdf me-1"></i> Export
                                                         </button>
                                                     @endif
@@ -687,21 +527,21 @@ td:focus-within {
                                             </div>
                                         </div>
 
-                                        <form action="/project/ikms/{{ $ikm->first()->id }}/updateCots" method="POST">
+                                        <form action="/project/Ikms/{{ $Ikm->first()->id }}/updateCots" method="POST">
                                             @csrf
-                                            <div class="d-flex gap-2 mb-3" id="cotsActions" style="display:none;">
+                                            <div class="d-flex gap-2 mb-3" id="CotsActions" style="display:none;">
                                                 <button class="btn btn-phoenix-primary btn-sm" type="button" id="batalCots">Batal</button>
                                                 <button class="btn btn-primary btn-sm" type="submit" id="simpanCots">Simpan</button>
                                             </div>
 
-                                            <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
-                                            <input type="text" name="id_project" value="{{ $project->id }}" hidden>
-                                            <input type="text" name="id_cots" value="{{ $a->id }}" hidden>
+                                            <input type="text" name="id_Ikm" value="{{ $Ikm->first()->id }}" hidden>
+                                            <input type="text" name="id_Project" value="{{ $project->id }}" hidden>
+                                            <input type="text" name="id_Cots" value="{{ $a->id }}" hidden>
 
                                             <table class="table table-bordered" style="table-layout: fixed; overflow-wrap: break-word;">
                                                 <tbody>
                                                     @php
-                                                    $cotsFields = [
+                                                    $CotsFields = [
                                                         'sejarahSingkat' => 'Sejarah Singkat',
                                                         'produkjual' => 'Produk yang Dijual',
                                                         'carapemasaran' => 'Cara Pemasaran',
@@ -714,7 +554,7 @@ td:focus-within {
                                                     ];
                                                     @endphp
 
-                                                    @foreach($cotsFields as $key => $label)
+                                                    @foreach($CotsFields as $key => $label)
                                                     <tr>
                                                         <td style="padding-left:10px;background-color:#f5f5f5;width:200px;"><strong>{{ $label }}</strong></td>
                                                     </tr>
@@ -734,13 +574,13 @@ td:focus-within {
                                 @else
                                     <div class="text-center py-5">
                                         <i class="ti ti-report fs-3 text-muted mb-3"></i>
-                                        <p class="text-muted mb-3">Belum ada Laporan COTS</p>
-                                        <form action="/project/ikms/{{ $ikm->first()->id }}/cots" method="post" class="d-inline">
+                                        <p class="text-muted mb-3">Belum ada Laporan Cots</p>
+                                        <form action="/project/Ikms/{{ $Ikm->first()->id }}/Cots" method="post" class="d-inline">
                                             @csrf
-                                            <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
-                                            <input type="text" name="id_project" value="{{ $ikm->first()->id_Project }}" hidden>
+                                            <input type="text" name="id_Ikm" value="{{ $Ikm->first()->id }}" hidden>
+                                            <input type="text" name="id_project" value="{{ $Ikm->first()->id_Project }}" hidden>
                                             <button class="btn btn-phoenix-primary" type="submit">
-                                                <i class="fas fa-plus me-1"></i> Buat Laporan COTS
+                                                <i class="fas fa-plus me-1"></i> Buat Laporan Cots
                                             </button>
                                         </form>
                                     </div>
@@ -758,132 +598,288 @@ td:focus-within {
             <div class="col-xl-3">
                 <div class="card card-h-100 rounded-0 rounded-end border-start border-dashed shadow-none">
                     <div class="card-body p-0">
+
                         <!-- Bencmark Produk -->
                         <div class="p-3 border-bottom border-dashed">
                             <div class="d-flex mb-3 justify-content-between align-items-center">
-                                <h5 class="mb-0">Bencmark Produk ({{ $ikm->first()->bencmark->count() }})</h5>
-                                <button class="btn btn-phoenix-primary btn-sm" data-bs-toggle="modal" data-bs-target="#verticallyCentered" title="Upload Bencmark">
-                                    <i class="ti ti-plus"></i>
+                                <h5 class="mb-0">
+                                    Bencmark Produk ({{ $Ikm->first()->bencmark->count() }})
+                                </h5>
+                                <button class="btn btn-phoenix-primary btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#verticallyCentered">
+                                    <i class="ti ti-plus"></i> Upload
                                 </button>
                             </div>
-                            <div class="row g-2">
-                                @if($ikm->first()->bencmark && $ikm->first()->bencmark->count())
-                                    @foreach($ikm->first()->bencmark as $image)
-                                        <div class="col-6">
-                                            <form action="/project/ikms/{{ $image->id }}/deletebencmark" method="post">
-                                                @csrf
-                                                <input type="text" value="{{ $image->gambar }}" name="oldImage" hidden>
-                                                <div class="position-relative rounded overflow-hidden" style="height: 80px;">
-                                                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 z-3" type="submit" onclick="return confirm('Yakin hapus?')">
+                            <div class="design-gallery">
+                                @forelse($Ikm->first()->bencmark as $image)
+
+                                    <div class="gallery-item">
+
+                                        <form action="/project/Ikms/{{ $image->id }}/deletebencmark" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="oldImage" value="{{ $image->gambar }}">
+
+                                            <div class="gallery-thumb">
+
+                                                {{-- Thumbnail --}}
+                                                <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
+                                                data-fslightbox="benchmark-gallery">
+                                                    <img src="{{ \App\Helpers\ThumbnailHelper::thumbnailUrl($image->gambar, 'medium', true) ?? \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
+                                                        loading="lazy">
+                                                </a>
+
+                                                {{-- Overlay Actions --}}
+                                                <div class="gallery-actions">
+
+                                                    {{-- Preview --}}
+                                                    <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
+                                                    data-fslightbox="benchmark-gallery"
+                                                    class="action-btn"
+                                                    title="Preview">
+                                                        <i class="ti ti-eye"></i>
+                                                    </a>
+
+                                                    {{-- Download --}}
+                                                    @if(\App\Helpers\ThumbnailHelper::isValidImage($image->gambar))
+                                                        <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
+                                                        download
+                                                        class="action-btn"
+                                                        title="Download">
+                                                            <i class="ti ti-download"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    {{-- Delete --}}
+                                                    <button type="submit"
+                                                            class="action-btn danger"
+                                                            title="Hapus"
+                                                            onclick="return confirm('Hapus gambar ini?')">
                                                         <i class="ti ti-trash"></i>
                                                     </button>
-                                                    <a data-fslightbox href="{{ asset('storage/'.$image->gambar) }}">
-                                                        <img class="w-100 h-100" src="{{ asset('storage/'.$image->gambar) }}" alt="Bencmark" style="object-fit: cover;">
-                                                    </a>
+
                                                 </div>
-                                            </form>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <div class="col-12">
-                                        <div class="d-flex flex-column align-items-center justify-content-center py-3 bg-light rounded">
-                                            <i class="ti ti-photo fs-4 text-muted mb-1"></i>
-                                            <small class="text-muted">Belum ada</small>
-                                        </div>
+
+                                            </div>
+
+                                        </form>
+
                                     </div>
-                                @endif
-                            </div>
-                        </div>
 
-                        <!-- Desain Produk -->
-                        <div class="p-3 border-bottom border-dashed">
-                            <div class="d-flex mb-3 justify-content-between align-items-center">
-                                <h5 class="mb-0">Desain Produk ({{ $ikm->first()->produkDesign->count() }})</h5>
-                                <button class="btn btn-phoenix-primary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadDesign" title="Upload Desain">
-                                    <i class="ti ti-plus"></i>
-                                </button>
-                            </div>
-                            <div class="row g-2">
-                                @if($ikm->first()->produkDesign && $ikm->first()->produkDesign->count())
-                                  @foreach($ikm->first()->produkDesign as $image)
-                                <div class="col-6">
-                                    <form action="/project/ikms/{{ $image->id }}/deleteDesain" method="post">
-                                        @csrf
-                                        <input type="hidden" value="{{ $image->gambar }}" name="oldImage">
+                                @empty
+                                  <div class="empty-gallery">
+                                        <div class="empty-box">
 
-                                        <div class="image-wrapper position-relative rounded overflow-hidden" style="height:80px;">
+                                            <div class="empty-icon">
+                                                <i class="ti ti-photo"></i>
+                                            </div>
 
-                                            <button
-                                                class="btn btn-danger btn-sm delete-btn position-absolute top-0 end-0 m-1 z-3"
-                                                type="submit"
-                                                onclick="return confirm('Yakin hapus?')"
-                                            >
-                                                <i class="ti ti-trash"></i>
+                                            <h6 class="empty-title">Belum Ada Benchmark Produk</h6>
+
+                                            <p class="empty-desc">
+                                                Upload referensi produk pesaing sebagai bahan perbandingan.
+                                            </p>
+
+                                            <button class="btn btn-primary btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#verticallyCentered">
+                                                <i class="ti ti-upload me-1"></i> Upload Benchmark
                                             </button>
 
-                                            <a data-fslightbox href="{{ asset('storage/'.$image->gambar) }}">
-                                                <img
-                                                    src="{{ asset('storage/'.$image->gambar) }}"
-                                                    class="w-100 h-100"
-                                                    style="object-fit:cover;"
-                                                    alt="Desain"
-                                                    loading="lazy"
-                                                />
-                                            </a>
-
                                         </div>
-                                    </form>
-                                </div>
-                            @endforeach
-
-                                @else
-                                    <div class="col-12">
-                                        <div class="d-flex flex-column align-items-center justify-content-center py-3 bg-light rounded">
-                                            <i class="ti ti-palette fs-4 text-muted mb-1"></i>
-                                            <small class="text-muted">Belum ada</small>
-                                        </div>
-                                    </div>
-                                @endif
+                                  </div>
+                                @endforelse
                             </div>
                         </div>
+                       <!-- Desain Produk -->
+                            <div class="p-3 border-bottom border-dashed">
+                                <div class="d-flex mb-3 justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        Desain Produk ({{ $Ikm->first()->produkDesign->count() }})
+                                    </h5>
 
-                        <!-- Dokumentasi COTS -->
+                                    <button class="btn btn-phoenix-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#uploadDesign">
+                                        <i class="ti ti-plus"></i> Upload
+                                    </button>
+                                </div>
+                                <div class="design-gallery">
+
+                                    @forelse($Ikm->first()->produkDesign as $image)
+
+                                        <div class="gallery-item">
+
+                                            <form action="/project/Ikms/{{ $image->id }}/deleteDesain" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="oldImage" value="{{ $image->gambar }}">
+
+                                                <div class="gallery-thumb">
+
+                                                    {{-- Thumbnail --}}
+                                                    <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
+                                                    data-fslightbox="gallery">
+                                                        <img src="{{ \App\Helpers\ThumbnailHelper::thumbnailUrl($image->gambar, 'medium', true) ?? \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
+                                                            loading="lazy">
+                                                    </a>
+
+                                                    {{-- Overlay Actions --}}
+                                                    <div class="gallery-actions">
+
+                                                        {{-- Preview --}}
+                                                        <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
+                                                        data-fslightbox="gallery"
+                                                        class="action-btn"
+                                                        title="Preview">
+                                                            <i class="ti ti-eye"></i>
+                                                        </a>
+
+                                                        {{-- Download --}}
+                                                        @if(\App\Helpers\ThumbnailHelper::isValidImage($image->gambar))
+                                                            <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
+                                                            download
+                                                            class="action-btn"
+                                                            title="Download">
+                                                                <i class="ti ti-download"></i>
+                                                            </a>
+                                                        @endif
+
+                                                        {{-- Delete --}}
+                                                        <button type="submit"
+                                                                class="action-btn danger"
+                                                                title="Hapus"
+                                                                onclick="return confirm('Hapus gambar ini?')">
+                                                            <i class="ti ti-trash"></i>
+                                                        </button>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </form>
+
+                                        </div>
+
+                                    @empty
+                                        <div class="empty-gallery">
+                                            <div class="empty-box">
+                                                <div class="empty-icon">
+                                                    <i class="ti ti-palette"></i>
+                                                </div>
+
+                                                <h6 class="empty-title">Belum Ada Desain Produk</h6>
+
+                                                <p class="empty-desc">
+                                                    Tambahkan desain kemasan atau produk untuk mengisi galeri.
+                                                </p>
+
+                                                <button class="btn btn-primary btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#uploadDesign">
+                                                    <i class="ti ti-upload me-1"></i> Upload Desain
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        <!-- Dokumentasi Cots -->
                         <div class="p-3">
                             <div class="d-flex mb-3 justify-content-between align-items-center">
                                 <h5 class="mb-0">Dokumentasi</h5>
-                                <button class="btn btn-phoenix-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addDokumentasi" title="Upload Dokumentasi">
-                                    <i class="ti ti-plus"></i>
+
+                                <button class="btn btn-phoenix-primary btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#addDokumentasi">
+                                    <i class="ti ti-plus"></i> Upload
                                 </button>
                             </div>
-                            <div class="row g-2">
-                                @if(isset($dokumentasicots) && $dokumentasicots->count())
-                                    @foreach($dokumentasicots as $img)
-                                        <div class="col-6">
-                                            <form action="/project/ikms/{{ $ikm->first()->id }}/deleteDoc" method="post">
-                                                @csrf
-                                                <input type="text" value="{{ $img->id }}" name="id_gambar" hidden>
-                                                <input type="text" value="{{ $img->gambar }}" name="old_gambar" hidden>
-                                                <div class="position-relative rounded overflow-hidden" style="height: 80px;">
-                                                    <button class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 z-3" type="submit" onclick="return confirm('Yakin hapus?')">
+                            <div class="design-gallery">
+
+                                @forelse($dokumentasiCots as $img)
+
+                                    <div class="gallery-item">
+
+                                        <form action="/project/Ikms/{{ $Ikm->first()->id }}/deleteDoc" method="POST">
+                                            @csrf
+
+                                            <input type="hidden" name="id_gambar" value="{{ $img->id }}">
+                                            <input type="hidden" name="old_gambar" value="{{ $img->gambar }}">
+
+                                            <div class="gallery-thumb">
+
+                                                {{-- Thumbnail --}}
+                                                <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($img->gambar) }}"
+                                                data-fslightbox="dokumentasi-gallery">
+                                                    <img src="{{ \App\Helpers\ThumbnailHelper::thumbnailUrl($img->gambar, 'medium', true) ?? \App\Helpers\ThumbnailHelper::originalUrl($img->gambar) }}"
+                                                        loading="lazy">
+                                                </a>
+
+                                                {{-- Overlay Actions --}}
+                                                <div class="gallery-actions">
+
+                                                    {{-- Preview --}}
+                                                    <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($img->gambar) }}"
+                                                    data-fslightbox="dokumentasi-gallery"
+                                                    class="action-btn"
+                                                    title="Preview">
+                                                        <i class="ti ti-eye"></i>
+                                                    </a>
+
+                                                    {{-- Download --}}
+                                                    @if(\App\Helpers\ThumbnailHelper::isValidImage($img->gambar))
+                                                        <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($img->gambar) }}"
+                                                        download
+                                                        class="action-btn"
+                                                        title="Download">
+                                                            <i class="ti ti-download"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    {{-- Delete --}}
+                                                    <button type="submit"
+                                                            class="action-btn danger"
+                                                            title="Hapus"
+                                                            onclick="return confirm('Hapus gambar ini?')">
                                                         <i class="ti ti-trash"></i>
                                                     </button>
-                                                    <a data-fslightbox href="{{ asset('storage/'.$img->gambar) }}">
-                                                        <img class="w-100 h-100" src="{{ asset('storage/'.$img->gambar) }}" alt="Dokumentasi" style="object-fit: cover;">
-                                                    </a>
+
                                                 </div>
-                                            </form>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <div class="col-12">
-                                        <div class="d-flex flex-column align-items-center justify-content-center py-3 bg-light rounded">
-                                            <i class="ti ti-photo fs-4 text-muted mb-1"></i>
-                                            <small class="text-muted">Belum ada</small>
+
+                                            </div>
+
+                                        </form>
+
+                                    </div>
+
+                                @empty
+                                   <div class="empty-gallery">
+                                        <div class="empty-box">
+
+                                            <div class="empty-icon">
+                                                <i class="ti ti-photo"></i>
+                                            </div>
+
+                                            <h6 class="empty-title">Belum Ada Dokumentasi</h6>
+
+                                            <p class="empty-desc">
+                                                Upload foto dokumentasi untuk mulai mengisi galeri.
+                                            </p>
+
+                                            <button class="btn btn-primary btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#addDokumentasi">
+                                                <i class="ti ti-upload me-1"></i> Upload Sekarang
+                                            </button>
+
                                         </div>
                                     </div>
-                                @endif
+                                @endforelse
+
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -957,10 +953,10 @@ td:focus-within {
                     <span class="fas fa-times fs--1"></span>
                 </button>
             </div>
-            <form action="/project/ikms/{{ encrypt($ikm->first()->id) }}/bencmark" method="POST" enctype="multipart/form-data">
+            <form action="/project/Ikms/{{ encrypt($Ikm->first()->id) }}/bencmark" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
-                    <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                    <input type="text" name="id_Ikm" value="{{ $Ikm->first()->id }}" hidden>
                     <input type="text" name="id_Project" value="{{ $project->id }}" hidden>
 
                     <div class="mb-3">
@@ -1003,10 +999,10 @@ td:focus-within {
                     <span class="ti ti-x"></span>
                 </button>
             </div>
-            <form action="/project/ikms/{{ encrypt($ikm->first()->id) }}/tambahDesain" method="POST" enctype="multipart/form-data">
+            <form action="/project/Ikms/{{ encrypt($Ikm->first()->id) }}/tambahDesain" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
-                    <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                    <input type="text" name="id_Ikm" value="{{ $Ikm->first()->id }}" hidden>
                     <input type="text" name="id_project" value="{{ $project->id }}" hidden>
 
                     <div class="mb-3">
@@ -1050,11 +1046,11 @@ td:focus-within {
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/project/ikms/{{ $ikm->first()->id }}/dokumentasi" method="POST" enctype="multipart/form-data">
+                <form action="/project/Ikms/{{ $Ikm->first()->id }}/dokumentasi" method="POST" enctype="multipart/form-data">
                     @csrf
                 <div class="mb-3">
                     <label class="form-label">Pilih Photo:</label>
-                     <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
+                     <input type="text" name="id_Ikm" value="{{ $Ikm->first()->id }}" hidden>
                     <input type="text" name="id_project" value="{{ $project->id }}" hidden>
                     <div class="pro-upload">
                         <input type="file" name="gambar[]" multiple accept="image/*" class="pro-input">
@@ -1081,20 +1077,20 @@ td:focus-within {
 
 <!-- Update Picture Modal -->
 <div class="modal fade" id="UpdatePicture" tabindex="-1" aria-labelledby="UpdatePictureModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="UpdatePictureModalLabel"><i class="ti ti-user me-2"></i>Ubah Foto IKM</h5>
+                <h5 class="modal-title" id="UpdatePictureModalLabel"><i class="ti ti-user me-2"></i>Ubah Foto Ikm</h5>
                 <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
                     <span class="ti ti-x"></span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/project/ikms/{{ $ikm->first()->id }}/update" method="POST" enctype="multipart/form-data" id="cropForm">
+                <form action="/project/Ikms/{{ $Ikm->first()->id }}/update" method="POST" enctype="multipart/form-data" id="cropForm">
                     @csrf
                     <input type="text" name="id_projek" value="{{ $project->id }}" hidden>
-                    <input type="text" name="id_ikm" value="{{ $ikm->first()->id }}" hidden>
-                    <input type="text" name="oldImage" value="{{ $ikm->first()->gambar }}" hidden>
+                    <input type="text" name="id_Ikm" value="{{ $Ikm->first()->id }}" hidden>
+                    <input type="text" name="oldImage" value="{{ $Ikm->first()->gambar }}" hidden>
 
                     <!-- Image Input -->
                     <div class="mb-3">
@@ -1215,7 +1211,7 @@ document.addEventListener("DOMContentLoaded", function () {
         'segmentasi', 'jenisKemasan', 'harga', 'tagline', 'redaksi', 'gramasi'
     ];
 
-    const cotsFields = [
+    const CotsFields = [
         'sejarahSingkat', 'produkjual', 'carapemasaran', 'bahanbaku',
         'prosesproduksi', 'omset', 'kapasitasProduksi', 'kendala', 'solusi'
     ];
@@ -1242,28 +1238,28 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // COTS Edit functionality
+    // Cots Edit functionality
     const enableCotsBtn = document.getElementById('enableCots');
     const batalCotsBtn = document.getElementById('batalCots');
-    const cotsActionsDiv = document.getElementById('cotsActions');
+    const CotsActionsDiv = document.getElementById('CotsActions');
 
     if (enableCotsBtn) {
         enableCotsBtn.addEventListener('click', function () {
-            cotsFields.forEach(id => {
+            CotsFields.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.removeAttribute('readonly');
             });
-            if (cotsActionsDiv) cotsActionsDiv.style.display = 'flex';
+            if (CotsActionsDiv) CotsActionsDiv.style.display = 'flex';
         });
     }
 
     if (batalCotsBtn) {
         batalCotsBtn.addEventListener('click', function () {
-            cotsFields.forEach(id => {
+            CotsFields.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.setAttribute('readonly', 'readonly');
             });
-            if (cotsActionsDiv) cotsActionsDiv.style.display = 'none';
+            if (CotsActionsDiv) CotsActionsDiv.style.display = 'none';
         });
     }
 
@@ -1278,7 +1274,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById('aiTargetField').value = fieldId;
             document.getElementById('aiOptionsTargetField').value = fieldId;
             const promptInput = document.getElementById('aiPrompt');
-            promptInput.value = `Tuliskan konten untuk field "${fieldLabel}" yang menarik dan profesional untuk produk IKM ini.`;
+            promptInput.value = `Tuliskan konten untuk field "${fieldLabel}" yang menarik dan profesional untuk produk Ikm ini.`;
 
             const modal = new bootstrap.Modal(document.getElementById('aiGenerateModal'));
             modal.show();
@@ -1304,7 +1300,7 @@ Kriteria:
 7. Pastikan nama tersebut **belum umum digunakan** untuk produk sejenis di pasar Indonesia.
 8.Nama harus cocok untuk branding jangka panjang dan mudah dipakai sebagai domain atau media sosial.
 9.Nama harus mencerminkan karakter produk, seperti rasa, fungsi, atau keunikan produk.
-10.Nama Boleh terinspirasi dari **Nama IKM atau lokasi**
+10.Nama Boleh terinspirasi dari **Nama Ikm atau lokasi**
 11. Format output harus:
 <p><strong>Nama Merek</strong><br><em>Tagline singkat (opsional)</em></p>
 12. Tambahkan **alasan singkat** kenapa nama tersebut cocok untuk produk.  `
@@ -2083,7 +2079,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 @else
 <div class="alert alert-warning">
-    <p>Data IKM tidak ditemukan.</p>
+    <p>Data Ikm tidak ditemukan.</p>
 </div>
 @endif
 
@@ -2123,13 +2119,13 @@ document.addEventListener('DOMContentLoaded', function() {
         'segmentasi', 'jenisKemasan', 'harga', 'tagline', 'redaksi', 'gramasi'
     ];
 
-    // Get IKM and Project IDs from hidden inputs
+    // Get Ikm and Project IDs from hidden inputs
     function getIds() {
-        const idIkmInput = document.querySelector('input[name="id_ikm"]');
+        const idIkmInput = document.querySelector('input[name="id_Ikm"]');
         const idProjectInput = document.querySelector('input[name="id_Project"]');
 
         return {
-            id_ikm: idIkmInput ? idIkmInput.value : null,
+            id_Ikm: idIkmInput ? idIkmInput.value : null,
             id_Project: idProjectInput ? idProjectInput.value : null
         };
     }
@@ -2198,7 +2194,7 @@ function updateLastSavedTimestamp() {
 
     let timestampEl = document.getElementById('lastAutoSaveTime');
     if (!timestampEl) {
-        const form = document.querySelector('form[action="/project/ikms/updateBrainstorming"]');
+        const form = document.querySelector('form[action="/project/Ikms/updateBrainstorming"]');
         if (form) {
             timestampEl = document.createElement('small');
             timestampEl.id = 'lastAutoSaveTime';
@@ -2220,19 +2216,19 @@ function updateLastSavedTimestamp() {
     async function sendAutoSave(data) {
         const ids = getIds();
 
-        if (!ids.id_ikm || !ids.id_Project) {
-            console.warn('Auto-save: Missing IKM or Project ID');
+        if (!ids.id_Ikm || !ids.id_Project) {
+            console.warn('Auto-save: Missing Ikm or Project ID');
             return { success: false, message: 'ID tidak valid' };
         }
 
         const payload = {
-            id_ikm: ids.id_ikm,
+            id_Ikm: ids.id_Ikm,
             id_Project: ids.id_Project,
             ...data
         };
 
         try {
-            const response = await fetch('/project/ikms/auto-save-brainstorming', {
+            const response = await fetch('/project/Ikms/auto-save-brainstorming', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2351,7 +2347,7 @@ function updateLastSavedTimestamp() {
     // Initialize auto-save
     function initAutoSave() {
         // Check if we're on the brainstorming tab form
-        const form = document.querySelector('form[action="/project/ikms/updateBrainstorming"]');
+        const form = document.querySelector('form[action="/project/Ikms/updateBrainstorming"]');
         if (!form) {
             console.log('Auto-save: Brainstorming form not found');
             return;

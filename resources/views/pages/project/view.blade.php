@@ -71,7 +71,7 @@
 
                 <!-- UKM Count -->
                 <div class="col-6 col-lg-3">
-                    <label class="form-label fw-semibold">Jumlah IKM</label>
+                    <label class="form-label fw-semibold">Jumlah Ikm</label>
                     <select class="form-select" name="ukm_count">
                         <option value="">Semua</option>
                         <option value="0" {{ request('ukm_count') == '0' ? 'selected' : '' }}>0 Peserta</option>
@@ -111,7 +111,7 @@
                 <div class="col-md-6 col-xxl-3 project-card"
                     data-project-name="{{ strtolower($project->NamaProjek) }}"
                     data-project-year="{{ $project->created_at->format('Y') }}"
-                    data-ikms-count="{{ $project->ikms_count ?? 0 }}"
+                    data-Ikms-count="{{ $project->Ikms_count ?? 0 }}"
                     data-files-count="{{ $project->produk_designs_count ?? 0 }}">
                 <div class="card position-relative">
                     <div class="position-absolute top-0 end-0" style="width: 180px">
@@ -146,7 +146,7 @@
                         <div class="flex-grow-1">
                         <div class="d-flex align-items-start gap-2">
                             <h5 class="mb-1 lh-sm flex-grow-1">
-                            <a href="/project/dataikm/{{ $project->id }}" class="link-reset project-title">{{ $project->NamaProjek }}</a>
+                            <a href="/project/dataIkm/{{ $project->id }}" class="link-reset project-title">{{ $project->NamaProjek }}</a>
                             </h5>
                             {{-- <span class="badge badge-soft-success fs-xxs badge-label align-self-start">In Progress</span> --}}
                         </div>
@@ -160,7 +160,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" href="/project/dataikm/{{ $project->id }}"><i class="ti ti-eye me-2"></i>View</a>
+                                <a class="dropdown-item" href="/project/dataIkm/{{ $project->id }}"><i class="ti ti-eye me-2"></i>View</a>
                             </li>
                             <li>
                                 <a class="dropdown-item text-primary" data-bs-toggle="modal" data-bs-target="#updateItem-{{ $project->id }}"><i class="ti ti-edit me-2"></i>Edit</a>
@@ -169,13 +169,9 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li>
-                                <form action="/project/hapus/{{ $project->id }}" method="post" class="delete-form">
-                                @csrf
-                                <input type="text" name="id" hidden value="{{ $project->id }}">
-                                <button class="dropdown-item text-danger" type="submit">
+                                <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $project->id }}">
                                     <i class="ti ti-trash me-2"></i>Delete
-                                </button>
-                                </form>
+                                </a>
                             </li>
                             </ul>
                         </div>
@@ -193,8 +189,8 @@
                         <div class="d-flex align-items-center gap-2">
                             <i class="ti ti-list-check text-muted fs-lg"></i>
                             <div>
-                            <div class="fw-medium">{{ $project->ikms_count ?? 0 }}</div>
-                            <small class="text-muted fs-xs">IKM Created</small>
+                            <div class="fw-medium">{{ $project->ikms->count() ?? 0 }}</div>
+                            <small class="text-muted fs-xs">Ikm Created</small>
                             </div>
                         </div>
                         </div>
@@ -339,24 +335,87 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="/project/update" method="post" id="updateProjectForm-{{ $project->id }}">
+                        <form action="/project/update" method="POST" id="updateProjectForm-{{ $project->id }}">
                             @csrf
                             <input type="text" name="id" hidden value="{{ $project->id }}">
                             <div class="row">
                                 <div class="mb-3">
                                     <label for="projectName-{{ $project->id }}" class="form-label">Nama Projek</label>
-                                    <input type="text" name="NamaProjek" id="projectName-{{ $project->id }}" class="form-control" value="{{ $project->NamaProjek }}">
+                                    <input type="text" name="NamaProjek" id="projectName-{{ $project->id }}" class="form-control @error('NamaProjek') is-invalid @enderror" value="{{ $project->NamaProjek }}">
+                                    @error('NamaProjek')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label for="keterangan-{{ $project->id }}" class="form-label">Deskripsi</label>
-                                    <textarea name="keterangan" id="keterangan-{{ $project->id }}" cols="30" rows="4" class="form-control">{{ $project->keterangan }}</textarea>
+                                    <textarea name="keterangan" id="keterangan-{{ $project->id }}" cols="30" rows="4" class="form-control @error('keterangan') is-invalid @enderror">{{ $project->keterangan }}</textarea>
+                                    @error('keterangan')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary" type="submit">Simpan</button>
+                            </form>
+                            <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Batal</button>
+                        </div>
+                </div>
+            </div>
+        </div>
+        @endforeach
+
+        <!-- Delete Confirmation Modals -->
+        @foreach ($projects as $project)
+        <div class="modal fade" id="deleteModal-{{ $project->id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ $project->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-danger" id="deleteModalLabel-{{ $project->id }}">
+                            <i class="ti ti-alert-triangle me-2"></i>Konfirmasi Hapus Project
+                        </h5>
+                        <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span class="ti ti-times fs--1"></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center mb-4">
+                            <div class="avatar-md bg-danger-subtle rounded-circle d-inline-flex align-items-center justify-content-center mb-3">
+                                <i class="ti ti-trash fs-32 text-danger"></i>
+                            </div>
+                            <h5 class="fw-bold">Apakah Anda Yakin?</h5>
+                            <p class="text-muted">Anda akan menghapus project <strong>{{ $project->NamaProjek }}</strong> dan semua data terkait di dalamnya.</p>
+                        </div>
+
+                        <div class="alert alert-warning mb-4">
+                            <h6 class="alert-heading fw-bold">Data yang akan dihapus:</h6>
+                            <ul class="mb-0">
+                                <li>Project: <strong>{{ $project->NamaProjek }}</strong></li>
+                                <li>Total IKM: <strong>{{ $project->ikms_count ?? $project->ikms->count() ?? 0 }}</strong> data</li>
+                                <li>Total Desain Produk: <strong>{{ $project->produk_designs_count ?? 0 }}</strong> file</li>
+                            </ul>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="confirmDelete-{{ $project->id }}">
+                            <label class="form-check-label" for="confirmDelete-{{ $project->id }}">
+                                Saya yakin ingin menghapus data ini
+                            </label>
+                        </div>
+
+                        <form action="/project/hapus/{{ $project->id }}" method="POST" id="deleteForm-{{ $project->id }}">
+                            @csrf
+                            @method('DELETE')
+                            <input type="hidden" name="id" value="{{ $project->id }}">
+                        </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit">Update</button>
-                        </form>
-                        <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn-{{ $project->id }}" disabled>
+                            <i class="ti ti-trash me-1"></i>Ya, Hapus
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="ti ti-x me-1"></i>Batal
+                        </button>
                     </div>
                 </div>
             </div>
@@ -440,6 +499,20 @@
         const totalUkmEl = document.getElementById('total-ukm');
         const totalFilesEl = document.getElementById('total-files');
 
+        // Debounce function for performance optimization
+        // Prevents excessive filtering while user is typing
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         // Function to filter cards based on all criteria
         function filterCards() {
             const keyword = searchInput ? searchInput.value.toLowerCase() : '';
@@ -451,12 +524,12 @@
             projectCards.forEach(card => {
                 const projectName = card.dataset.projectName || '';
                 const projectYear = card.dataset.projectYear || '';
-                const ikmsCount = parseInt(card.dataset.ikmsCount || 0);
+                const IkmsCount = parseInt(card.dataset.IkmsCount || 0);
 
                 // Check all filter conditions
                 const matchesSearch = projectName.includes(keyword);
                 const matchesYear = !selectedYear || projectYear === selectedYear;
-                const matchesUkmCount = !selectedUkmCount || ikmsCount >= selectedUkmCount;
+                const matchesUkmCount = !selectedUkmCount || IkmsCount >= selectedUkmCount;
 
                 const isVisible = matchesSearch && matchesYear && matchesUkmCount;
 
@@ -481,7 +554,7 @@
 
             projectCards.forEach(card => {
                 if (card.style.display !== 'none') {
-                    totalUkm += parseInt(card.dataset.ikmsCount || 0);
+                    totalUkm += parseInt(card.dataset.IkmsCount || 0);
                     totalFiles += parseInt(card.dataset.filesCount || 0);
                 }
             });
@@ -493,9 +566,12 @@
         // Initialize totals on page load
         updateTotals();
 
-        // Add event listeners for real-time filtering
+        // Create debounced version of filter function (300ms delay for optimal performance)
+        const debouncedFilter = debounce(filterCards, 300);
+
+        // Add event listeners with debounced filtering for search input
         if (searchInput) {
-            searchInput.addEventListener('input', filterCards);
+            searchInput.addEventListener('input', debouncedFilter);
         }
 
         if (yearFilter) {
@@ -549,7 +625,7 @@
     if (addForm) {
         addForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            const submitBtn = document.getElementById('submitAddBtn');
+            const submitBtn = this.querySelector('button[type="submit"]');
 
             Swal.fire({
                 title: 'Simpan Project?',
@@ -562,8 +638,10 @@
                 cancelButtonColor: '#d33'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menyimpan...';
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menyimpan...';
+                    }
                     this.submit();
                 }
             });
@@ -575,7 +653,6 @@
     updateForms.forEach(form => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
-            const submitBtn = this.querySelector('button[type="submit"]');
 
             Swal.fire({
                 title: 'Update Project?',
@@ -588,8 +665,17 @@
                 cancelButtonColor: '#d33'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Mengupdate...';
+                    // Find the modal footer and disable buttons
+                    const modalFooter = this.closest('.modal-content').querySelector('.modal-footer');
+                    if (modalFooter) {
+                        const buttons = modalFooter.querySelectorAll('button');
+                        buttons.forEach(btn => {
+                            btn.disabled = true;
+                            if (btn.type === 'submit') {
+                                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Mengupdate...';
+                            }
+                        });
+                    }
                     this.submit();
                 }
             });
@@ -622,6 +708,31 @@
                 }
             });
         });
+    });
+
+    // Delete Modal Confirmation Handler
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle checkbox change for each delete modal
+        @foreach ($projects as $project)
+        const checkbox{{ $project->id }} = document.getElementById('confirmDelete-{{ $project->id }}');
+        const deleteBtn{{ $project->id }} = document.getElementById('confirmDeleteBtn-{{ $project->id }}');
+
+        if (checkbox{{ $project->id }} && deleteBtn{{ $project->id }}) {
+            checkbox{{ $project->id }}.addEventListener('change', function() {
+                deleteBtn{{ $project->id }}.disabled = !this.checked;
+            });
+
+            // Handle delete button click
+            deleteBtn{{ $project->id }}.addEventListener('click', function() {
+                const form = document.getElementById('deleteForm-{{ $project->id }}');
+                if (form) {
+                    this.disabled = true;
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menghapus...';
+                    form.submit();
+                }
+            });
+        }
+        @endforeach
     });
 
 </script>

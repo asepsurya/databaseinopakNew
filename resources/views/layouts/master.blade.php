@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="{{ $metaDescription ?? 'Database INOPAK - Sistem Pengelolaan Informasi' }}" />
-    <meta name="keywords" content="{{ $metaKeywords ?? 'inopak, database, ikm, admin dashboard' }}" />
+    <meta name="keywords" content="{{ $metaKeywords ?? 'inopak, database, Ikm, admin dashboard' }}" />
     <meta name="author" content="{{ $companyName ?? 'INOPAK' }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') | {{ $appName ?? 'Database INOPAK' }}</title>
@@ -36,7 +36,7 @@
     <!-- Toastr Custom Styles -->
     <style>
         @media (max-width: 576px) {
-            .ikm-counter {
+            .Ikm-counter {
                display: none !important;
             }
         }
@@ -306,7 +306,7 @@
             color: #1976d2;
         }
 
-        .search-autocomplete-item .item-icon.ikm {
+        .search-autocomplete-item .item-icon.Ikm {
             background: #fff3e0;
             color: #f57c00;
         }
@@ -348,7 +348,7 @@
             color: #1976d2;
         }
 
-        .search-autocomplete-item .item-type.ikm {
+        .search-autocomplete-item .item-type.Ikm {
             background: #fff3e0;
             color: #f57c00;
         }
@@ -532,11 +532,11 @@
                     </div> --}}
 
                     <!-- UMKM Counter Badge -->
-                    <div class="topbar-item ikm-counter">
+                    <div class="topbar-item Ikm-counter">
                         <div class="d-flex align-items-center gap-2 px-2 py-1 rounded bg-primary bg-opacity-10 border border-primary border-opacity-25">
                             <i class="ti ti-building-skyscraper text-primary fs-lg"></i>
                             <span class="fw-semibold text-primary">{{ $totalUmkm ?? 0 }}</span>
-                            <span class="text-muted fs-xs d-none d-lg-inline">IKM</span>
+                            <span class="text-muted fs-xs d-none d-lg-inline">Ikm</span>
                         </div>
                     </div>
 
@@ -1073,9 +1073,9 @@
                     </li>
 
                     {{-- <li class="side-nav-item">
-                        <a href="/project/dataikm/1" class="side-nav-link">
+                        <a href="/project/dataIkm/1" class="side-nav-link">
                             <span class="menu-icon"><i class="ti ti-users"></i></span>
-                            <span class="menu-text">Data IKM</span>
+                            <span class="menu-text">Data Ikm</span>
                         </a>
                     </li> --}}
 
@@ -1362,18 +1362,35 @@
 
             let html = '';
             results.forEach((item, index) => {
-                const iconClass = item.type === 'project' ? 'ti ti-folder' : 'ti ti-building-skyscraper';
-                const iconType = item.type;
-                const typeLabel = item.type === 'project' ? 'Project' : 'IKM';
+                // Debug: Log the actual data structure
+                console.log('Item data:', JSON.stringify(item, null, 2));
+
+                // Normalize type to lowercase for consistent comparison
+                const normalizedType = (item.type || '').toLowerCase();
+                const iconClass = normalizedType === 'project' ? 'ti ti-folder' : 'ti ti-building-skyscraper';
+                const iconType = normalizedType || 'unknown';
+                const typeLabel = normalizedType === 'project' ? 'Project' : (normalizedType === 'ikm' ? 'IKM' : 'Unknown');
+
+                let title = '';
+                let subtitle = '';
+
+                if (normalizedType === 'ikm') {
+                    title = item.nama_ikm || item.nama_Ikm || item.nama || 'N/A';
+                    subtitle = item.nama_project || item.project_name || '';
+                } else if (normalizedType === 'project') {
+                    title = item.nama_project || item.project_name || 'N/A';
+                } else {
+                    title = item.name || item.title || item.nama || 'N/A';
+                }
 
                 html += `
-                    <div class="search-autocomplete-item" data-index="${index}" data-route="${escapeHtml(item.route)}">
+                    <div class="search-autocomplete-item" data-index="${index}" data-route="${escapeHtml(item.route || '')}">
                         <div class="item-icon ${iconType}">
                             <i class="${iconClass}"></i>
                         </div>
                         <div class="item-content">
-                            <div class="item-title">${escapeHtml(item.type === 'ikm' ? item.nama_ikm : item.nama_project)}</div>
-                            ${item.nama_project && item.type === 'ikm' ? '<div class="item-subtitle">' + escapeHtml(item.nama_project) + '</div>' : ''}
+                            <div class="item-title">${escapeHtml(title)}</div>
+                            ${subtitle ? '<div class="item-subtitle">' + escapeHtml(subtitle) + '</div>' : ''}
                         </div>
                         <span class="item-type ${iconType}">${typeLabel}</span>
                     </div>
@@ -1556,18 +1573,39 @@
 
                 let html = '';
                 results.forEach((item, index) => {
-                    const iconClass = item.type === 'project' ? 'ti ti-folder' : 'ti ti-building-skyscraper';
-                    const iconType = item.type;
-                    const typeLabel = item.type === 'project' ? 'Project' : 'IKM';
-                    const title = item.type === 'ikm' ? item.nama_ikm : item.nama_project;
+                    // Debug: Log the actual data structure
+                    console.log('Item data:', JSON.stringify(item, null, 2));
 
-                    html += '<div class="search-autocomplete-item" data-index="' + index + '" data-route="' + escapeHtml(item.route) + '">';
-                    html += '<div class="item-icon ' + iconType + '"><i class="' + iconClass + '"></i></div>';
-                    html += '<div class="item-content"><div class="item-title">' + escapeHtml(title) + '</div>';
-                    if (item.nama_project && item.type === 'ikm') {
-                        html += '<div class="item-subtitle">' + escapeHtml(item.nama_project) + '</div>';
+                    // Normalize type to lowercase for consistent comparison
+                    const normalizedType = (item.type || '').toLowerCase();
+                    const iconClass = normalizedType === 'project' ? 'ti ti-folder' : 'ti ti-building-skyscraper';
+                    const iconType = normalizedType || 'unknown';
+                    const typeLabel = normalizedType === 'project' ? 'Project' : (normalizedType === 'ikm' ? 'IKM' : 'Unknown');
+
+                    let title = '';
+                    let subtitle = '';
+
+                    if (normalizedType === 'ikm') {
+                        title = item.nama_ikm || item.nama_Ikm || item.nama || 'N/A';
+                        subtitle = item.nama_project || item.project_name || '';
+                    } else if (normalizedType === 'project') {
+                        title = item.nama_project || item.project_name || 'N/A';
+                    } else {
+                        title = item.name || item.title || item.nama || 'N/A';
                     }
-                    html += '</div><span class="item-type ' + iconType + '">' + typeLabel + '</span></div>';
+
+                    html += `
+                        <div class="search-autocomplete-item" data-index="${index}" data-route="${escapeHtml(item.route || '')}">
+                            <div class="item-icon ${iconType}">
+                                <i class="${iconClass}"></i>
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">${escapeHtml(title)}</div>
+                                ${subtitle ? '<div class="item-subtitle">' + escapeHtml(subtitle) + '</div>' : ''}
+                            </div>
+                            <span class="item-type ${iconType}">${typeLabel}</span>
+                        </div>
+                    `;
                 });
 
                 dropdown.innerHTML = html;
@@ -1679,7 +1717,7 @@
 
         function initEncryptedLinks() {
             // Find all links with encrypted ID data attributes
-            const encryptedLinks = document.querySelectorAll('[data-encrypted-ikm]');
+            const encryptedLinks = document.querySelectorAll('[data-encrypted-Ikm]');
 
             if (encryptedLinks.length === 0) {
                 return;
@@ -1691,7 +1729,7 @@
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
 
-                    const encryptedIkm = this.getAttribute('data-encrypted-ikm');
+                    const encryptedIkm = this.getAttribute('data-encrypted-Ikm');
                     const encryptedProject = this.getAttribute('data-encrypted-project');
 
                     console.log('Click on encrypted link:', { encryptedIkm, encryptedProject });
@@ -1714,11 +1752,11 @@
 
                     // Add encrypted IDs
                     if (encryptedIkm) {
-                        const ikmInput = document.createElement('input');
-                        ikmInput.type = 'hidden';
-                        ikmInput.name = 'encrypted_ikm';
-                        ikmInput.value = encryptedIkm;
-                        form.appendChild(ikmInput);
+                        const IkmInput = document.createElement('input');
+                        IkmInput.type = 'hidden';
+                        IkmInput.name = 'encrypted_Ikm';
+                        IkmInput.value = encryptedIkm;
+                        form.appendChild(IkmInput);
                     }
 
                     if (encryptedProject) {
@@ -1802,7 +1840,7 @@
                 didOpen: () => {
                     // Add additional buttons dynamically
                     const actions = [
-                        { text: 'IKM', icon: 'ti ti-users', action: '/project/dataikm/create' },
+                        { text: 'Ikm', icon: 'ti ti-users', action: '/project/dataIkm/create' },
                         { text: 'COTS', icon: 'ti ti-file-text', action: '/cots/create' }
                     ];
 
@@ -1843,7 +1881,7 @@
     </script>
     <script>
 const texts = [
-    "Cari Nama IKM...",
+    "Cari Nama Ikm...",
     "Cari Nama Project...",
     "Ayo mulai dari sekarang!",
     "Jangan tunda kesuksesanmu!",

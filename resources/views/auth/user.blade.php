@@ -3,6 +3,10 @@
 @section('title', 'My Profile')
 
 @push('styles')
+
+@endpush
+
+@section('content')
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 <style>
     .profile-photo-container {
@@ -104,17 +108,7 @@
         z-index: 10;
     }
 
-    .photo-upload-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 9990;
-    }
-
+    /* Loading Spinner */
     .photo-upload-loading {
         display: none;
         position: fixed;
@@ -130,8 +124,8 @@
     }
 
     .photo-upload-loading .spinner {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border: 4px solid #e9ecef;
         border-top: 4px solid #435ebe;
         border-radius: 50%;
@@ -142,6 +136,44 @@
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
+    }
+
+    /* Cropper Container in Modal */
+    .cropper-container {
+        display: none;
+    }
+
+    .cropper-container.show {
+        display: block;
+    }
+
+    .img-container {
+        max-height: 400px;
+        background: #333;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .img-container img {
+        max-width: 100%;
+        display: block;
+    }
+
+    .preview-container-crop {
+        width: 150px;
+        height: 150px;
+        overflow: hidden;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin: 0 auto;
+    }
+
+    .preview-container-crop .preview {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
     }
 
     .profile-card {
@@ -262,12 +294,18 @@
         .profile-content {
             padding: 20px;
         }
+
+        .img-container {
+            max-height: 300px;
+        }
+
+        .preview-container-crop {
+            width: 120px;
+            height: 120px;
+        }
     }
 </style>
-@endpush
-
-@section('content')
-<div >
+<div>
     <div>
         <!-- Start Content-->
         <div class="container-fluid">
@@ -281,8 +319,7 @@
             </div>
             <!-- end page title -->
 
-            <!-- Profile Photo Upload Loading Overlay -->
-            <div class="photo-upload-overlay" id="photoUploadOverlay"></div>
+            <!-- Profile Photo Upload Loading -->
             <div class="photo-upload-loading" id="photoUploadLoading">
                 <div class="spinner"></div>
                 <p class="mb-0">Mengunggah foto profil...</p>
@@ -309,7 +346,7 @@
                                          id="profilePhotoPreview">
                                 @endif
 
-                                <label for="profile_photo" class="photo-upload-btn" title="Ubah Foto Profil">
+                                <label for="imageInput" class="photo-upload-btn" title="Ubah Foto Profil" data-bs-toggle="modal" data-bs-target="#updateProfilePhoto">
                                     <i class="ti ti-camera"></i>
                                 </label>
 
@@ -332,19 +369,6 @@
                         </div>
 
                         <div class="profile-content">
-                            <form action="{{ route('profile.photo.update') }}"
-                                  method="POST"
-                                  enctype="multipart/form-data"
-                                  id="photoUploadForm">
-                                @csrf
-                                @method('POST')
-                                <input type="file"
-                                       name="profile_photo"
-                                       id="profile_photo"
-                                       accept="image/jpeg,image/png,image/jpg,image/gif"
-                                       style="display: none;"
-                                       onchange="previewPhoto(event)">
-                            </form>
 
                             <form action="{{ route('profile.photo.remove') }}"
                                   method="POST"
@@ -505,7 +529,7 @@
 
                                         <div class="mb-4">
                                             <label for="address" class="form-label form-label-custom">Alamat</label>
-                                            <textarea class="form-control form-control-custom @error('address') is-invalid @enderror"
+                                            <textarea class="form-control form-control-custom"
                                                       id="address"
                                                       name="address"
                                                       rows="2"
@@ -564,7 +588,9 @@
                                             <label for="new_password" class="form-label form-label-custom">Kata Sandi Baru <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="password"
-                                                       class="form-control form-control-custom @error('new_password') is-invalid @enderror"
+                                                     @error('new_password')
+                                                         <div class="invalid-feedback">{{ $message }}</div>
+                                                     @enderror
                                                        id="new_password"
                                                        name="new_password"
                                                        required
@@ -615,148 +641,473 @@
     </div>
     <!-- end content -->
 </div>
+
+<!-- Update Profile Photo Modal -->
+<div class="modal fade" id="updateProfilePhoto" tabindex="-1" aria-labelledby="updateProfilePhotoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateProfilePhotoModalLabel">
+                    <i class="ti ti-camera me-2"></i>Ubah Foto Profil
+                </h5>
+                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="ti ti-x"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('profile.photo.cropped') }}" method="POST" enctype="multipart/form-data" id="cropForm">
+                    @csrf
+
+                    <!-- Image Input -->
+                    <div class="mb-3">
+                        <label class="form-label">Pilih Foto</label>
+                        <input type="file" name="profile_photo" class="form-control" id="imageInput" accept="image/*">
+                    </div>
+
+                    <!-- Cropper Container -->
+                    <div class="cropper-container" id="cropperContainer">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="img-container">
+                                    <img id="imageToCrop" src="" alt="Gambar untuk di-crop">
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-flex flex-column justify-content-center">
+                                <div class="preview-container-crop">
+                                    <div class="preview" id="previewCircle"></div>
+                                </div>
+                                <div class="mt-3 text-center">
+                                    <p class="text-muted mb-2">Preview</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden input for cropped image -->
+                    <input type="hidden" name="croppedImage" id="croppedImage">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" id="cropButton" style="display:none;">
+                    <i class="ti ti-crop me-1"></i> Crop Foto
+                </button>
+                <button class="btn btn-outline-secondary" type="button" id="resetButton" style="display:none;">
+                    <i class="ti ti-refresh me-1"></i> Reset
+                </button>
+                <button class="btn btn-primary" type="button" id="saveButton" style="display:none;" onclick="submitCroppedForm()">
+                    <i class="ti ti-check me-1"></i> Simpan
+                </button>
+                <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @push('scripts')
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 <script>
-    // Photo preview functionality
-    function previewPhoto(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+    // Wait for DOM to be ready
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Profile photo script initialized');
 
-        // Validate file type
-        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-        if (!validTypes.includes(file.type)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Format Tidak Valid',
-                text: 'File harus berupa gambar dengan format JPEG, PNG, JPG, atau GIF.',
-                confirmButtonColor: '#435ebe'
-            });
-            event.target.value = '';
-            return;
-        }
+        // Global variables
+        let cropper = null;
 
-        // Validate file size (2MB = 2 * 1024 * 1024 bytes)
-        const maxSize = 2 * 1024 * 1024;
-        if (file.size > maxSize) {
-            Swal.fire({
-                icon: 'error',
-                title: 'File Terlalu Besar',
-                text: 'Ukuran file maksimal adalah 2MB.',
-                confirmButtonColor: '#435ebe'
-            });
-            event.target.value = '';
-            return;
-        }
+        // Photo validation constants
+        const VALID_TYPES = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+        const MIN_WIDTH = 100;
+        const MIN_HEIGHT = 100;
 
-        // Show loading
-        document.getElementById('photoUploadOverlay').style.display = 'block';
-        document.getElementById('photoUploadLoading').style.display = 'block';
+        // DOM Elements - get them inside DOMContentLoaded
+        const imageInput = document.getElementById('imageInput');
+        const imageToCrop = document.getElementById('imageToCrop');
+        const cropperContainer = document.getElementById('cropperContainer');
+        const cropButton = document.getElementById('cropButton');
+        const resetButton = document.getElementById('resetButton');
+        const saveButton = document.getElementById('saveButton');
+        const croppedImageInput = document.getElementById('croppedImage');
+        const updateProfilePhotoModal = document.getElementById('updateProfilePhoto');
 
-        // Preview using FileReader
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.getElementById('profilePhotoPreview');
-            const placeholder = document.getElementById('profilePhotoPlaceholder');
-            const currentPhoto = document.getElementById('currentProfilePhoto');
-
-            preview.src = e.target.result;
-            preview.classList.add('active');
-
-            if (placeholder) placeholder.style.display = 'none';
-            if (currentPhoto) currentPhoto.style.display = 'none';
-
-            // Submit the form
-            document.getElementById('photoUploadForm').submit();
-        };
-        reader.readAsDataURL(file);
-    }
-
-    // Toggle password visibility
-    document.querySelectorAll('.toggle-password').forEach(button => {
-        button.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
-            const input = document.getElementById(targetId);
-            const icon = this.querySelector('i');
-
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('ti-eye');
-                icon.classList.add('ti-eye-off');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('ti-eye-off');
-                icon.classList.add('ti-eye');
-            }
+        console.log('Elements found:', {
+            imageInput: !!imageInput,
+            imageToCrop: !!imageToCrop,
+            cropperContainer: !!cropperContainer,
+            cropButton: !!cropButton,
+            resetButton: !!resetButton,
+            saveButton: !!saveButton,
+            croppedImageInput: !!croppedImageInput,
+            modal: !!updateProfilePhotoModal
         });
-    });
 
-    // Form submission handling
-    document.querySelectorAll('.profile-form, .password-form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+        // Handle file selection
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                console.log('File selected:', e.target.files.length);
+                const files = e.target.files;
 
-            const formElement = this;
+                if (files && files.length > 0) {
+                    const file = files[0];
+                    console.log('File type:', file.type, 'Size:', file.size);
 
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah Anda yakin ingin menyimpan perubahan?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#435ebe',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, Simpan!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Remove the event listener to prevent infinite loop, then submit natively
-                    formElement.removeEventListener('submit', arguments.callee);
-                    HTMLFormElement.prototype.submit.call(formElement);
+                    // Validate file type
+                    if (!VALID_TYPES.includes(file.type)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Format Tidak Valid',
+                            text: 'File harus berupa gambar dengan format JPEG, PNG, JPG, atau WEBP.',
+                            confirmButtonColor: '#435ebe'
+                        });
+                        imageInput.value = '';
+                        return;
+                    }
+
+                    // Validate file size
+                    if (file.size > MAX_SIZE) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'File Terlalu Besar',
+                            text: 'Ukuran file maksimal adalah 5MB.',
+                            confirmButtonColor: '#435ebe'
+                        });
+                        imageInput.value = '';
+                        return;
+                    }
+
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        console.log('Image loaded, initializing cropper');
+                        if (cropper) {
+                            cropper.destroy();
+                            cropper = null;
+                        }
+
+                        imageToCrop.src = e.target.result;
+                        cropperContainer.classList.add('show');
+
+                        cropper = new Cropper(imageToCrop, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            responsive: true,
+                            preview: '#previewCircle',
+                            ready: function() {
+                                console.log('Cropper is ready');
+                            }
+                        });
+
+                        if (cropButton) cropButton.style.display = 'inline-block';
+                        if (resetButton) resetButton.style.display = 'inline-block';
+                        if (saveButton) saveButton.style.display = 'inline-block';
+                        if (imageInput.parentElement) imageInput.parentElement.style.display = 'none';
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Handle crop button click
+        if (cropButton) {
+            cropButton.addEventListener('click', function() {
+                console.log('Crop button clicked');
+                if (cropper) {
+                    const canvas = cropper.getCroppedCanvas({
+                        width: 300,
+                        height: 300,
+                        fillColor: '#fff',
+                        imageSmoothingEnabled: true,
+                        imageSmoothingQuality: 'high'
+                    });
+
+                    if (canvas) {
+                        const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                        console.log('Cropped image generated, length:', croppedDataUrl.length);
+                        if (croppedImageInput) {
+                            croppedImageInput.value = croppedDataUrl;
+                        }
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Foto berhasil di-crop. Klik Simpan untuk menyimpan.',
+                            confirmButtonColor: '#435ebe'
+                        });
+                    } else {
+                        console.error('Failed to get cropped canvas');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Gagal memproses gambar. Silakan coba lagi.',
+                            confirmButtonColor: '#435ebe'
+                        });
+                    }
+                }
+            });
+        }
+
+        // Handle reset button click
+        if (resetButton) {
+            resetButton.addEventListener('click', function() {
+                console.log('Reset button clicked');
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+
+                imageToCrop.src = '';
+                if (cropperContainer) cropperContainer.classList.remove('show');
+                if (cropButton) cropButton.style.display = 'none';
+                if (resetButton) resetButton.style.display = 'none';
+                if (saveButton) saveButton.style.display = 'none';
+                if (imageInput) {
+                    imageInput.value = '';
+                    if (imageInput.parentElement) imageInput.parentElement.style.display = 'block';
+                }
+                if (croppedImageInput) croppedImageInput.value = '';
+
+                const preview = document.getElementById('previewCircle');
+                if (preview) preview.style.backgroundImage = '';
+            });
+        }
+
+        // Convert base64 to Blob
+        function base64ToBlob(base64Data, mimeType) {
+            try {
+                const byteCharacters = atob(base64Data.split(',')[1]);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                return new Blob([byteArray], { type: mimeType });
+            } catch (e) {
+                console.error('Error converting base64 to blob:', e);
+                return null;
+            }
+        }
+
+        // Submit cropped form
+        window.submitCroppedForm = function() {
+            console.log('submitCroppedForm called');
+
+            if (!croppedImageInput || !croppedImageInput.value) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan',
+                    text: 'Silakan crop foto terlebih dahulu.',
+                    confirmButtonColor: '#435ebe'
+                });
+                return;
+            }
+
+            console.log('Preparing form data...');
+
+            // Close modal properly
+            if (updateProfilePhotoModal) {
+                // Try Bootstrap 5 first
+                if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+                    try {
+                        const modalInstance = bootstrap.Modal.getInstance(updateProfilePhotoModal);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+                    } catch (e) {
+                        console.log('Could not get modal instance, using fallback');
+                    }
+                }
+                // Fallback: hide using jQuery or direct manipulation
+                if ($(updateProfilePhotoModal).hasClass('show')) {
+                    $(updateProfilePhotoModal).modal('hide');
+                }
+            }
+
+            // Show loading
+            const loadingEl = document.getElementById('photoUploadLoading');
+            if (loadingEl) loadingEl.style.display = 'block';
+
+            // Create form data with the cropped image as a file
+            const formData = new FormData();
+
+            // Add CSRF token
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (csrfToken) {
+                formData.append('_token', csrfToken.content);
+            }
+
+            // Convert base64 cropped image to Blob and append as file
+            const base64Data = croppedImageInput.value;
+            const blob = base64ToBlob(base64Data, 'image/jpeg');
+
+            if (blob) {
+                formData.append('profile_photo', blob, 'cropped-photo.jpg');
+                console.log('Blob created successfully');
+            } else {
+                console.error('Failed to create blob from base64');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Gagal memproses gambar.',
+                    confirmButtonColor: '#435ebe'
+                });
+                return;
+            }
+
+            // Submit via AJAX
+            fetch('{{ route("profile.photo.cropped") }}', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (loadingEl) loadingEl.style.display = 'none';
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response data:', data);
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: data.message,
+                        confirmButtonColor: '#435ebe',
+                        timer: 3000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: data.message || 'Gagal mengunggah foto profil.',
+                        confirmButtonColor: '#435ebe'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                if (loadingEl) loadingEl.style.display = 'none';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Terjadi kesalahan saat mengunggah foto. Silakan coba lagi.',
+                    confirmButtonColor: '#435ebe'
+                });
+            });
+        };
+
+        // Handle modal close
+        if (updateProfilePhotoModal) {
+            updateProfilePhotoModal.addEventListener('hidden.bs.modal', function() {
+                console.log('Modal closed');
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+
+                if (cropperContainer) cropperContainer.classList.remove('show');
+                if (cropButton) cropButton.style.display = 'none';
+                if (resetButton) resetButton.style.display = 'none';
+                if (saveButton) saveButton.style.display = 'none';
+                if (imageInput) {
+                    imageInput.value = '';
+                    if (imageInput.parentElement) imageInput.parentElement.style.display = 'block';
+                }
+                if (croppedImageInput) croppedImageInput.value = '';
+
+                const preview = document.getElementById('previewCircle');
+                if (preview) preview.style.backgroundImage = '';
+            });
+        }
+
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('ti-eye');
+                    icon.classList.add('ti-eye-off');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('ti-eye-off');
+                    icon.classList.add('ti-eye');
                 }
             });
         });
+
+        // Form submission handling
+        document.querySelectorAll('.profile-form, .password-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formElement = this;
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin menyimpan perubahan?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#435ebe',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, Simpan!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        formElement.removeEventListener('submit', arguments.callee);
+                        HTMLFormElement.prototype.submit.call(formElement);
+                    }
+                });
+            });
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            document.querySelectorAll('.alert-dismissible').forEach(alert => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Session success messages
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#435ebe',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        @endif
+
+        @if(session('UpdateBerhasil'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('UpdateBerhasil') }}',
+                confirmButtonColor: '#435ebe',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        @endif
+
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#435ebe'
+            });
+        @endif
     });
-
-    // Auto-hide alerts after 5 seconds
-    setTimeout(function() {
-        document.querySelectorAll('.alert-dismissible').forEach(alert => {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-        });
-    }, 5000);
-
-    // Session success messages
-    @if(session('success'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: '{{ session('success') }}',
-            confirmButtonColor: '#435ebe',
-            timer: 3000,
-            timerProgressBar: true
-        });
-    @endif
-
-    @if(session('UpdateBerhasil'))
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: '{{ session('UpdateBerhasil') }}',
-            confirmButtonColor: '#435ebe',
-            timer: 3000,
-            timerProgressBar: true
-        });
-    @endif
-
-    @if(session('error'))
-        Swal.fire({
-            icon: 'error',
-            title: 'Gagal!',
-            text: '{{ session('error') }}',
-            confirmButtonColor: '#435ebe'
-        });
-    @endif
 </script>
 @endpush

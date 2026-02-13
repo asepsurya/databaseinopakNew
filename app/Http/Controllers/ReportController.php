@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ikm;
-use App\Models\cots;
+use App\Models\Ikm;
+use App\Models\Cots;
 use App\Models\DokumentasiCots;
 use Faker\Factory as Faker; //import Faker untuk generate random data
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -13,7 +13,7 @@ class ReportController extends Controller
 {
     public function ReportBrainstorming($id, $name){
         $dataDummy = [];
-        $data1 = ikm::where('id',$id)->get();
+        $data1 = Ikm::where('id',$id)->get();
          foreach($data1 as $a){
             $people = (Object) [
                 "jenis_produk" => $a->jenisProduk,
@@ -51,8 +51,8 @@ class ReportController extends Controller
        
         
         $dataDummy = [];
-        $data = ikm::where('id',$id)->get();
-        $datadoc = DokumentasiCots::where('id_ikm',$id)->get();
+        $data = Ikm::where('id',$id)->get();
+        $datadoc = DokumentasiCots::where('id_Ikm',$id)->get();
         
          foreach($data as $a){
             foreach ($a->cots as $cots){
@@ -100,7 +100,7 @@ class ReportController extends Controller
     public function ikmReport($id_project, $nama_project){
       
         $dataDummy = [];
-        $dataikm = ikm::where('id_Project',$id_project)->get();
+        $dataikm = Ikm::where('id_Project',$id_project)->get();
         $pdf = PDF::loadView('report.ikm',[
             'ikm'=> $dataikm
         ]);

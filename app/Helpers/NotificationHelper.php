@@ -292,7 +292,7 @@ if (!function_exists('notify_project')) {
     }
 }
 
-if (!function_exists('notify_ikm')) {
+if (!function_exists('notify_Ikm')) {
     /**
      * Notify about IKM-related activities
      */
@@ -303,12 +303,12 @@ if (!function_exists('notify_ikm')) {
     ): void
     {
         $type = match ($event) {
-            'created' => NotificationType::IKM_CREATED,
-            'updated' => NotificationType::IKM_UPDATED,
-            'deleted' => NotificationType::IKM_DELETED,
-            'approved' => NotificationType::IKM_APPROVED,
-            'rejected' => NotificationType::IKM_REJECTED,
-            'verified' => NotificationType::IKM_VERIFIED,
+            'created' => NotificationType::Ikm_CREATED,
+            'updated' => NotificationType::Ikm_UPDATED,
+            'deleted' => NotificationType::Ikm_DELETED,
+            'approved' => NotificationType::Ikm_APPROVED,
+            'rejected' => NotificationType::Ikm_REJECTED,
+            'verified' => NotificationType::Ikm_VERIFIED,
             default => NotificationType::DATA_UPDATED,
         };
 
@@ -327,7 +327,7 @@ if (!function_exists('notify_ikm')) {
             [
                 'message' => $message,
                 'additional_data' => [
-                    'ikm' => $ikmName,
+                    'Ikm' => $ikmName,
                     'event' => $event,
                 ],
             ],
@@ -337,7 +337,7 @@ if (!function_exists('notify_ikm')) {
     }
 }
 
-if (!function_exists('notify_cots')) {
+if (!function_exists('notify_Cots')) {
     /**
      * Notify about COTS-related activities
      */
@@ -348,11 +348,11 @@ if (!function_exists('notify_cots')) {
     ): void
     {
         $type = match ($event) {
-            'created' => NotificationType::COTS_CREATED,
-            'updated' => NotificationType::COTS_UPDATED,
-            'deleted' => NotificationType::COTS_DELETED,
-            'installed' => NotificationType::COTS_INSTALLED,
-            'removed' => NotificationType::COTS_REMOVED,
+            'created' => NotificationType::Cots_CREATED,
+            'updated' => NotificationType::Cots_UPDATED,
+            'deleted' => NotificationType::Cots_DELETED,
+            'installed' => NotificationType::Cots_INSTALLED,
+            'removed' => NotificationType::Cots_REMOVED,
             default => NotificationType::DATA_UPDATED,
         };
 
@@ -370,7 +370,7 @@ if (!function_exists('notify_cots')) {
             [
                 'message' => $message,
                 'additional_data' => [
-                    'cots' => $cotsName,
+                    'Cots' => $cotsName,
                     'event' => $event,
                 ],
             ],

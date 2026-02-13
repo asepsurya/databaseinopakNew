@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 use App\Model;
-use App\Models\ikm;
+use App\Models\Ikm;
 use App\Models\Project;
 use App\Models\Province;
 use App\Models\Regency;
 use App\Models\District;
 use App\Models\Village;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreikmRequest;
-use App\Http\Requests\UpdateikmRequest;
+use App\Http\Requests\StoreIkmRequest;
+use App\Http\Requests\UpdateIkmRequest;
 
 class IkmController extends Controller
 {
@@ -19,14 +19,14 @@ class IkmController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(project $project)    
+    public function index(project $project)
     {
         return view('pages.ikm.show',[
             'title'=>'Form Brainstorming',
             'project'=>$project,
-            'dataIkm'=>ikm::where('id_Project',$project->id)->get(),
+            'dataIkm'=>Ikm::where('id_Project',$project->id)->get(),
             'provinsi'=>Province::all(),
-            'searchIkm'=>ikm::all()
+            'searchIkm'=>Ikm::all()
         ]);
     }
 
@@ -43,10 +43,10 @@ class IkmController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreikmRequest  $request
+     * @param  \App\Http\Requests\StoreIkmRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreikmRequest $request)
+    public function store(StoreIkmRequest $request)
     {
 
     }
@@ -54,10 +54,10 @@ class IkmController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\ikm  $ikm
+     * @param  \App\Models\Ikm  $ikm
      * @return \Illuminate\Http\Response
      */
-    public function show(ikm $ikm)
+    public function show(Ikm $ikm)
     {
         //
     }
@@ -65,10 +65,10 @@ class IkmController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\ikm  $ikm
+     * @param  \App\Models\Ikm  $ikm
      * @return \Illuminate\Http\Response
      */
-    public function edit(ikm $ikm)
+    public function edit(Ikm $ikm)
     {
         //
     }
@@ -76,11 +76,11 @@ class IkmController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateikmRequest  $request
-     * @param  \App\Models\ikm  $ikm
+     * @param  \App\Http\Requests\UpdateIkmRequest  $request
+     * @param  \App\Models\Ikm  $ikm
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateikmRequest $request, ikm $ikm)
+    public function update(UpdateIkmRequest $request, Ikm $ikm)
     {
         //
     }
@@ -88,70 +88,75 @@ class IkmController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\ikm  $ikm
+     * @param  \App\Models\Ikm  $ikm
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ikm $ikm)
+    public function destroy(Ikm $ikm)
     {
         //
     }
-    
-    public function tambahIkm(request $request){
-        ikm::create([
-            'nama'=>$request->nama,
-            'jenisProduk'=>$request->jenisProduk,
-            'id_Project'=>$request->id_Project
-        ]);
-        $request->session()->flash('Berhasil', 'Data Berhasil Disimpan');
-        return redirect('/project/dataikm/'.$request->id_Project);
-    }
-       
 
-    public function createIkm(request $request){
-     
-       $validasiData = $request->validate([
-        'nama'=>'required|max:255',
-        'gender'=>'required',
-        'alamat'=>'required',
-        'id_provinsi'=>'required',
-        'id_kota'=>'required',
-        'id_kecamatan'=>'required',
-        'id_desa'=>'required',
-        'rt'=>'required',
-        'rw'=>'required',
-        'telp'=>'required',
-        // produk
-        'jenisProduk'=>'required',
-        'merk'=>'required',
-        'tagline'=>'',
-        'kelebihan'=>'required',
-        'gramasi'=>'required',
-        'jenisKemasan'=>'',
-        'segmentasi'=>'required',
-        'harga'=>'required',
-        'varian'=>'required',
-        'komposisi'=>'required',
-        'redaksi'=>'',
-        'other'=>'',
-        // perizinan
-        'namaUsaha'=>'required',
-        'noNIB'=>'',
-        'noISO'=>'',
-        'noPIRT'=>'',
-        'noHAKI'=>'',
-        'noLayakSehat'=>'',
-        'noHalal'=>'',
-        'CPPOB'=>'',
-        'HACCP'=>'',
-        'legalitasLain'=>'',
-        'id_Project'=>'',
-        'gambar'=>'',
-        
-       ]);
-                
-       ikm::create($validasiData);
-       $request->session()->flash('Berhasil', 'Data Berhasil Disimpan');
-       return redirect('/project/dataikm/'.$request->id_Project);
+    public function tambahIkm(Request $request){
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'jenisProduk' => 'required|string',
+            'id_Project' => 'required|string',
+        ]);
+
+        Ikm::create([
+            'nama' => $validated['nama'],
+            'jenisProduk' => $validated['jenisProduk'],
+            'id_Project' => $validated['id_Project']
+        ]);
+
+        $request->session()->flash('Berhasil', 'Data IKM Berhasil Disimpan');
+        return redirect('/project/dataIkm/'.$validated['id_Project']);
+    }
+
+
+    public function createIkm(Request $request){
+        $validatedData = $request->validate([
+            'nama' => 'required|string|max:255',
+            'gender' => 'required|string',
+            'alamat' => 'required|string',
+            'id_provinsi' => 'required|string',
+            'id_kota' => 'required|string',
+            'id_kecamatan' => 'required|string',
+            'id_desa' => 'required|string',
+            'rt' => 'required|string',
+            'rw' => 'required|string',
+            'telp' => 'required|string',
+            // produk
+            'jenisProduk' => 'required|string',
+            'merk' => 'required|string',
+            'tagline' => 'nullable|string',
+            'kelebihan' => 'required|string',
+            'gramasi' => 'required|string',
+            'jenisKemasan' => 'nullable|string',
+            'segmentasi' => 'required|string',
+            'harga' => 'required|string',
+            'varian' => 'required|string',
+            'komposisi' => 'required|string',
+            'redaksi' => 'nullable|string',
+            'other' => 'nullable|string',
+            // perizinan
+            'namaUsaha' => 'required|string',
+            'noNIB' => 'nullable|string',
+            'noISO' => 'nullable|string',
+            'noPIRT' => 'nullable|string',
+            'noHAKI' => 'nullable|string',
+            'noLayakSehat' => 'nullable|string',
+            'noHalal' => 'nullable|string',
+            'CPPOB' => 'nullable|string',
+            'HACCP' => 'nullable|string',
+            'legalitasLain' => 'nullable|string',
+            'id_Project' => 'required|string',
+            'gambar' => 'nullable|string',
+        ]);
+
+        Ikm::create($validatedData);
+        $request->session()->flash('Berhasil', 'Data IKM Berhasil Disimpan');
+        return redirect('/project/dataIkm/'.$validatedData['id_Project']);
     }
 
     public function UpdateIkm(request $request){
@@ -191,22 +196,22 @@ class IkmController extends Controller
             // 'HACCP'=>'',
             'legalitasLain'=>'',
             'id_Project'=>'',
-            
+
            ]);
-            ikm::where('id',$request->id_ikm)->update($validasiData);
+            Ikm::where('id',$request->id_Ikm)->update($validasiData);
             $request->session()->flash('UpdateBerhasil', 'Data Berhasil Diubah');
-            $idikm = encrypt($request->id_ikm);
+            $idikm = encrypt($request->id_Ikm);
             return redirect('project/ikms/'.$idikm.'/'.$request->id_Project);
     }
     public function deleteIkm(request $request){
-        ikm::destroy($request->id_ikm);
+        Ikm::destroy($request->id_Ikm);
         $request->session()->flash('HapusBerhasil', 'Data Berhasil dihapus');
         return redirect('/project/dataikm/'.$request->id_Project);
     }
-    
+
     public function getkabupaten(request $request){
         $id_provinsi = $request->id_provinsi;
-       
+
         $option = "<option value=''> Kota/Kabupaten </option>";
         $kabupatens = Regency::where('province_id',$id_provinsi)->get();
         foreach($kabupatens as $kabupaten){
@@ -216,7 +221,7 @@ class IkmController extends Controller
     }
     public function getkecamatan(request $request){
         $id_kabupaten = $request->id_kabupaten;
-       
+
         $option = "<option value=''> Kecamatan </option>";
         $kecamatans = District::where('regency_id',$id_kabupaten)->get();
         foreach($kecamatans as $kecamatan){
@@ -227,7 +232,7 @@ class IkmController extends Controller
 
     public function getdesa(request $request){
         $id_kecamatan = $request->id_kecamatan;
-       
+
         $option = "<option value=''> Kelurahan/Desa </option>";
         $desas = Village::where('district_id',$id_kecamatan)->get();
         foreach($desas as $desa){
@@ -236,16 +241,26 @@ class IkmController extends Controller
         echo $option;
     }
     public function getmemberUpdate(request $request){
+
         $id_project = $request->getId_project;
-        $id_IKM = $request->getId_IKM;
+        $id_IKM = $request->getId_Ikm;
         return view('pages.ikm.update',[
             'title'=>'Update IKM',
             'project'=>Project::Firstwhere('id',$id_project),
             'dataIkm'=>ikm::where('id',$id_IKM)->get(),
             'provinsi'=>Province::all(),
             'searchIkm'=>ikm::all(),
-        
+
         ]);
-        
+
+        return view('pages.ikm.update',[
+            'title'=>'Update IKM',
+            'project'=>Project::find($id_project),
+            'dataIkm'=>Ikm::where('id',$id_Ikm)->get(),
+            'Ikm'=>$ikm, // Add this for backward compatibility
+            'provinsi'=>Province::all(),
+            'searchIkm'=>Ikm::all(),
+        ]);
+
     }
 }

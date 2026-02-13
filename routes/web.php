@@ -44,8 +44,9 @@ Route::post('/login',[LoginController::class,'login'])->middleware('guest')->nam
 Route::get('/dashboard',[DashboardController::class,'index'])->middleware('auth')->name('dashboard');
 //Profile
 Route::resource('/profile', ProfileController::class)->middleware('auth');
+Route::post('/profile/photo/cropped', [ProfileController::class, 'updatePhotoCropped'])->name('profile.photo.cropped')->middleware('auth');
 Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update')->middleware('auth');
-Route::delete('/profile/photo', [ProfileController::class, 'removePhoto'])->name('profile.photo.remove')->middleware('auth');
+Route::delete('/profile/photo', [ProfileController::class, 'destroy'])->name('profile.photo.remove')->middleware('auth');
 Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update')->middleware('auth');
 //backEnd
 Route::get('/brainstorming',[MyController::class,'brainstorming'])->middleware('auth');
@@ -53,57 +54,58 @@ Route::get('/brainstorming',[MyController::class,'brainstorming'])->middleware('
 Route::get('/brainstorming',[MyController::class,'brainstorming'])->middleware('auth');
 Route::get('/brainstorming/create',[MyController::class,'brainstormingInsert'])->middleware('auth');
 
-Route::get('/ajax/search-ikm', [MyController::class, 'searchIkm'])->name('ajax.searchIkm');
+Route::get('/ajax/search-Ikm', [MyController::class, 'searchIkm'])->name('ajax.searchIkm');
 
 Route::get('/kurasi',[MyController::class,'kurasi'])->middleware('auth');
 //Menu Project
 Route::get('/project',[ProjectController::class,'index'])->middleware('auth')->name('project.index');
 Route::get('/api/project/search', [ProjectController::class, 'searchProjects'])->name('api.project.search')->middleware('auth');
+Route::get('/api/projects/filter', [ProjectController::class, 'filterProjects'])->name('api.projects.filter')->middleware('auth');
 Route::post('/project/create',[ProjectController::class,'store'])->middleware('auth');
 Route::post('/project/update',[ProjectController::class,'update'])->middleware('auth');
-Route::post('/project/hapus/{id}',[ProjectController::class,'hapus'])->middleware('auth');
+Route::delete('/project/hapus/{id}',[ProjectController::class,'hapus'])->middleware('auth');
 //menu Ikm
-Route::get('/project/dataikm/{project:id}',[IkmController::class,'index'])->middleware('auth')->name('ikm.index');
-Route::get('/project/dataikm/ikm/{ikm}/edit',[IkmController::class,'edit'])->middleware('auth')->name('ikm.edit');
-Route::POST('/project/dataikm/ikm/{ikm}/update',[IkmController::class,'UpdateIkm'])->middleware('auth')->name('ikm.update');
-Route::post('/project/dataikm/createIkm',[IkmController::class,'createIkm'])->middleware('auth');
-Route::post('/project/dataikm/tambahIkm',[IkmController::class,'tambahIkm'])->middleware('auth');
-Route::post('/project/dataikm/UpdateIkm',[IkmController::class,'UpdateIkm'])->middleware('auth');
-Route::post('/project/dataikm/{id}/delete',[IkmController::class,'deleteIkm'])->middleware('auth');
+Route::get('/project/dataIkm/{project:id}',[IkmController::class,'index'])->middleware('auth')->name('Ikm.index');
+Route::get('/project/dataIkm/Ikm/{ikm}/edit',[IkmController::class,'edit'])->middleware('auth')->name('ikm.edit');
+Route::POST('/project/dataIkm/Ikm/{ikm}/update',[IkmController::class,'UpdateIkm'])->middleware('auth')->name('ikm.update');
+Route::post('/project/dataIkm/createIkm',[IkmController::class,'createIkm'])->middleware('auth');
+Route::post('/project/dataIkm/tambahIkm',[IkmController::class,'tambahIkm'])->middleware('auth');
+Route::post('/project/dataikm.updateIkm',[IkmController::class,'UpdateIkm'])->middleware('auth');
+Route::post('/project/dataIkm/{id}/delete',[IkmController::class,'deleteIkm'])->middleware('auth');
 Route::post('/getkabupatenUpdate',[IkmController::class,'getkabupaten'])->name('getkabupatenUpdate');
 Route::post('/getkecamatanUpdate',[IkmController::class,'getkecamatan'])->name('getkecamatanUpdate');
 Route::post('/getdesaUpdate',[IkmController::class,'getdesa'])->name('getdesaUpdate');
-Route::post('/project/dataikm/{id}/update',[IkmController::class,'getmemberUpdate'])->name('getmemberUpdate');
+Route::POST('/project/dataIkm/{id}/update',[IkmController::class,'getmemberUpdate'])->name('getmemberUpdate');
 // detile Ikm
-// Route::get('/project/ikms/{id}',[DetileIkmController::class,'index'])->middleware('auth')->name('detail');
-Route::get('/project/ikms/{id_ikm}/{id_project}',[DetileIkmController::class,'index'])->middleware('auth')->name('detail');
+// Route::get('/project/Ikms/{id}',[DetileIkmController::class,'index'])->middleware('auth')->name('detail');
+Route::get('/project/Ikms/{id_Ikm}/{id_project}',[DetileIkmController::class,'index'])->middleware('auth')->name('detail');
 
 // Encrypted route variants for secure ID handling
-Route::get('/e/ikm/{encrypted_id}/{encrypted_project}',[DetileIkmController::class,'encryptedIndex'])->middleware('auth')->name('detail.encrypted');
+Route::get('/e/Ikm/{encrypted_id}/{encrypted_project}',[DetileIkmController::class,'encryptedIndex'])->middleware('auth')->name('detail.encrypted');
 
 // API endpoint for decrypting IDs (used by JavaScript)
 Route::post('/api/decrypt-ids', [DetileIkmController::class, 'decryptIds'])->middleware('auth')->name('api.decrypt-ids');
-Route::post('/project/ikms/{id}/update',[DetileIkmController::class,'ubahFotoIkm'])->name('updatePhoto');
-Route::post('/project/ikms/{id}/bencmark',[DetileIkmController::class,'bencmark'])->middleware('auth');
-Route::post('/project/ikms/{id}/cots',[DetileIkmController::class,'cots'])->middleware('auth');
-Route::post('/project/ikms/{id}/a',[DetileIkmController::class,'Updatecots'])->middleware('auth');
-Route::post('/project/ikms/{id}/dokumentasi',[DetileIkmController::class,'dokumentasi'])->middleware('auth');
-Route::post('/project/ikms/{id}/deleteDoc',[DetileIkmController::class,'deleteDoc'])->middleware('auth');
-Route::post('/project/ikms/{id_gambar}/deletebencmark',[DetileIkmController::class,'bencmarkDelete'])->middleware('auth');
-Route::post('/project/ikms/updateBrainstorming',[DetileIkmController::class,'updateBrainstorming'])->middleware('auth');
+Route::post('/project/Ikms/{id}/update',[DetileIkmController::class,'ubahFotoIkm'])->middleware('auth')->name('updatePhoto');
+Route::post('/project/Ikms/{id}/bencmark',[DetileIkmController::class,'bencmark'])->middleware('auth');
+Route::post('/project/Ikms/{id}/Cots',[DetileIkmController::class,'Cots'])->middleware('auth');
+Route::post('/project/Ikms/{id}/a',[DetileIkmController::class,'UpdateCots'])->middleware('auth');
+Route::post('/project/Ikms/{id}/dokumentasi',[DetileIkmController::class,'dokumentasi'])->middleware('auth');
+Route::post('/project/Ikms/{id}/deleteDoc',[DetileIkmController::class,'deleteDoc'])->middleware('auth');
+Route::post('/project/Ikms/{id_gambar}/deletebencmark',[DetileIkmController::class,'bencmarkDelete'])->middleware('auth');
+Route::post('/project/Ikms/updateBrainstorming',[DetileIkmController::class,'updateBrainstorming'])->middleware('auth');
 // Auto-save endpoint for brainstorming
-Route::post('/project/ikms/auto-save-brainstorming',[DetileIkmController::class,'autoSaveBrainstorming'])->middleware('auth');
+Route::post('/project/Ikms/auto-save-brainstorming',[DetileIkmController::class,'autoSaveBrainstorming'])->middleware('auth');
 
-Route::post('/project/ikms/{id}/tambahDesain',[DetileIkmController::class,'tambahDesain'])->middleware('auth');
-Route::post('/project/ikms/{id}/deleteDesain',[DetileIkmController::class,'deleteDesain'])->middleware('auth');
+Route::post('/project/Ikms/{id}/tambahDesain',[DetileIkmController::class,'tambahDesain'])->middleware('auth');
+Route::post('/project/Ikms/{id}/deleteDesain',[DetileIkmController::class,'deleteDesain'])->middleware('auth');
 // report
 Route::get('/report/brainstorming/{id}/{name}',[ReportController::class,'ReportBrainstorming'])->middleware('auth');
-Route::get('/report/cots/{id}/{name}',[ReportController::class,'Reportcots'])->middleware('auth');
-Route::get('/report/ikms/{id_project}/{nama_project}',[ReportController::class,'ikmReport'])->middleware('auth');
+Route::get('/report/Cots/{id}/{name}',[ReportController::class,'ReportCots'])->middleware('auth');
+Route::get('/report/Ikms/{id_project}/{nama_project}',[ReportController::class,'IkmReport'])->middleware('auth');
 
 // public Cots
-Route::get('/cots',[DetileIkmController::class,'publik_cots']);
-Route::post('/cots/create',[DetileIkmController::class,'cots_save']);
+Route::get('/Cots',[DetileIkmController::class,'publik_Cots']);
+Route::post('/Cots/create',[DetileIkmController::class,'Cots_save']);
 
 
 // Clear application cache:

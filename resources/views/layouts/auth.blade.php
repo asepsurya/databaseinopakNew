@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="{{ $metaDescription ?? 'Database INOPAK - Sistem Pengelolaan Informasi' }}" />
-    <meta name="keywords" content="{{ $metaKeywords ?? 'inopak, database, ikm, admin dashboard' }}" />
+    <meta name="keywords" content="{{ $metaKeywords ?? 'inopak, database, Ikm, admin dashboard' }}" />
     <meta name="author" content="{{ $companyName ?? 'INOPAK' }}" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Authentication') | {{ $appName ?? 'Database INOPAK' }}</title>

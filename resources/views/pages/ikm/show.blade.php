@@ -1,12 +1,13 @@
 @extends('layouts.master')
 
-@section('page-title', 'Data IKM - ' . $project->NamaProjek)
+@section('page-title', 'Data Ikm - ' . $project->NamaProjek)
 
 @section('content')
 @push('styles')
 <!-- DataTables CSS -->
 <link href="{{ asset('assets/plugins/datatables/dataTables.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
 <link href="{{ asset('assets/plugins/datatables/responsive.bootstrap5.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('assets/css/thumbnail.css') }}" rel="stylesheet" type="text/css" />
 <style>
     .table {
         border-collapse: separate;
@@ -209,7 +210,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header justify-content-between d-flex align-items-center projek-header">
-                <h4 class="mb-0"><i class="ti ti-user-group me-2"></i>Data IKM - {{ $project->NamaProjek }}</h4>
+                <h4 class="mb-0"><i class="ti ti-user-group me-2"></i>Data Ikm - {{ $project->NamaProjek }}</h4>
                 <div class="d-flex gap-2">
                     <a href="/project" class="btn btn-light btn-sm"><i class="ti ti-arrow-left me-1"></i> Kembali</a>
                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#tambahIkm"><i class="ti ti-plus me-1"></i> Tambah</button>
@@ -231,12 +232,12 @@
                             </div>
 
                             <!-- Title -->
-                            <h5 class="fw-bold mb-2">Belum Ada Data IKM</h5>
+                            <h5 class="fw-bold mb-2">Belum Ada Data Ikm</h5>
 
                             <!-- Description -->
                             <p class="text-muted mb-4">
-                                Saat ini belum ada data IKM yang tersedia.
-                                Silakan tambahkan data pertama untuk mulai mengelola IKM Anda.
+                                Saat ini belum ada data Ikm yang tersedia.
+                                Silakan tambahkan data pertama untuk mulai mengelola Ikm Anda.
                             </p>
 
                             <!-- Button -->
@@ -244,7 +245,7 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#tambahIkm">
                                 <i class="ti ti-plus me-2"></i>
-                                Tambah IKM Pertama
+                                Tambah Ikm Pertama
                             </button>
 
                         </div>
@@ -255,12 +256,12 @@
                 @else
                 <!-- Table -->
                 <div class="table-responsive">
-                <table class="table table-striped align-middle mb-0 dt-responsive" id="ikm-table">
+                <table class="table table-striped align-middle mb-0 dt-responsive" id="Ikm-table">
 
                     <thead class="thead-sm text-uppercase fs-xxs">
                         <tr>
                             <th>No</th>
-                            <th>Nama IKM</th>
+                            <th>Nama Ikm</th>
                             <th>Jenis Produk</th>
                             <th>Merk</th>
                             <th>Telepon</th>
@@ -276,17 +277,33 @@
                             <td>{{ $no++ }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <div class="avatar-sm me-3">
-                                        @if($data->gambar && file_exists(storage_path('app/public/' . $data->gambar)))
-                                            <img src="{{ asset('storage/' . $data->gambar) }}" alt="{{ $data->nama }}" class="rounded" style="width: 40px; height: 40px; object-fit: cover;" loading="lazy">
+                                    <div class="thumbnail-wrapper thumbnail-avatar me-3">
+                                        @if($data->gambar && \App\Helpers\ThumbnailHelper::isValidImage($data->gambar))
+                                            <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($data->gambar) }}"
+                                               data-fslightbox
+                                               title="Klik untuk perbesar">
+                                                <img src="{{ \App\Helpers\ThumbnailHelper::thumbnailUrl($data->gambar, 'small', true) ?? \App\Helpers\ThumbnailHelper::originalUrl($data->gambar) }}"
+                                                     alt="{{ $data->nama }}"
+                                                     class="thumbnail-image"
+                                                     loading="lazy">
+                                            </a>
+                                            {{-- @if(\App\Helpers\ThumbnailHelper::isValidImage($data->gambar))
+                                                <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($data->gambar) }}"
+                                                   class="thumbnail-download"
+                                                   title="Unduh gambar asli"
+                                                   download="{{ basename($data->gambar) }}"
+                                                   onclick="event.stopPropagation();">
+                                                    <i class="ti ti-download"></i>
+                                                </a>
+                                            @endif --}}
                                         @else
-                                            <div class="avatar-title bg-light text-muted rounded">
+                                            <div class="thumbnail-fallback d-flex align-items-center justify-content-center w-100 h-100">
                                                 <i class="ti ti-user"></i>
                                             </div>
                                         @endif
                                     </div>
                                     <div>
-                                        <a href="/project/ikms/{{ encrypt($data->id) }}/{{ $project->id }}" class="link-reset fw-medium">{{ $data->nama }}</a>
+                                        <a href="/project/Ikms/{{ encrypt($data->id) }}/{{ $project->id }}" class="link-reset fw-medium">{{ $data->nama }}</a>
                                         <p class="text-muted mb-0 small" style="font-size: 12px;">{{ $data->created_at->diffForHumans() }}</p>
                                     </div>
                                 </div>
@@ -312,25 +329,24 @@
                             </td>
                             <td>
                                 <div class="d-flex gap-1">
-                                    <a href="/project/ikms/{{ encrypt($data->id) }}/{{ $project->id }}" class="btn btn-sm btn-light btn-icon" title="Detail">
+                                    <a href="/project/Ikms/{{ encrypt($data->id) }}/{{ $project->id }}" class="btn btn-sm btn-light btn-icon" title="Detail">
                                         <i class="ti ti-eye"></i>
                                     </a>
-                                    <form action="/project/dataikm/{{ $project->id }}/update" method="POST" class="d-inline">
-                                        @csrf
+                                    <form action="/project/dataIkm/{{ $project->id }}/update" method="GET" class="d-inline">
                                         <input type="text" value="{{ $data->id_provinsi }}" name="getId_provinsi" hidden>
                                         <input type="text" value="{{ $data->id_kota }}" name="getId_kota" hidden>
                                         <input type="text" value="{{ $data->id_kecamatan }}" name="getId_kecamatan" hidden>
                                         <input type="text" value="{{ $data->id_desa }}" name="getId_desa" hidden>
                                         <input type="text" value="{{ $project->id }}" name="getId_project" hidden>
-                                        <input type="text" value="{{ $data->id }}" name="getId_IKM" hidden>
+                                        <input type="text" value="{{ $data->id }}" name="getId_Ikm" hidden>
                                         <input type="text" value="{{ $project->NamaProjek }}" name="get_Nmproject" hidden>
                                         <button type="submit" class="btn btn-sm btn-light btn-icon" title="Ubah">
                                             <i class="ti ti-pencil"></i>
                                         </button>
                                     </form>
-                                    <form action="/project/dataikm/{{ $project->id }}/delete" method="POST" class="d-inline">
+                                    <form action="/project/dataIkm/{{ $project->id }}/delete" method="POST" class="d-inline">
                                         @csrf
-                                        <input type="text" value="{{ $data->id }}" name="id_ikm" hidden>
+                                        <input type="text" value="{{ $data->id }}" name="id_Ikm" hidden>
                                         <input type="text" value="{{ $project->id }}" name="id_Project" hidden>
                                         <button type="submit" class="btn btn-sm btn-light btn-icon" title="Hapus" onclick="return confirm('Anda Yakin data ini akan dihapus?')">
                                             <i class="ti ti-trash"></i>
@@ -349,21 +365,21 @@
     </div>
 </div>
 
-<!-- Modal Tambah IKM -->
+<!-- Modal Tambah Ikm -->
 <div class="modal fade" id="tambahIkm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addMemberModalLabel">+ Tambah IKM</h5>
+                <h5 class="modal-title" id="addMemberModalLabel">+ Tambah Ikm</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="/project/dataikm/tambahIkm" method="post">
+                <form action="/project/dataIkm/tambahIkm" method="post">
                     @csrf
                     <div class="mb-3">
                         <div class="form-floating">
                             <input type="text" class="form-control" name="nama" placeholder="Nama" required>
-                            <label for="nama" class="form-label">Nama IKM</label>
+                            <label for="nama" class="form-label">Nama Ikm</label>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -395,7 +411,7 @@
 
 <script>
     $(document).ready(function () {
-        $('#ikm-table').DataTable({
+        $('#Ikm-table').DataTable({
             pageLength: 10,
             lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
             columnDefs: [{

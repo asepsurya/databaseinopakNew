@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\ikm;
+use App\Models\Ikm;
 use App\Traits\CreatesNotifications;
 use App\Services\NotificationService;
 

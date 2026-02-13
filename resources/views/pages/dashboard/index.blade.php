@@ -6,13 +6,17 @@
     <i class="ti-home me-1"></i> Dashboard
 @endsection
 
+
+
+@section('content')
 <style>
-    .container-fluid {
+    /* Fixed container styling */
+    .dashboard-container {
         padding: 0 !important;
     }
 
     @media (max-width: 768px) {
-        .container-fluid {
+        .dashboard-container {
             padding: 0 !important;
         }
 
@@ -22,8 +26,8 @@
     }
 
 </style>
-
-@section('content')
+    <!-- Dashboard Container -->
+    <div class="dashboard-container">
 
 
     <!-- Nav Tabs -->
@@ -193,18 +197,18 @@
             </div>
         </div>
 
-        <!-- Total IKM -->
+        <!-- Total Ikm -->
         <div class="col-md-6 col-xl-3">
             <div class="card card-h-100 shadow-sm border-0">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-muted text-uppercase fs-12 fw-semibold mb-1" title="Total Number of IKM">Total IKM</p>
-                            <h3 class="fw-bold mb-0 fs-22">{{ number_format($totalIKM ?? 0) }}</h3>
+                            <p class="text-muted text-uppercase fs-12 fw-semibold mb-1" title="Total Number of Ikm">Total Ikm</p>
+                            <h3 class="fw-bold mb-0 fs-22">{{ number_format($totalIkm ?? 0) }}</h3>
                             <div class="mt-2">
-                                <span class="badge {{ ($ikmGrowth ?? 0) >= 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} fw-semibold">
-                                    <i class="ti ti-arrow-{{ ($ikmGrowth ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>
-                                    {{ abs($ikmGrowth ?? 0) }}%
+                                <span class="badge {{ ($IkmGrowth ?? 0) >= 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} fw-semibold">
+                                    <i class="ti ti-arrow-{{ ($IkmGrowth ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>
+                                    {{ abs($IkmGrowth ?? 0) }}%
                                 </span>
                                 <span class="text-muted fs-11 ms-1">vs last month</span>
                             </div>
@@ -217,18 +221,18 @@
             </div>
         </div>
 
-        <!-- Total COTS -->
+        <!-- Total Cots -->
         <div class="col-md-6 col-xl-3">
             <div class="card card-h-100 shadow-sm border-0">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <p class="text-muted text-uppercase fs-12 fw-semibold mb-1" title="Total Number of COTS">Total COTS</p>
-                            <h3 class="fw-bold mb-0 fs-22">{{ number_format($totalCOTS ?? 0) }}</h3>
+                            <p class="text-muted text-uppercase fs-12 fw-semibold mb-1" title="Total Number of Cots">Total Cots</p>
+                            <h3 class="fw-bold mb-0 fs-22">{{ number_format($totalCots ?? 0) }}</h3>
                             <div class="mt-2">
-                                <span class="badge {{ ($cotsGrowth ?? 0) >= 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} fw-semibold">
-                                    <i class="ti ti-arrow-{{ ($cotsGrowth ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>
-                                    {{ abs($cotsGrowth ?? 0) }}%
+                                <span class="badge {{ ($CotsGrowth ?? 0) >= 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger' }} fw-semibold">
+                                    <i class="ti ti-arrow-{{ ($CotsGrowth ?? 0) >= 0 ? 'up' : 'down' }} me-1"></i>
+                                    {{ abs($CotsGrowth ?? 0) }}%
                                 </span>
                                 <span class="text-muted fs-11 ms-1">vs last month</span>
                             </div>
@@ -291,7 +295,7 @@
                     <div class="d-flex gap-3 mb-3">
                         <div class="d-flex align-items-center">
                             <span class="badge bg-primary me-2">&nbsp;</span>
-                            <span class="text-muted fs-12">IKM</span>
+                            <span class="text-muted fs-12">Ikm</span>
                         </div>
                         <div class="d-flex align-items-center">
                             <span class="badge bg-success me-2">&nbsp;</span>
@@ -299,7 +303,7 @@
                         </div>
                         <div class="d-flex align-items-center">
                             <span class="badge bg-warning me-2">&nbsp;</span>
-                            <span class="text-muted fs-12">COTS</span>
+                            <span class="text-muted fs-12">Cots</span>
                         </div>
                     </div>
                     <div id="monthlyTrendsChart" class="apex-charts" dir="ltr"></div>
@@ -307,23 +311,23 @@
             </div>
         </div>
 
-        <!-- IKM Distribution by Type -->
+        <!-- Ikm Distribution by Type -->
         <div class="col-xl-4">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-dashed justify-content-between d-flex align-items-center">
                     <h4 class="card-title mb-0">
                         <i class="ti ti-chart-pie me-2 text-primary"></i>
-                        IKM by Category
+                        Ikm by Category
                     </h4>
-                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="View Details" onclick="window.location.href='/project/dataikm/1'">
+                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="View Details" onclick="window.location.href='/project/dataIkm/1'">
                         <i class="ti ti-arrow-right"></i>
                     </button>
                 </div>
                 <div class="card-body">
-                    <div id="ikmDistributionChart" class="apex-charts" dir="ltr"></div>
-                    @if(!empty($ikmByCategory) && count($ikmByCategory) > 0)
+                    <div id="IkmDistributionChart" class="apex-charts" dir="ltr"></div>
+                    @if(!empty($IkmByCategory) && count($IkmByCategory) > 0)
                         <div class="mt-3">
-                            @foreach(array_slice($ikmByCategory, 0, 5) as $category => $count)
+                            @foreach(array_slice($IkmByCategory, 0, 5) as $category => $count)
                                 <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
                                     <span class="text-muted fs-12 text-truncate" style="max-width: 150px;">{{ $category ?? 'Unknown' }}</span>
                                     <span class="fw-semibold">{{ number_format($count) }}</span>
@@ -344,17 +348,17 @@
 
     <!-- Second Row -->
     <div class="row mb-3">
-        <!-- IKM by Province -->
+        <!-- Ikm by Province -->
         <div class="col-xl-6">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-dashed justify-content-between d-flex align-items-center">
                     <h4 class="card-title mb-0">
                         <i class="ti ti-map-2 me-2 text-primary"></i>
-                        IKM Distribution by Province
+                        Ikm Distribution by Province
                     </h4>
                 </div>
                 <div class="card-body">
-                    @if(!empty($ikmByProvince) && count($ikmByProvince) > 0)
+                    @if(!empty($IkmByProvince) && count($IkmByProvince) > 0)
                         <div class="table-responsive">
                             <table class="table table-sm table-hover mb-0">
                                 <thead>
@@ -366,10 +370,10 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $totalByProvince = array_sum($ikmByProvince);
-                                        $maxCount = max($ikmByProvince);
+                                        $totalByProvince = array_sum($IkmByProvince);
+                                        $maxCount = max($IkmByProvince);
                                     @endphp
-                                    @foreach($ikmByProvince as $province => $count)
+                                    @foreach($IkmByProvince as $province => $count)
                                         @php
                                             $percentage = $totalByProvince > 0 ? round(($count / $totalByProvince) * 100, 1) : 0;
                                             $width = $maxCount > 0 ? round(($count / $maxCount) * 100) : 0;
@@ -407,22 +411,22 @@
             </div>
         </div>
 
-        <!-- Recent IKM Entries -->
+        <!-- Recent Ikm Entries -->
         <div class="col-xl-6">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-header bg-white border-dashed justify-content-between d-flex align-items-center">
                     <h4 class="card-title mb-0">
                         <i class="ti ti-clock me-2 text-primary"></i>
-                        Recent IKM Entries
+                        Recent Ikm Entries
                     </h4>
-                    <a href="/project/dataikm/1" class="btn btn-sm btn-outline-primary">
+                    <a href="/project/dataIkm/1" class="btn btn-sm btn-outline-primary">
                         View All <i class="ti ti-arrow-right ms-1"></i>
                     </a>
                 </div>
                 <div class="card-body p-0">
-                    @if(!empty($recentIKM) && count($recentIKM) > 0)
+                    @if(!empty($recentIkm) && count($recentIkm) > 0)
                         <div class="list-group list-group-flush">
-                            @foreach($recentIKM as $ikm)
+                            @foreach($recentIkm as $Ikm)
                                 <div class="list-group-item d-flex align-items-center py-2 px-3">
                                     <div class="flex-shrink-0 me-3">
                                         <div class="avatar-sm bg-light rounded-circle d-flex align-items-center justify-content-center">
@@ -430,15 +434,15 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1">
-                                        <h6 class="mb-0 fs-13">{{ $ikm->nama ?? 'Unknown IKM' }}</h6>
+                                        <h6 class="mb-0 fs-13">{{ $Ikm->nama ?? 'Unknown Ikm' }}</h6>
                                         <p class="mb-0 text-muted fs-11">
-                                            {{ $ikm->jenisProduk ?? 'N/A' }} •
-                                            {{ $ikm->regency->name ?? $ikm->id_kota ?? 'Unknown' }}
+                                            {{ $Ikm->jenisProduk ?? 'N/A' }} •
+                                            {{ $Ikm->regency->name ?? $Ikm->id_kota ?? 'Unknown' }}
                                         </p>
                                     </div>
                                     <div class="flex-shrink-0 text-end">
                                         <span class="badge bg-light text-dark fs-10">
-                                            {{ $ikm->created_at->diffForHumans() }}
+                                            {{ $Ikm->created_at->diffForHumans() }}
                                         </span>
                                     </div>
                                 </div>
@@ -447,9 +451,9 @@
                     @else
                         <div class="text-center text-muted py-5">
                             <i class="ti ti-inbox fs-48 text-opacity-25"></i>
-                            <p class="mt-2 mb-0">No recent IKM entries</p>
-                            <a href="/project/dataikm/1" class="btn btn-sm btn-outline-primary mt-2">
-                                <i class="ti ti-plus me-1"></i> Add New IKM
+                            <p class="mt-2 mb-0">No recent Ikm entries</p>
+                            <a href="/project/dataIkm/1" class="btn btn-sm btn-outline-primary mt-2">
+                                <i class="ti ti-plus me-1"></i> Add New Ikm
                             </a>
                         </div>
                     @endif
@@ -514,7 +518,7 @@
             <div class="card shadow-sm border-0">
                 <div class="card-header border-dashed card-tabs">
                     <div class="flex-grow-1">
-                        <h4 class="card-title">Sales Report <span class="text-muted fs-base fw-normal">({{ number_format($totalIKM ?? 0) }} IKM)</span></h4>
+                        <h4 class="card-title">Sales Report <span class="text-muted fs-base fw-normal">({{ number_format($totalIkm ?? 0) }} Ikm)</span></h4>
                     </div>
                     <ul class="nav nav-tabs nav-justified card-header-tabs nav-bordered" role="tablist">
                         <li class="nav-item" role="presentation">
@@ -541,10 +545,10 @@
                     <div class="bg-light bg-opacity-25 border-bottom border-dashed">
                         <div class="row text-center">
                             <div class="col-sm-4">
-                                <p class="text-muted mt-3 mb-1">Total IKM</p>
+                                <p class="text-muted mt-3 mb-1">Total Ikm</p>
                                 <h4 class="mb-3">
                                     <i class="ti ti-building-store text-primary me-1"></i>
-                                    <span>{{ number_format($totalIKM ?? 0) }}</span>
+                                    <span>{{ number_format($totalIkm ?? 0) }}</span>
                                 </h4>
                             </div>
                             <div class="col-sm-4">
@@ -558,7 +562,7 @@
                                 <p class="text-muted mt-3 mb-1">Growth Rate</p>
                                 <h4 class="mb-3">
                                     <i class="ti ti-trending-up text-success me-1"></i>
-                                    <span>{{ abs($ikmGrowth ?? 0) }}%</span>
+                                    <span>{{ abs($IkmGrowth ?? 0) }}%</span>
                                 </h4>
                             </div>
                         </div>
@@ -566,8 +570,8 @@
 
                     <div class="p-3 pt-1">
                         <div class="dash-item-overlay d-none d-md-block" dir="ltr">
-                            <h5>IKM Performance Overview</h5>
-                            <p class="text-muted mb-0 mt-2">Track your IKM growth and performance metrics over time.</p>
+                            <h5>Ikm Performance Overview</h5>
+                            <p class="text-muted mb-0 mt-2">Track your Ikm growth and performance metrics over time.</p>
                         </div>
                         <div dir="ltr">
                             <div id="salesReportChart" class="apex-charts" style="min-height: 280px;"></div>
@@ -595,25 +599,26 @@
     <script type="application/json" id="dashboardData">
     {
         "monthlyTrends": {
-            "ikm": @json(array_values($filledMonthlyIKMTrend ?? [])),
+            "Ikm": @json(array_values($filledMonthlyIkmTrend ?? [])),
             "projects": @json(array_values($filledMonthlyProjectTrend ?? [])),
-            "cots": @json(array_values($filledMonthlyCOTSTrend ?? [])),
+            "Cots": @json(array_values($filledMonthlyCotsTrend ?? [])),
             "labels": @json($monthNames ?? [])
         },
-        "ikmDistribution": {
-            "labels": @json($ikmTypeDistribution['labels'] ?? []),
-            "data": @json($ikmTypeDistribution['data'] ?? []),
-            "colors": @json($ikmTypeDistribution['colors'] ?? [])
+        "IkmDistribution": {
+            "labels": @json($IkmTypeDistribution['labels'] ?? []),
+            "data": @json($IkmTypeDistribution['data'] ?? []),
+            "colors": @json($IkmTypeDistribution['colors'] ?? [])
         },
-        "ikmByProvince": @json($ikmByProvince ?? []),
+        "IkmByProvince": @json($IkmByProvince ?? []),
         "growth": {
-            "ikm": {{ $ikmGrowth ?? 0 }},
+            "Ikm": {{ $IkmGrowth ?? 0 }},
             "projects": {{ $projectGrowth ?? 0 }},
-            "cots": {{ $cotsGrowth ?? 0 }}
+            "Cots": {{ $CotsGrowth ?? 0 }}
         },
-        "cotsStats": @json($cotsStats ?? [])
+        "CotsStats": @json($CotsStats ?? [])
     }
     </script>
+    </div> <!-- End Dashboard Container -->
 @endsection
 
 @push('scripts')
@@ -625,7 +630,7 @@
         // Global dashboard data and chart instances
         let dashboardData = {};
         let monthlyTrendsChart = null;
-        let ikmDistributionChart = null;
+        let IkmDistributionChart = null;
         let salesReportChart = null;
         let currentPeriod = 'monthly';
 
@@ -647,10 +652,13 @@
             if (dataContainer) {
                 try {
                     dashboardData = JSON.parse(dataContainer.textContent);
+                    console.log('Dashboard data loaded:', dashboardData);
                 } catch (e) {
                     console.error('Error parsing dashboard data:', e);
                     dashboardData = {};
                 }
+            } else {
+                console.warn('Dashboard data container not found');
             }
 
             // Initialize charts
@@ -661,7 +669,13 @@
 
         function initMonthlyTrendsChart() {
             const chartElement = document.getElementById('monthlyTrendsChart');
-            if (!chartElement) return;
+            if (!chartElement) {
+                console.warn('Monthly Trends Chart element not found');
+                return;
+            }
+
+            // Debug: Check what data we received
+            console.log('Monthly Trends raw data:', dashboardData.monthlyTrends);
 
             const data = dashboardData.monthlyTrends || {
                 ikm: [12, 19, 15, 25, 22, 30],
@@ -670,24 +684,26 @@
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
             };
 
+            console.log('Monthly Trends processed data:', data);
+
             const options = {
                 series: [
                     {
-                        name: 'IKM',
+                        name: 'Ikm',
                         type: 'line',
-                        data: data.ikm,
+                        data: data.ikm || data.Ikm || [],
                         color: '#435ebe'
                     },
                     {
                         name: 'Projects',
                         type: 'bar',
-                        data: data.projects,
+                        data: data.projects || [],
                         color: '#28a745'
                     },
                     {
-                        name: 'COTS',
+                        name: 'Cots',
                         type: 'bar',
-                        data: data.cots,
+                        data: data.cots || data.Cots || [],
                         color: '#ffc107'
                     }
                 ],
@@ -730,7 +746,7 @@
                     enabled: false
                 },
                 xaxis: {
-                    categories: data.labels,
+                    categories: data.labels || [],
                     labels: {
                         style: {
                             colors: '#6c757d',
@@ -790,16 +806,27 @@
 
             // Create chart
             if (typeof ApexCharts !== 'undefined') {
+                console.log('Initializing Monthly Trends Chart');
                 monthlyTrendsChart = new ApexCharts(chartElement, options);
-                monthlyTrendsChart.render();
+                monthlyTrendsChart.render()
+                    .then(() => console.log('Monthly Trends Chart rendered successfully'))
+                    .catch(err => console.error('Monthly Trends Chart render error:', err));
+            } else {
+                console.error('ApexCharts library not loaded');
             }
         }
 
         function initIkmDistributionChart() {
-            const chartElement = document.getElementById('ikmDistributionChart');
-            if (!chartElement) return;
+            const chartElement = document.getElementById('IkmDistributionChart');
+            if (!chartElement) {
+                console.warn('IKM Distribution Chart element not found');
+                return;
+            }
 
-            const data = dashboardData.ikmDistribution || {
+            // Debug: Check what data we received
+            console.log('IKM Distribution raw data:', dashboardData);
+
+            const data = dashboardData.ikmDistribution || dashboardData.IkmDistribution || {
                 labels: ['Food', 'Beverage', 'Textile', 'Chemical', 'Other'],
                 data: [30, 25, 20, 15, 10],
                 colors: {
@@ -811,15 +838,17 @@
                 }
             };
 
+            console.log('IKM Distribution processed data:', data);
+
             // Generate colors array based on labels
             const defaultColors = ['#435ebe', '#28a745', '#ffc107', '#dc3545', '#17a2b8', '#6c757d', '#20c997', '#6610f2'];
-            const colors = data.labels.map((label, index) => {
-                return data.colors[label] || defaultColors[index % defaultColors.length];
-            });
+            const colors = data.labels && data.labels.length > 0 ? data.labels.map((label, index) => {
+                return (data.colors && data.colors[label]) ? data.colors[label] : defaultColors[index % defaultColors.length];
+            }) : defaultColors;
 
             const options = {
-                series: data.data,
-                labels: data.labels,
+                series: data.data || [],
+                labels: data.labels || [],
                 chart: {
                     height: 220,
                     type: 'donut',
@@ -844,7 +873,9 @@
                                     fontSize: '12px',
                                     fontFamily: 'inherit',
                                     formatter: function(w) {
-                                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                        const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
+                                        console.log('Chart total:', total);
+                                        return total > 0 ? total.toLocaleString() : '0';
                                     }
                                 },
                                 value: {
@@ -869,7 +900,7 @@
                 tooltip: {
                     y: {
                         formatter: function(value) {
-                            return value.toLocaleString() + ' IKM';
+                            return value.toLocaleString() + ' Ikm';
                         }
                     }
                 }
@@ -877,22 +908,31 @@
 
             // Create chart
             if (typeof ApexCharts !== 'undefined') {
-                ikmDistributionChart = new ApexCharts(chartElement, options);
-                ikmDistributionChart.render();
+                console.log('Initializing IKM Distribution Chart with options:', options);
+                IkmDistributionChart = new ApexCharts(chartElement, options);
+                IkmDistributionChart.render()
+                    .then(() => console.log('IKM Distribution Chart rendered successfully'))
+                    .catch(err => console.error('IKM Distribution Chart render error:', err));
+            } else {
+                console.error('ApexCharts library not loaded');
             }
         }
 
         function initSalesReportChart() {
             const chartElement = document.getElementById('salesReportChart');
-            if (!chartElement) return;
+            if (!chartElement) {
+                console.warn('Sales Report Chart element not found');
+                return;
+            }
 
             // Generate sample data based on period
             const chartData = generateChartDataForPeriod(currentPeriod);
+            console.log('Sales Report Chart data:', chartData);
 
             const options = {
                 series: [{
-                    name: 'IKM',
-                    data: chartData.data
+                    name: 'Ikm',
+                    data: chartData.data || []
                 }],
                 chart: {
                     height: 220,
@@ -927,7 +967,7 @@
                     width: 2
                 },
                 xaxis: {
-                    categories: chartData.labels,
+                    categories: chartData.labels || [],
                     labels: {
                         show: true,
                         style: {
@@ -974,8 +1014,13 @@
 
             // Create chart
             if (typeof ApexCharts !== 'undefined') {
+                console.log('Initializing Sales Report Chart');
                 salesReportChart = new ApexCharts(chartElement, options);
-                salesReportChart.render();
+                salesReportChart.render()
+                    .then(() => console.log('Sales Report Chart rendered successfully'))
+                    .catch(err => console.error('Sales Report Chart render error:', err));
+            } else {
+                console.error('ApexCharts library not loaded');
             }
         }
 
@@ -1042,7 +1087,7 @@
                     if (salesReportChart) {
                         const chartData = generateChartDataForPeriod(currentPeriod);
                         salesReportChart.updateSeries([{
-                            name: 'IKM',
+                            name: 'Ikm',
                             data: chartData.data
                         }]);
                         salesReportChart.updateOptions({

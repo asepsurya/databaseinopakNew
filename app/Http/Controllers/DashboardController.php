@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\ikm;
+use App\Models\Ikm;
 use App\Models\Project;
-use App\Models\cots;
+use App\Models\Cots;
 use App\Models\BencmarkProduk;
 use App\Models\ProdukDesign;
 use App\Models\DokumentasiCots;
@@ -47,11 +47,11 @@ class DashboardController extends Controller
             ->where('created_at', '<=', $endDate)
             ->count();
 
-        $totalIKM = ikm::where('created_at', '>=', $startDate)
+        $totalIkm = Ikm::where('created_at', '>=', $startDate)
             ->where('created_at', '<=', $endDate)
             ->count();
 
-        $totalCOTS = cots::where('created_at', '>=', $startDate)
+        $totalCots = Cots::where('created_at', '>=', $startDate)
             ->where('created_at', '<=', $endDate)
             ->count();
 
@@ -61,7 +61,7 @@ class DashboardController extends Controller
 
         // Monthly trends for the last 6 months
         $monthlyIKMTrend = cache()->remember('dashboard_monthly_ikm_trend', $cacheDuration, function () {
-            return ikm::select(
+            return Ikm::select(
                 DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
                 DB::raw('COUNT(*) as count')
             )
@@ -87,7 +87,7 @@ class DashboardController extends Controller
 
         // IKM by Category/Distribusi
         $ikmByCategory = cache()->remember('dashboard_ikm_by_category', $cacheDuration, function () {
-            return ikm::select('jenisProduk as category', DB::raw('COUNT(*) as count'))
+            return Ikm::select('jenisProduk as category', DB::raw('COUNT(*) as count'))
                 ->groupBy('jenisProduk')
                 ->orderBy('count', 'DESC')
                 ->limit(10)
@@ -97,7 +97,7 @@ class DashboardController extends Controller
 
         // IKM by Province
         $ikmByProvince = cache()->remember('dashboard_ikm_by_province', $cacheDuration, function () {
-            return ikm::with('province')
+            return Ikm::with('province')
                 ->select('id_provinsi', DB::raw('COUNT(*) as count'))
                 ->groupBy('id_provinsi')
                 ->orderBy('count', 'DESC')
@@ -115,7 +115,7 @@ class DashboardController extends Controller
 
         // IKM by Regency
         $ikmByRegency = cache()->remember('dashboard_ikm_by_regency', $cacheDuration, function () {
-            return ikm::with('regency')
+            return Ikm::with('regency')
                 ->select('id_kota', DB::raw('COUNT(*) as count'))
                 ->groupBy('id_kota')
                 ->orderBy('count', 'DESC')
@@ -132,8 +132,8 @@ class DashboardController extends Controller
         });
 
         // Recent IKM entries
-        $recentIKM = cache()->remember('dashboard_recent_ikm', now()->addMinutes(2), function () {
-            return ikm::with('province', 'regency')
+        $recentIkm = cache()->remember('dashboard_recent_ikm', now()->addMinutes(2), function () {
+            return Ikm::with('province', 'regency')
                 ->latest()
                 ->limit(5)
                 ->get();
@@ -149,16 +149,16 @@ class DashboardController extends Controller
         // COTS Statistics
         $cotsStats = cache()->remember('dashboard_cots_stats', $cacheDuration, function () {
             return [
-                'total' => cots::count(),
-                'this_month' => cots::whereMonth('created_at', now()->month)->count(),
-                'with_omset' => cots::where('omset', '!=', '')->where('omset', '!=', '0')->count(),
-                'recent' => cots::latest()->first() ? 1 : 0,
+                'total' => Cots::count(),
+                'this_month' => Cots::whereMonth('created_at', now()->month)->count(),
+                'with_omset' => Cots::where('omset', '!=', '')->where('omset', '!=', '0')->count(),
+                'recent' => Cots::latest()->first() ? 1 : 0,
             ];
         });
 
         // Monthly COTS trend
         $monthlyCOTSTrend = cache()->remember('dashboard_monthly_cots_trend', $cacheDuration, function () {
-            return cots::select(
+            return Cots::select(
                 DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
                 DB::raw('COUNT(*) as count')
             )
@@ -193,7 +193,7 @@ class DashboardController extends Controller
 
         // Chart data for IKM Distribution by Type
         $ikmTypeDistribution = cache()->remember('dashboard_ikm_type_distribution', $cacheDuration, function () {
-            $types = ikm::select('jenisProduk', DB::raw('COUNT(*) as total'))
+            $types = Ikm::select('jenisProduk', DB::raw('COUNT(*) as total'))
                 ->groupBy('jenisProduk')
                 ->pluck('total', 'jenisProduk')
                 ->toArray();
@@ -222,42 +222,34 @@ class DashboardController extends Controller
         // Fill missing months with zeros
         $filledMonthlyIKMTrend = $this->fillMissingMonths($monthlyIKMTrend, 6);
         $filledMonthlyProjectTrend = $this->fillMissingMonths($monthlyProjectTrend, 6);
-        $filledMonthlyCOTSTrend = $this->fillMissingMonths($monthlyCOTSTrend, 6);
+        $filledMonthlyCotsTrend = $this->fillMissingMonths($monthlyCOTSTrend, 6);
 
-        return view('pages.dashboard.index', compact(
-            'title',
-            'user',
-            // Core Metrics
-            'totalProjects',
-            'totalIKM',
-            'totalCOTS',
-            'totalUsers',
-            // Trends
-            'monthlyIKMTrend',
-            'monthlyProjectTrend',
-            'monthlyCOTSTrend',
-            'filledMonthlyIKMTrend',
-            'filledMonthlyProjectTrend',
-            'filledMonthlyCOTSTrend',
-            // Distribution
-            'ikmByCategory',
-            'ikmByProvince',
-            'ikmByRegency',
-            'ikmTypeDistribution',
-            // Recent Data
-            'recentIKM',
-            'recentProjects',
-            // Stats
-            'cotsStats',
-            // Activity
-            'userActivity',
-            // Growth
-            'ikmGrowth',
-            'projectGrowth',
-            'cotsGrowth',
-            // Chart Labels
-            'monthNames'
-        ));
+        return view('pages.dashboard.index', [
+            'title' => $title,
+            'user' => $user,
+            'totalProjects' => $totalProjects,
+            'totalIkm' => $totalIkm,
+            'totalCots' => $totalCots,
+            'totalUsers' => $totalUsers,
+            'monthlyIKMTrend' => $monthlyIKMTrend,
+            'monthlyProjectTrend' => $monthlyProjectTrend,
+            'monthlyCOTSTrend' => $monthlyCOTSTrend,
+            'filledMonthlyIkmTrend' => $filledMonthlyIKMTrend,
+            'filledMonthlyProjectTrend' => $filledMonthlyProjectTrend,
+            'filledMonthlyCotsTrend' => $filledMonthlyCotsTrend,
+            'IkmByCategory' => $ikmByCategory,
+            'IkmByProvince' => $ikmByProvince,
+            'ikmByRegency' => $ikmByRegency,
+            'IkmTypeDistribution' => $ikmTypeDistribution,
+            'recentIkm' => $recentIkm,
+            'recentProjects' => $recentProjects,
+            'cotsStats' => $cotsStats,
+            'userActivity' => $userActivity,
+            'IkmGrowth' => $ikmGrowth,
+            'projectGrowth' => $projectGrowth,
+            'CotsGrowth' => $cotsGrowth,
+            'monthNames' => $monthNames
+        ]);
     }
 
     /**
@@ -271,26 +263,26 @@ class DashboardController extends Controller
         $lastYear = now()->subMonth()->year;
 
         $currentCount = match($type) {
-            'ikm' => ikm::whereMonth('created_at', $currentMonth)
+            'ikm' => Ikm::whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
                 ->count(),
             'projects' => Project::whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
                 ->count(),
-            'cots' => cots::whereMonth('created_at', $currentMonth)
+            'cots' => Cots::whereMonth('created_at', $currentMonth)
                 ->whereYear('created_at', $currentYear)
                 ->count(),
             default => 0
         };
 
         $lastCount = match($type) {
-            'ikm' => ikm::whereMonth('created_at', $lastMonth)
+            'ikm' => Ikm::whereMonth('created_at', $lastMonth)
                 ->whereYear('created_at', $lastYear)
                 ->count(),
             'projects' => Project::whereMonth('created_at', $lastMonth)
                 ->whereYear('created_at', $lastYear)
                 ->count(),
-            'cots' => cots::whereMonth('created_at', $lastMonth)
+            'cots' => Cots::whereMonth('created_at', $lastMonth)
                 ->whereYear('created_at', $lastYear)
                 ->count(),
             default => 0
@@ -333,7 +325,7 @@ class DashboardController extends Controller
 
         $data = match($chartType) {
             'ikm_trend' => cache()->remember('api_ikm_trend', $cacheDuration, function () {
-                return ikm::select(
+                return Ikm::select(
                     DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
                     DB::raw('COUNT(*) as count')
                 )
@@ -355,7 +347,7 @@ class DashboardController extends Controller
                 ->toArray();
             }),
             'ikm_distribution' => cache()->remember('api_ikm_distribution', $cacheDuration, function () {
-                return ikm::select('jenisProduk as label', DB::raw('COUNT(*) as value'))
+                return Ikm::select('jenisProduk as label', DB::raw('COUNT(*) as value'))
                     ->groupBy('jenisProduk')
                     ->get()
                     ->toArray();
@@ -382,12 +374,12 @@ class DashboardController extends Controller
             'generated_by' => Auth::user()->name,
             'summary' => [
                 'total_projects' => Project::count(),
-                'total_ikm' => ikm::count(),
-                'total_cots' => cots::count(),
+                'total_ikm' => Ikm::count(),
+                'total_cots' => Cots::count(),
                 'total_users' => User::count(),
             ],
             'monthly_trends' => [
-                'ikm' => ikm::select(
+                'ikm' => Ikm::select(
                     DB::raw('DATE_FORMAT(created_at, "%Y-%m") as month'),
                     DB::raw('COUNT(*) as count')
                 )
@@ -406,7 +398,7 @@ class DashboardController extends Controller
                 ->pluck('count', 'month')
                 ->toArray(),
             ],
-            'ikm_by_province' => ikm::with('province')
+            'ikm_by_province' => Ikm::with('province')
                 ->select('id_provinsi', DB::raw('COUNT(*) as count'))
                 ->groupBy('id_provinsi')
                 ->get()

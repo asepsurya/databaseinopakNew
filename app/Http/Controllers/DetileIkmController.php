@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\ikm;
+use App\Models\Ikm;
 use App\Models\DokumentasiCots;
 use App\Models\BencmarkProduk;
 use App\Models\ProdukDesign;
-use App\Models\cots;
+use App\Models\Cots;
 use App\Models\Project;
 use App\Models\Province;
 use App\Models\Regency;
@@ -20,18 +20,44 @@ use Illuminate\Support\Facades\Log;
 class DetileIkmController extends Controller
 {
 
-    public function index($id_ikm, $id_project){
-        // unkripsi id ikm
-        $id_ikm =decrypt($id_ikm);
+    public function index($id_Ikm, $id_project){
+        // Decripsi id ikm
+        $id_Ikm = decrypt($id_Ikm);
+
+        // OPTIMIZED: Use first() instead of get() for single record
+        $project = Project::find($id_project);
+
+        // OPTIMIZED: Eager load ALL relationships to prevent N+1 queries
+        $ikmData = Ikm::with([
+            'province',
+            'district',
+            'village',
+            'regency',
+            'bencmark',
+            'produkDesign',
+            'cots'
+        ])->where('id', $id_Ikm)->first();
+
+        // OPTIMIZED: Get related data only once, use collection methods instead of redundant queries
+        $dokumentasicots = DokumentasiCots::where('id_Ikm', $id_Ikm)->get();
+        $dokumentasicotscek = $dokumentasicots->count(); // Reuse collection instead of separate query
+
+        $cotsData = Cots::where('id_Ikm', $id_Ikm)->get();
+        $cotsCount = $cotsData->count(); // Reuse collection instead of separate query
+
+        // OPTIMIZED: REMOVED Ikm::all() - This was loading ALL IKM records!
+        // If searchIkm is needed, consider pagination or limiting results
+        // $searchIkm = Ikm::all() // REMOVED - Major performance issue!
+
         return view('pages.ikm.detile',[
             'title'=>'Detile IKM',
-            'project'=>Project::Firstwhere('id',$id_project),
-            'ikm'=>ikm::with(['province','district','village','regency','bencmark'])->where('id',$id_ikm)->get(),
-            'dokumentasicots'=>DokumentasiCots::where('id_ikm',$id_ikm)->get(),
-            'dokumentasicotscek'=>DokumentasiCots::where('id_ikm',$id_ikm)->count(),
-            'cots'=>cots::where('id_ikm',$id_ikm)->count(),
-            'cotsview'=>cots::where('id_ikm',$id_ikm)->get(),
-            'searchIkm'=>ikm::all()
+            'project'=>$project,
+            'Ikm'=>collect([$ikmData]), // Keep as collection for backward compatibility
+            'dokumentasiCots'=>$dokumentasicots,
+            'dokumentasiCotscek'=>$dokumentasicotscek,
+            'cots'=>$cotsCount,
+            'cotsview'=>$cotsData,
+            // 'searchIkm'=>$searchIkm // REMOVED - Causes slow loading
         ]);
     }
 
@@ -55,19 +81,19 @@ class DetileIkmController extends Controller
             }
 
             // Decrypt the IDs
-            $id_ikm = Crypt::decryptString($encryptedIkm);
+            $id_Ikm = Crypt::decryptString($encryptedIkm);
             $id_project = Crypt::decryptString($encryptedProject);
 
             Log::info('Decrypt IDs: Success', [
                 'encrypted_ikm' => $encryptedIkm,
                 'encrypted_project' => $encryptedProject,
-                'decrypted_ikm' => $id_ikm,
+                'decrypted_ikm' => $id_Ikm,
                 'decrypted_project' => $id_project
             ]);
 
             // Redirect to the detail page with decrypted IDs
             return redirect()->route('detail', [
-                'id_ikm' => $id_ikm,
+                'id_Ikm' => $id_Ikm,
                 'id_project' => $id_project
             ]);
 
@@ -90,25 +116,45 @@ class DetileIkmController extends Controller
     {
         try {
             // Decrypt the IDs
-            $id_ikm = Crypt::decryptString($encrypted_id);
+            $id_Ikm = Crypt::decryptString($encrypted_id);
             $id_project = Crypt::decryptString($encrypted_project);
 
             Log::info('Encrypted route access', [
                 'encrypted_id' => $encrypted_id,
                 'encrypted_project' => $encrypted_project,
-                'decrypted_ikm' => $id_ikm,
+                'decrypted_ikm' => $id_Ikm,
                 'decrypted_project' => $id_project
             ]);
 
+            // OPTIMIZED: Use find() instead of Firstwhere() for single record
+            $project = Project::find($id_project);
+
+            // OPTIMIZED: Eager load ALL relationships to prevent N+1 queries
+            $ikmData = Ikm::with([
+                'province',
+                'district',
+                'village',
+                'regency',
+                'bencmark',
+                'produkDesign',
+                'cots'
+            ])->where('id', $id_Ikm)->first();
+
+            // OPTIMIZED: Get related data only once
+            $dokumentasicots = DokumentasiCots::where('id_Ikm', $id_Ikm)->get();
+            $dokumentasicotscek = $dokumentasicots->count();
+
+            $cotsData = Cots::where('id_Ikm', $id_Ikm)->get();
+            $cotsCount = $cotsData->count();
+
             return view('pages.ikm.detile',[
                 'title'=>'Detile IKM',
-                'project'=>Project::Firstwhere('id',$id_project),
-                'ikm'=>ikm::with(['province','district','village','regency','bencmark'])->where('id',$id_ikm)->get(),
-                'dokumentasicots'=>DokumentasiCots::where('id_ikm',$id_ikm)->get(),
-                'dokumentasicotscek'=>DokumentasiCots::where('id_ikm',$id_ikm)->count(),
-                'cots'=>cots::where('id_ikm',$id_ikm)->count(),
-                'cotsview'=>cots::where('id_ikm',$id_ikm)->get(),
-                'searchIkm'=>ikm::all()
+                'project'=>$project,
+                'Ikm'=>collect([$ikmData]),
+                'dokumentasiCots'=>$dokumentasicots,
+                'dokumentasiCotscek'=>$dokumentasicotscek,
+                'cots'=>$cotsCount,
+                'cotsview'=>$cotsData
             ]);
 
         } catch (\Exception $e) {
@@ -121,21 +167,19 @@ class DetileIkmController extends Controller
             return redirect()->route('dashboard')->with('error', 'ID tidak valid atau sudah kadaluarsa');
         }
     }
-    public function ubahFotoIkm(request $request){
+    public function ubahFotoIkm(Request $request){
+        $validated = $request->validate([
+            'id_Ikm' => 'required|string',
+            'id_projek' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'croppedImage' => 'nullable|string',
+            'oldImage' => 'nullable|string',
+        ]);
 
-        // return $request->file('gambar')->store('ikms-img-Profile');
+        $filePath = null;
 
-        $validasiGambar = [
-            'gambar'=>'image|file',
-        ];
-
-        // Check if cropped image data is provided (base64)
-        if($request->croppedImage) {
-            // Handle base64 cropped image
-            $request->validate([
-                'croppedImage' => 'string',
-            ]);
-
+        // Handle cropped image (base64)
+        if ($request->croppedImage) {
             $imageData = $request->croppedImage;
 
             // Remove data URL prefix if present
@@ -147,38 +191,32 @@ class DetileIkmController extends Controller
             $imageData = base64_decode($imageData);
 
             // Generate unique filename
-            $fileName = 'ikm_' . $request->id_ikm . '_' . time() . '.jpg';
+            $fileName = 'ikm_' . $validated['id_Ikm'] . '_' . time() . '.jpg';
             $filePath = 'ikms-img-Profile/' . $fileName;
 
             // Store the image
             Storage::put($filePath, $imageData);
 
             // Delete old image if exists
-            if($request->oldImage){
+            if ($request->oldImage) {
                 Storage::delete($request->oldImage);
             }
-
-            ikm::where('id', $request->id_ikm)->update(['gambar' => $filePath]);
-
-            $request->session()->flash('UpdateBerhasil', 'Photo Berhasil Diubah');
-            return redirect('/project/dataikm/'.$request->id_projek);
         }
-
         // Handle regular file upload
-        $request->validate($validasiGambar);
-
-        if($request->file('gambar')){
-            //gambar dibah maka gambar di storage di hapus
-            if($request->oldImage){
+        elseif ($request->file('gambar')) {
+            // Delete old image if exists
+            if ($request->oldImage) {
                 Storage::delete($request->oldImage);
             }
-            // post-images adalah directory penyimpanan Gambar
-            $validasiGambar['gambar']=$request->file('gambar')->store('ikms-img-Profile');
+            $filePath = $request->file('gambar')->store('ikms-img-Profile');
         }
 
-        ikm::where('id',$request->id_ikm)->update($validasiGambar);
+        if ($filePath) {
+            Ikm::where('id', $validated['id_Ikm'])->update(['gambar' => $filePath]);
+        }
+
         $request->session()->flash('UpdateBerhasil', 'Photo Berhasil Diubah');
-        return redirect('/project/dataikm/'.$request->id_projek);
+        return redirect('/project/dataIkm/'.$validated['id_projek']);
     }
     /**
      * Auto-save brainstorming data via AJAX
@@ -188,7 +226,7 @@ class DetileIkmController extends Controller
     {
         try {
             $validated = $request->validate([
-                'id_ikm' => 'required|exists:ikms,id',
+                'id_Ikm' => 'required|exists:ikms,id',
                 'id_Project' => 'required|exists:projects,id',
             ]);
 
@@ -207,12 +245,12 @@ class DetileIkmController extends Controller
             }
 
             if (!empty($updateData)) {
-                $ikm = ikm::where('id', $request->id_ikm)->first();
+                $ikm = Ikm::where('id', $request->id_Ikm)->first();
                 if ($ikm) {
                     $ikm->update($updateData);
 
                     Log::info('Auto-save brainstorming successful', [
-                        'ikm_id' => $request->id_ikm,
+                        'ikm_id' => $request->id_Ikm,
                         'project_id' => $request->id_Project,
                         'fields_updated' => array_keys($updateData),
                         'saved_at' => now()->toISOString()
@@ -235,7 +273,7 @@ class DetileIkmController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Auto-save brainstorming failed: ' . $e->getMessage(), [
-                'ikm_id' => $request->id_ikm ?? null,
+                'ikm_id' => $request->id_Ikm ?? null,
                 'project_id' => $request->id_Project ?? null,
                 'exception' => $e
             ]);
@@ -248,89 +286,105 @@ class DetileIkmController extends Controller
         }
     }
 
-    public function bencmark(request $request){
-        $validasiGambar = $request->validate([
-            'id_ikm'=>'',
-            'gambar.*'=>'image|file',
-            'id_Project'=>'',
-
+    public function bencmark(Request $request){
+        // Validate input with proper rules
+        $validated = $request->validate([
+            'id_Ikm' => 'required|string',
+            'id_Project' => 'required|string',
+            'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        foreach ($request->file('gambar') as $item){
-            $validasiGambar['gambar']= $item->store('Bencmark-design');
-            BencmarkProduk::create($validasiGambar);
+        // Check if files were uploaded
+        if (!$request->hasFile('gambar')) {
+            $request->session()->flash('Gagal', 'Tidak ada gambar yang dipilih');
+            return redirect()->back();
         }
 
-        $request->session()->flash('Berhasil', 'Benckmark Berhasil Ditambahkan');
+        // Process each uploaded file
+        $uploadedCount = 0;
+        foreach ($request->file('gambar') as $file){
+            $filePath = $file->store('Bencmark-design');
+
+            BencmarkProduk::create([
+                'id_Ikm' => $validated['id_Ikm'],
+                'id_Project' => $validated['id_Project'],
+                'gambar' => $filePath
+            ]);
+            $uploadedCount++;
+        }
+
+        $request->session()->flash('Berhasil', "$uploadedCount Benchmark Berhasil Ditambahkan");
         return redirect()->back();
     }
 
-    public function cots(request $request){
-        $validasi = $request->validate([
-            'id_ikm'=>'required|unique:cots',
-            'id_project'=>'required',
-            // 'sejarahSingkat'=>'required',
-            // 'produkjual'=>'required',
-            // 'carapemasaran'=>'required',
-            // 'bahanbaku'=>'required',
-            // 'prosesproduksi'=>'required',
-            // 'omset'=>'required',
-            // 'kapasitasProduksi'=>'required',
-            // 'kendala'=>'required',
-            // 'solusi'=>'required',
+    public function cots(Request $request){
+        $validated = $request->validate([
+            'id_Ikm' => 'required|string',
+            'id_project' => 'required|string',
         ]);
-        cots::create($validasi);
-        $request->session()->flash('Berhasil', 'Data Berhasil ditambahkan');
+
+        Cots::create([
+            'id_Ikm' => $validated['id_Ikm'],
+            'id_project' => $validated['id_project'],
+        ]);
+
+        $request->session()->flash('Berhasil', 'Data COTS Berhasil ditambahkan');
         return redirect()->back();
-        // return redirect()->route('detail',[
-        //     'id_ikm'=>encrypt($request->id_ikm),
-        //     'id_project'=>$request->id_project
-        // ]);
     }
-    public function Updatecots(request $request){
-
-        $validasi = $request->validate([
-            'id_ikm'=>'',
-            'id_project'=>'',
-            'sejarahSingkat'=>'',
-            'produkjual'=>'',
-            'carapemasaran'=>'',
-            'bahanbaku'=>'',
-            'prosesproduksi'=>'',
-            'omset'=>'',
-            'kapasitasProduksi'=>'',
-            'kendala'=>'',
-            'solusi'=>'',
+    public function Updatecots(Request $request){
+        $validated = $request->validate([
+            'id_Ikm' => 'required|string',
+            'id_project' => 'required|string',
+            'sejarahSingkat' => 'nullable|string',
+            'produkjual' => 'nullable|string',
+            'carapemasaran' => 'nullable|string',
+            'bahanbaku' => 'nullable|string',
+            'prosesproduksi' => 'nullable|string',
+            'omset' => 'nullable|string',
+            'kapasitasProduksi' => 'nullable|string',
+            'kendala' => 'nullable|string',
+            'solusi' => 'nullable|string',
         ]);
 
-        cots::where('id_ikm',$request->id_ikm)->update($validasi);
-        $request->session()->flash('UpdateBerhasil', 'Data Berhasil Diubah');
+        Cots::where('id_Ikm', $validated['id_Ikm'])->update($validated);
+        $request->session()->flash('UpdateBerhasil', 'Data COTS Berhasil Diubah');
         return redirect()->route('detail',[
-            'id_ikm'=>encrypt($request->id_ikm),
-            'id_project'=>$request->id_project
+            'id_Ikm' => encrypt($validated['id_Ikm']),
+            'id_project' => $validated['id_project']
         ]);
     }
-    // input image Multiple
-    public function dokumentasi(request $request){
-        $validasi = $request->validate([
-            'id_ikm'=>'',
-            'id_project'=>'',
-            'gambar.*'=>''
-          ]);
-        $images=[];
-        foreach ($request->file('gambar') as $item){
-            $validasi['gambar']= $item->store('images');
-            DokumentasiCots::create($validasi);
+    // Upload multiple documentation images
+    public function dokumentasi(Request $request){
+        $validated = $request->validate([
+            'id_Ikm' => 'required|string',
+            'id_project' => 'required|string',
+            'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if (!$request->hasFile('gambar')) {
+            $request->session()->flash('Gagal', 'Tidak ada gambar yang dipilih');
+            return redirect()->back();
         }
 
-       $request->session()->flash('Berhasil', 'Data Berhasil ditambahkan');
-        return redirect()->back();
+        $uploadedCount = 0;
+        foreach ($request->file('gambar') as $file) {
+            $filePath = $file->store('images');
 
+            DokumentasiCots::create([
+                'id_Ikm' => $validated['id_Ikm'],
+                'id_project' => $validated['id_project'],
+                'gambar' => $filePath
+            ]);
+            $uploadedCount++;
+        }
+
+        $request->session()->flash('Berhasil', "$uploadedCount Dokumentasi Berhasil Ditambahkan");
+        return redirect()->back();
     }
 
    public function deleteDoc(request $request){
      $images = DokumentasiCots::all();
-     $id_ikm = $request->id_ikm;
+     $id_Ikm = $request->id_Ikm;
      $id_gambar=$request->id_gambar;
      $old_gambar=$request->old_gambar;
 
@@ -355,18 +409,30 @@ class DetileIkmController extends Controller
    }
 
    public function tambahDesain(Request $request, $id){
-    $validasiGambar = $request->validate([
-        'id_ikm'=>'',
-        'id_project'=>'',
-        'gambar.*'=>'file|image'
+    $validated = $request->validate([
+        'id_Ikm' => 'required|string',
+        'id_project' => 'required|string',
+        'gambar.*' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
 
-    foreach ($request->file('gambar') as $item){
-        $validasiGambar['gambar']= $item->store('Produk-design');
-        ProdukDesign::create($validasiGambar);
+    if (!$request->hasFile('gambar')) {
+        $request->session()->flash('Gagal', 'Tidak ada gambar yang dipilih');
+        return redirect()->back();
     }
 
-    $request->session()->flash('Berhasil', 'Data Berhasil disimpan');
+    $uploadedCount = 0;
+    foreach ($request->file('gambar') as $file) {
+        $filePath = $file->store('Produk-design');
+
+        ProdukDesign::create([
+            'id_Ikm' => $validated['id_Ikm'],
+            'id_project' => $validated['id_project'],
+            'gambar' => $filePath
+        ]);
+        $uploadedCount++;
+    }
+
+    $request->session()->flash('Berhasil', "$uploadedCount Desain Berhasil Ditambahkan");
     return redirect()->back();
    }
 
@@ -381,7 +447,7 @@ class DetileIkmController extends Controller
    }
 
    public function updateBrainstorming(request $request){
-    ikm::where(['id'=>$request->id_ikm,'id_Project'=>$request->id_Project])->update([
+    Ikm::where(['id'=>$request->id_Ikm,'id_Project'=>$request->id_Project])->update([
         'jenisProduk'=>$request->jenisProduk,
         'merk'=>$request->merk,
         'komposisi'=>$request->komposisi,
@@ -408,7 +474,7 @@ class DetileIkmController extends Controller
     public function publik_cots(){
     return view('pages.public-cots.cots_public',[
         'title'=>'Form COTS',
-        'dataIkm'=>ikm::all(),
+        'dataIkm'=>Ikm::all(),
         'project'=>Project::all(),
         'provinsi'=>province::all(),
 
@@ -420,7 +486,7 @@ class DetileIkmController extends Controller
         $validasiGambar = $request->file('gambar')->store('ikms-img-Profile');
     }
 
-    ikm::create([
+    Ikm::create([
         'nama'=>$request->nama,
         'telp'=>$request->telp,
         'gender'=>$request->gender,
@@ -437,24 +503,24 @@ class DetileIkmController extends Controller
     ]);
 
     // get data
-    $a = ikm::where(['nama'=>$request->nama,'telp'=>$request->telp,'id_Project'=>$request->id_Project])->get();
+    $a = Ikm::where(['nama'=>$request->nama,'telp'=>$request->telp,'id_Project'=>$request->id_Project])->get();
     foreach($a as $data){
-        $id_ikm = $data->id;
+        $id_Ikm = $data->id;
         $id_project=$data->id_Project;
     }
     // input Dokumentasi COTS
     foreach ($request->file('gambargallery') as $item){
         $validasiGambar2 = $item->store('images');
         DokumentasiCots::create([
-            'id_ikm'=>$id_ikm,
+            'id_Ikm'=>$id_Ikm,
             'id_project'=>$id_project,
             'gambar'=>$validasiGambar2
         ]);
     }
 
     // input Data COTS
-    cots::create([
-        'id_ikm'=>$id_ikm,
+    Cots::create([
+        'id_Ikm'=>$id_Ikm,
         'id_project'=>$id_project,
         'sejarahSingkat'=>$request->sejarahSingkat,
         'produkjual'=>$request->produkjual,

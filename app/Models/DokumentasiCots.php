@@ -13,6 +13,6 @@ class DokumentasiCots extends Model
         'gambar' => 'array'
     ];
     public function ikms(){
-        return $this->hasMany('App\Models\ikm','id');
+        return $this->hasMany('App\\Models\\Ikm','id');
     }
 }

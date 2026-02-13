@@ -1,12 +1,12 @@
 @extends('layouts.public')
 
-@section('title', 'Form COTS - Database INOPAK')
+@section('title', 'Form Cots - Database INOPAK')
 
 @section('content')
-<h4 class="text-center mb-4">Formulir Pendaftaran COTS</h4>
+<h4 class="text-center mb-4">Formulir Pendaftaran Cots</h4>
 <p class="text-center text-muted mb-4">Silakan lengkapi data di bawah ini dengan benar.</p>
 
-<form action="{{ route('cots.save') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('Cots.save') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="row">
         <div class="col-md-6">
@@ -92,7 +92,7 @@
 
     <div class="row">
         <div class="col-12">
-            <h5 class="mb-3"><i class="mdi mdi-file-document text-primary"></i> Data COTS</h5>
+            <h5 class="mb-3"><i class="mdi mdi-file-document text-primary"></i> Data Cots</h5>
         </div>
         <div class="col-md-6">
             <div class="mb-3">

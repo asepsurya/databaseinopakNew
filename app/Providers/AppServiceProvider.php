@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\ikm;
+use App\Models\Ikm;
 use App\Models\LogoSetting;
 use App\Models\AppSetting;
 use App\Services\BrandingService;
 use Illuminate\Support\ServiceProvider;
+
+// Load ThumbnailHelper for Blade views
+require_once app_path('Helpers/ThumbnailHelper.php');
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Share total UMKM count with all views
         view()->composer('*', function ($view) {
-            $totalUmkm = ikm::count();
+            $totalUmkm = Ikm::count();
             $view->with('totalUmkm', $totalUmkm);
         });
 

@@ -1,0 +1,529 @@
+/**
+ * Thumbnail System CSS
+ * Custom thumbnail styles for image uploads
+ * Consistent design across all application pages
+ */
+
+/* ============================================
+   THUMBNAIL COMPONENT STYLES
+   ============================================ */
+
+/* Thumbnail wrapper */
+.thumbnail-wrapper {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.thumbnail-wrapper:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Thumbnail container */
+.thumbnail-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Thumbnail image */
+.thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.thumbnail-wrapper:hover .thumbnail-image {
+    transform: scale(1.05);
+}
+
+/* Placeholder/loading state */
+.thumbnail-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+}
+
+.thumbnail-placeholder .spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Fallback state */
+.thumbnail-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+/* Hover overlay */
+.thumbnail-hover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.thumbnail-wrapper:hover .thumbnail-hover-overlay {
+    opacity: 1;
+}
+
+/* ============================================
+   ACTION BUTTONS
+   ============================================ */
+
+/* Download button */
+.thumbnail-download {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.2s ease;
+    z-index: 10;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumbnail-wrapper:hover .thumbnail-download {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.thumbnail-download:hover {
+    background-color: #f8f9fa;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.thumbnail-download i {
+    font-size: 1rem;
+}
+
+/* Fullscreen button */
+.thumbnail-fullscreen {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    padding: 0.375rem;
+    border-radius: 0.375rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.2s ease;
+    z-index: 10;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumbnail-wrapper:hover .thumbnail-fullscreen {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.thumbnail-fullscreen:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1);
+}
+
+.thumbnail-fullscreen i {
+    font-size: 0.875rem;
+}
+
+/* Delete button */
+.thumbnail-delete {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    padding: 0.375rem;
+    border-radius: 0.375rem;
+    background-color: #dc3545;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.2s ease;
+    z-index: 10;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.thumbnail-wrapper:hover .thumbnail-delete {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.thumbnail-delete:hover {
+    background-color: #c82333;
+    transform: scale(1.1);
+}
+
+.thumbnail-delete i {
+    font-size: 0.875rem;
+}
+
+/* ============================================
+   THUMBNAIL GRID/GALLERY
+   ============================================ */
+
+/* Thumbnail gallery grid */
+.thumbnail-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+}
+
+/* Responsive gallery */
+.thumbnail-gallery-sm {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+}
+
+.thumbnail-gallery-lg {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Thumbnail card */
+.thumbnail-card {
+    background: #fff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.thumbnail-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* ============================================
+   AVATAR/PROFILE THUMBNAILS
+   ============================================ */
+
+/* Profile/avatar thumbnails */
+.thumbnail-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.thumbnail-avatar-lg {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+}
+
+.thumbnail-avatar-xl {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+}
+
+/* ============================================
+   IMAGE PREVIEW ITEMS
+   ============================================ */
+
+/* Design preview item */
+.design-preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.design-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.design-preview-item:hover img {
+    transform: scale(1.1);
+}
+
+/* Design overlay */
+.design-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.design-preview-item:hover .design-overlay {
+    opacity: 1;
+}
+
+/* ============================================
+   IMAGE WRAPPER
+   ============================================ */
+
+/* Image wrapper with actions */
+.image-wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.image-wrapper:hover {
+    transform: scale(1.02);
+}
+
+/* ============================================
+   DARK MODE SUPPORT
+   ============================================ */
+
+[data-bs-theme="dark"] .thumbnail-container {
+    background-color: #2e3344 !important;
+}
+
+[data-bs-theme="dark"] .thumbnail-placeholder {
+    background-color: #2e3344 !important;
+}
+
+[data-bs-theme="dark"] .thumbnail-fallback {
+    background-color: #2e3344 !important;
+    color: #adb5bd !important;
+}
+
+[data-bs-theme="dark"] .thumbnail-download {
+    background-color: #3d4458 !important;
+    color: #dee2e6 !important;
+}
+
+[data-bs-theme="dark"] .thumbnail-card {
+    background-color: #2e3344;
+}
+
+[data-bs-theme="dark"] .thumbnail-wrapper:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+@media (max-width: 576px) {
+    .thumbnail-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .thumbnail-download,
+    .thumbnail-fullscreen {
+        opacity: 1 !important;
+        transform: scale(0.9) !important;
+        padding: 0.375rem;
+    }
+
+    .thumbnail-wrapper:hover .thumbnail-download,
+    .thumbnail-wrapper:hover .thumbnail-fullscreen {
+        transform: scale(1) !important;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    .thumbnail-gallery {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+
+/* ============================================
+   LOADING ANIMATIONS
+   ============================================ */
+
+/* Pulse animation for loading */
+@keyframes thumbnail-pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.thumbnail-loading {
+    animation: thumbnail-pulse 1.5s ease-in-out infinite;
+}
+
+/* Skeleton loading */
+.thumbnail-skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+[data-bs-theme="dark"] .thumbnail-skeleton {
+    background: linear-gradient(90deg, #3d4458 25%, #2e3344 50%, #3d4458 75%);
+    background-size: 200% 100%;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+/* Object fit cover utility */
+.object-cover {
+    object-fit: cover;
+}
+
+/* Aspect ratio utilities */
+.aspect-square {
+    aspect-ratio: 1 / 1;
+}
+
+.aspect-video {
+    aspect-ratio: 16 / 9;
+}
+
+.aspect-portrait {
+    aspect-ratio: 3 / 4;
+}
+
+/* Size utilities */
+.thumbnail-sm {
+    max-width: 150px;
+    max-height: 150px;
+}
+
+.thumbnail-md {
+    max-width: 300px;
+    max-height: 300px;
+}
+
+.thumbnail-lg {
+    max-width: 600px;
+    max-height: 600px;
+}
+
+.thumbnail-xl {
+    max-width: 1200px;
+    max-height: 1200px;
+}
+
+/* Border radius utilities */
+.thumbnail-rounded {
+    border-radius: 0.375rem;
+}
+
+.thumbnail-rounded-lg {
+    border-radius: 0.75rem;
+}
+
+.thumbnail-circle {
+    border-radius: 50%;
+}
+
+/* Shadow utilities */
+.thumbnail-shadow-sm {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.thumbnail-shadow-md {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.thumbnail-shadow-lg {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.16);
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+/* Focus states for keyboard navigation */
+.thumbnail-download:focus,
+.thumbnail-fullscreen:focus,
+.thumbnail-delete:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+/* Screen reader only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .thumbnail-wrapper,
+    .thumbnail-image,
+    .thumbnail-download,
+    .thumbnail-fullscreen,
+    .thumbnail-delete {
+        transition: none;
+    }
+
+    .thumbnail-skeleton {
+        animation: none;
+        background: #e0e0e0;
+    }
+
+    [data-bs-theme="dark"] .thumbnail-skeleton {
+        background: #3d4458;
+    }
+}
+
+/* Print styles */
+@media print {
+    .thumbnail-download,
+    .thumbnail-fullscreen,
+    .thumbnail-delete {
+        display: none !important;
+    }
+
+    .thumbnail-wrapper {
+        break-inside: avoid;
+    }
+}

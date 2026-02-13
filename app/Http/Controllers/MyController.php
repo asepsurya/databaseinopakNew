@@ -8,7 +8,7 @@ use App\Models\Village;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Models\ikm;
+use App\Models\Ikm;
 
 class MyController extends Controller
 {

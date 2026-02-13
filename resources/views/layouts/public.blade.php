@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Database INOPAK - Sistem Pengelolaan Informasi" />
-    <meta name="keywords" content="inopak, database, ikm, cots" />
+    <meta name="keywords" content="inopak, database, Ikm, Cots" />
     <meta name="author" content="INOPAK" />
     <title>@yield('title', 'Page') | Database INOPAK</title>
 

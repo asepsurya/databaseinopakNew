@@ -42,20 +42,20 @@ enum NotificationType: string
     case PROJECT_COMPLETED = 'project_completed';
     case PROJECT_ARCHIVED = 'project_archived';
 
-    // ==================== IKM (Industri Kecil Menengah) ====================
-    case IKM_CREATED = 'ikm_created';
-    case IKM_UPDATED = 'ikm_updated';
-    case IKM_DELETED = 'ikm_deleted';
-    case IKM_APPROVED = 'ikm_approved';
-    case IKM_REJECTED = 'ikm_rejected';
-    case IKM_VERIFIED = 'ikm_verified';
+    // ==================== Ikm (Industri Kecil Menengah) ====================
+    case Ikm_CREATED = 'Ikm_created';
+    case Ikm_UPDATED = 'Ikm_updated';
+    case Ikm_DELETED = 'Ikm_deleted';
+    case Ikm_APPROVED = 'Ikm_approved';
+    case Ikm_REJECTED = 'Ikm_rejected';
+    case Ikm_VERIFIED = 'Ikm_verified';
 
-    // ==================== COTS (Commercial Off-The-Shelf) ====================
-    case COTS_CREATED = 'cots_created';
-    case COTS_UPDATED = 'cots_updated';
-    case COTS_DELETED = 'cots_deleted';
-    case COTS_INSTALLED = 'cots_installed';
-    case COTS_REMOVED = 'cots_removed';
+    // ==================== Cots (Commercial Off-The-Shelf) ====================
+    case Cots_CREATED = 'Cots_created';
+    case Cots_UPDATED = 'Cots_updated';
+    case Cots_DELETED = 'Cots_deleted';
+    case Cots_INSTALLED = 'Cots_installed';
+    case Cots_REMOVED = 'Cots_removed';
 
     // ==================== BENCHMARK PRODUK ====================
     case BENCHMARK_CREATED = 'benchmark_created';
@@ -64,7 +64,7 @@ enum NotificationType: string
     case BENCHMARK_APPROVED = 'benchmark_approved';
     case BENCHMARK_REJECTED = 'benchmark_rejected';
 
-    // ==================== DOKUMENTASI COTS ====================
+    // ==================== DOKUMENTASI Cots ====================
     case DOKUMENTASI_CREATED = 'dokumentasi_created';
     case DOKUMENTASI_UPDATED = 'dokumentasi_updated';
     case DOKUMENTASI_DELETED = 'dokumentasi_deleted';
@@ -158,7 +158,7 @@ enum NotificationType: string
             self::PRODUK_DESIGN_UPDATED, self::USER_UPDATED, self::FORM_DRAFT_SAVED => 'ti ti-pencil',
             self::DATA_DELETED, self::BENCHMARK_DELETED, self::DOKUMENTASI_DELETED,
             self::PRODUK_DESIGN_DELETED, self::USER_DELETED, self::ACCOUNT_DELETED,
-            self::COTS_REMOVED, self::PROFILE_DELETED => 'ti ti-trash',
+            self::Cots_REMOVED, self::PROFILE_DELETED => 'ti ti-trash',
             self::DATA_RESTORED => 'ti ti-recycle',
             self::DATA_IMPORTED, self::IMPORT_STARTED, self::IMPORT_COMPLETED => 'ti ti-upload',
             self::DATA_EXPORTED, self::EXPORT_STARTED, self::EXPORT_COMPLETED => 'ti ti-download',
@@ -167,9 +167,9 @@ enum NotificationType: string
             // Form Submissions
             self::FORM_SUBMITTED, self::TICKET_CREATED, self::FEEDBACK_SUBMITTED => 'ti ti-file-description',
             self::FORM_APPROVED, self::BENCHMARK_APPROVED, self::DOKUMENTASI_APPROVED,
-            self::PRODUK_DESIGN_APPROVED, self::IKM_APPROVED, self::TICKET_CLOSED => 'ti ti-check',
+            self::PRODUK_DESIGN_APPROVED, self::Ikm_APPROVED, self::TICKET_CLOSED => 'ti ti-check',
             self::FORM_REJECTED, self::BENCHMARK_REJECTED, self::PRODUK_DESIGN_REJECTED,
-            self::IKM_REJECTED => 'ti ti-x',
+            self::Ikm_REJECTED => 'ti ti-x',
 
             // Profile
             self::PROFILE_UPDATED, self::USER_ROLE_CHANGED, self::PREFERENCES_UPDATED => 'ti ti-user',
@@ -177,17 +177,17 @@ enum NotificationType: string
             self::TWO_FACTOR_ENABLED, self::TWO_FACTOR_DISABLED => 'ti ti-shield',
 
             // Project
-            self::PROJECT_CREATED, self::IKM_CREATED, self::COTS_CREATED => 'ti ti-folder-plus',
-            self::PROJECT_UPDATED, self::IKM_UPDATED, self::COTS_UPDATED => 'ti ti-folder-edit',
-            self::PROJECT_DELETED, self::IKM_DELETED, self::COTS_DELETED => 'ti ti-folder-minus',
+            self::PROJECT_CREATED, self::Ikm_CREATED, self::Cots_CREATED => 'ti ti-folder-plus',
+            self::PROJECT_UPDATED, self::Ikm_UPDATED, self::Cots_UPDATED => 'ti ti-folder-edit',
+            self::PROJECT_DELETED, self::Ikm_DELETED, self::Cots_DELETED => 'ti ti-folder-minus',
             self::PROJECT_COMPLETED => 'ti ti-folder-check',
             self::PROJECT_ARCHIVED => 'ti ti-folder-zip',
 
-            // IKM
-            self::IKM_VERIFIED => 'ti ti-badge-check',
+            // Ikm
+            self::Ikm_VERIFIED => 'ti ti-badge-check',
 
-            // COTS
-            self::COTS_INSTALLED => 'ti ti-package',
+            // Cots
+            self::Cots_INSTALLED => 'ti ti-package',
 
             // Export/Import
             self::EXPORT_FAILED, self::IMPORT_FAILED, self::REPORT_FAILED => 'ti ti-exclamation-circle',
@@ -241,10 +241,10 @@ enum NotificationType: string
             self::LOGIN, self::LOGOUT, self::USER_LOGGED_IN, self::USER_LOGGED_OUT,
             self::DATA_CREATED, self::FORM_APPROVED, self::FORM_SUBMITTED,
             self::TRANSACTION_COMPLETED, self::EXPORT_COMPLETED, self::IMPORT_COMPLETED,
-            self::BACKUP_COMPLETED, self::PROJECT_CREATED, self::IKM_CREATED, self::COTS_CREATED,
+            self::BACKUP_COMPLETED, self::PROJECT_CREATED, self::Ikm_CREATED, self::Cots_CREATED,
             self::BENCHMARK_CREATED, self::DOKUMENTASI_CREATED, self::PRODUK_DESIGN_CREATED,
-            self::PROJECT_COMPLETED, self::IKM_APPROVED, self::IKM_VERIFIED,
-            self::COTS_INSTALLED, self::BENCHMARK_APPROVED, self::DOKUMENTASI_APPROVED,
+            self::PROJECT_COMPLETED, self::Ikm_APPROVED, self::Ikm_VERIFIED,
+            self::Cots_INSTALLED, self::BENCHMARK_APPROVED, self::DOKUMENTASI_APPROVED,
             self::PRODUK_DESIGN_APPROVED, self::TICKET_CLOSED, self::SYNC_COMPLETED,
             self::API_CALL_SUCCESS, self::REPORT_GENERATED, self::REPORT_EXPORTED,
             self::TRANSACTION_CREATED, self::ACCOUNT_CREATED, self::USER_CREATED,
@@ -256,19 +256,19 @@ enum NotificationType: string
             self::FORM_REJECTED, self::TRANSACTION_FAILED, self::IMPORT_FAILED,
             self::EXPORT_FAILED, self::SYSTEM_ERROR, self::SERVER_ERROR, self::DATABASE_ERROR,
             self::ACCOUNT_DELETED, self::USER_DELETED, self::PROJECT_DELETED,
-            self::IKM_DELETED, self::COTS_DELETED, self::BENCHMARK_DELETED,
+            self::Ikm_DELETED, self::Cots_DELETED, self::BENCHMARK_DELETED,
             self::DOKUMENTASI_DELETED, self::PRODUK_DESIGN_DELETED,
-            self::IKM_REJECTED, self::BENCHMARK_REJECTED, self::PRODUK_DESIGN_REJECTED,
+            self::Ikm_REJECTED, self::BENCHMARK_REJECTED, self::PRODUK_DESIGN_REJECTED,
             self::TRANSACTION_CANCELLED, self::TRANSACTION_REFUNDED, self::REPORT_FAILED,
             self::UNAUTHORIZED_ACCESS, self::SUSPICIOUS_ACTIVITY, self::SECURITY_ALERT,
             self::SYNC_FAILED, self::API_CALL_FAILED, self::BACKUP_FAILED,
-            self::COTS_REMOVED, self::MAINTENANCE_STARTED, self::PASSWORD_EXPIRED,
+            self::Cots_REMOVED, self::MAINTENANCE_STARTED, self::PASSWORD_EXPIRED,
             self::PROFILE_DELETED => 'danger',
 
             // Warning states - Yellow/Orange
             self::PASSWORD_RESET, self::PASSWORD_CHANGED, self::DATA_UPDATED,
-            self::FORM_DRAFT_SAVED, self::PROJECT_UPDATED, self::IKM_UPDATED,
-            self::COTS_UPDATED, self::BENCHMARK_UPDATED, self::DOKUMENTASI_UPDATED,
+            self::FORM_DRAFT_SAVED, self::PROJECT_UPDATED, self::Ikm_UPDATED,
+            self::Cots_UPDATED, self::BENCHMARK_UPDATED, self::DOKUMENTASI_UPDATED,
             self::PRODUK_DESIGN_UPDATED, self::USER_UPDATED, self::TRANSACTION_CREATED,
             self::SYSTEM_WARNING, self::MAINTENANCE_MODE, self::TICKET_UPDATED,
             self::USER_ROLE_CHANGED, self::USER_PERMISSION_CHANGED, self::PREFERENCES_UPDATED,
@@ -342,20 +342,20 @@ enum NotificationType: string
             self::PROJECT_COMPLETED => 'Proyek Selesai',
             self::PROJECT_ARCHIVED => 'Proyek Diarsipkan',
 
-            // IKM
-            self::IKM_CREATED => 'Data IKM Baru',
-            self::IKM_UPDATED => 'Data IKM Diperbarui',
-            self::IKM_DELETED => 'Data IKM Dihapus',
-            self::IKM_APPROVED => 'IKM Disetujui',
-            self::IKM_REJECTED => 'IKM Ditolak',
-            self::IKM_VERIFIED => 'IKM Terverifikasi',
+            // Ikm
+            self::Ikm_CREATED => 'Data Ikm Baru',
+            self::Ikm_UPDATED => 'Data Ikm Diperbarui',
+            self::Ikm_DELETED => 'Data Ikm Dihapus',
+            self::Ikm_APPROVED => 'Ikm Disetujui',
+            self::Ikm_REJECTED => 'Ikm Ditolak',
+            self::Ikm_VERIFIED => 'Ikm Terverifikasi',
 
-            // COTS
-            self::COTS_CREATED => 'Data COTS Baru',
-            self::COTS_UPDATED => 'Data COTS Diperbarui',
-            self::COTS_DELETED => 'Data COTS Dihapus',
-            self::COTS_INSTALLED => 'COTS Diinstal',
-            self::COTS_REMOVED => 'COTS Dihapus',
+            // Cots
+            self::Cots_CREATED => 'Data Cots Baru',
+            self::Cots_UPDATED => 'Data Cots Diperbarui',
+            self::Cots_DELETED => 'Data Cots Dihapus',
+            self::Cots_INSTALLED => 'Cots Diinstal',
+            self::Cots_REMOVED => 'Cots Dihapus',
 
             // Benchmark
             self::BENCHMARK_CREATED => 'Benchmark Baru',
@@ -454,11 +454,11 @@ enum NotificationType: string
             self::PROJECT_CREATED, self::PROJECT_UPDATED, self::PROJECT_DELETED,
             self::PROJECT_COMPLETED, self::PROJECT_ARCHIVED => 'project',
 
-            self::IKM_CREATED, self::IKM_UPDATED, self::IKM_DELETED,
-            self::IKM_APPROVED, self::IKM_REJECTED, self::IKM_VERIFIED => 'ikm',
+            self::Ikm_CREATED, self::Ikm_UPDATED, self::Ikm_DELETED,
+            self::Ikm_APPROVED, self::Ikm_REJECTED, self::Ikm_VERIFIED => 'Ikm',
 
-            self::COTS_CREATED, self::COTS_UPDATED, self::COTS_DELETED,
-            self::COTS_INSTALLED, self::COTS_REMOVED => 'cots',
+            self::Cots_CREATED, self::Cots_UPDATED, self::Cots_DELETED,
+            self::Cots_INSTALLED, self::Cots_REMOVED => 'Cots',
 
             self::BENCHMARK_CREATED, self::BENCHMARK_UPDATED, self::BENCHMARK_DELETED,
             self::BENCHMARK_APPROVED, self::BENCHMARK_REJECTED => 'benchmark',
@@ -515,13 +515,13 @@ enum NotificationType: string
             self::PROJECT_CREATED,
             self::PROJECT_UPDATED,
             self::PROJECT_COMPLETED,
-            self::IKM_CREATED,
-            self::IKM_UPDATED,
-            self::IKM_APPROVED,
-            self::IKM_VERIFIED,
-            self::COTS_CREATED,
-            self::COTS_UPDATED,
-            self::COTS_INSTALLED,
+            self::Ikm_CREATED,
+            self::Ikm_UPDATED,
+            self::Ikm_APPROVED,
+            self::Ikm_VERIFIED,
+            self::Cots_CREATED,
+            self::Cots_UPDATED,
+            self::Cots_INSTALLED,
             self::BENCHMARK_CREATED,
             self::BENCHMARK_UPDATED,
             self::BENCHMARK_APPROVED,
@@ -570,10 +570,10 @@ enum NotificationType: string
             self::ACCOUNT_DELETED,
             self::USER_DELETED,
             self::PROJECT_DELETED,
-            self::IKM_DELETED,
-            self::IKM_REJECTED,
-            self::COTS_DELETED,
-            self::COTS_REMOVED,
+            self::Ikm_DELETED,
+            self::Ikm_REJECTED,
+            self::Cots_DELETED,
+            self::Cots_REMOVED,
             self::BENCHMARK_DELETED,
             self::BENCHMARK_REJECTED,
             self::DOKUMENTASI_DELETED,
@@ -603,7 +603,7 @@ enum NotificationType: string
             self::BULK_ACTION,
             self::TRANSACTION_CREATED,
             self::PROJECT_ARCHIVED,
-            self::COTS_UPDATED,
+            self::Cots_UPDATED,
             self::SYNC_STARTED,
             self::IMPORT_STARTED,
             self::EXPORT_STARTED,

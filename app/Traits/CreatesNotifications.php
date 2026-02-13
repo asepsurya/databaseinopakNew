@@ -403,8 +403,8 @@ trait CreatesNotifications
         $type = match ($event) {
             'created' => match ($contentType) {
                 'project' => NotificationType::PROJECT_CREATED,
-                'ikm' => NotificationType::IKM_CREATED,
-                'cots' => NotificationType::COTS_CREATED,
+                'Ikm' => NotificationType::Ikm_CREATED,
+                'Cots' => NotificationType::Cots_CREATED,
                 'benchmark' => NotificationType::BENCHMARK_CREATED,
                 'dokumentasi' => NotificationType::DOKUMENTASI_CREATED,
                 'produk_design' => NotificationType::PRODUK_DESIGN_CREATED,
@@ -412,8 +412,8 @@ trait CreatesNotifications
             },
             'updated' => match ($contentType) {
                 'project' => NotificationType::PROJECT_UPDATED,
-                'ikm' => NotificationType::IKM_UPDATED,
-                'cots' => NotificationType::COTS_UPDATED,
+                'Ikm' => NotificationType::Ikm_UPDATED,
+                'Cots' => NotificationType::Cots_UPDATED,
                 'benchmark' => NotificationType::BENCHMARK_UPDATED,
                 'dokumentasi' => NotificationType::DOKUMENTASI_UPDATED,
                 'produk_design' => NotificationType::PRODUK_DESIGN_UPDATED,
@@ -421,22 +421,22 @@ trait CreatesNotifications
             },
             'deleted' => match ($contentType) {
                 'project' => NotificationType::PROJECT_DELETED,
-                'ikm' => NotificationType::IKM_DELETED,
-                'cots' => NotificationType::COTS_DELETED,
+                'Ikm' => NotificationType::Ikm_DELETED,
+                'Cots' => NotificationType::Cots_DELETED,
                 'benchmark' => NotificationType::BENCHMARK_DELETED,
                 'dokumentasi' => NotificationType::DOKUMENTASI_DELETED,
                 'produk_design' => NotificationType::PRODUK_DESIGN_DELETED,
                 default => NotificationType::DATA_DELETED,
             },
             'approved' => match ($contentType) {
-                'ikm' => NotificationType::IKM_APPROVED,
+                'Ikm' => NotificationType::Ikm_APPROVED,
                 'benchmark' => NotificationType::BENCHMARK_APPROVED,
                 'dokumentasi' => NotificationType::DOKUMENTASI_APPROVED,
                 'produk_design' => NotificationType::PRODUK_DESIGN_APPROVED,
                 default => NotificationType::FORM_APPROVED,
             },
             'rejected' => match ($contentType) {
-                'ikm' => NotificationType::IKM_REJECTED,
+                'Ikm' => NotificationType::Ikm_REJECTED,
                 'benchmark' => NotificationType::BENCHMARK_REJECTED,
                 'produk_design' => NotificationType::PRODUK_DESIGN_REJECTED,
                 default => NotificationType::FORM_REJECTED,
@@ -475,8 +475,8 @@ trait CreatesNotifications
     {
         return match ($contentType) {
             'project' => 'Proyek',
-            'ikm' => 'Data IKM',
-            'cots' => 'Data COTS',
+            'Ikm' => 'Data IKM',
+            'Cots' => 'Data COTS',
             'benchmark' => 'Benchmark Produk',
             'dokumentasi' => 'Dokumentasi COTS',
             'produk_design' => 'Desain Produk',
