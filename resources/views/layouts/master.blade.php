@@ -35,6 +35,11 @@
 
     <!-- Toastr Custom Styles -->
     <style>
+        @media (max-width: 576px) {
+            .ikm-counter {
+               display: none !important;
+            }
+        }
         /* Toastr notification styles */
         .toast-simple {
             font-family: inherit;
@@ -419,6 +424,11 @@
         .dark .search-autocomplete-dropdown .no-results {
             color: #adb5bd;
         }
+         @media (max-width: 768px) {
+            #sidebarToggleBtn{
+                display: none !important;
+            }
+        }
     </style>
 
     @stack('styles')
@@ -522,7 +532,7 @@
                     </div> --}}
 
                     <!-- UMKM Counter Badge -->
-                    <div class="topbar-item">
+                    <div class="topbar-item ikm-counter">
                         <div class="d-flex align-items-center gap-2 px-2 py-1 rounded bg-primary bg-opacity-10 border border-primary border-opacity-25">
                             <i class="ti ti-building-skyscraper text-primary fs-lg"></i>
                             <span class="fw-semibold text-primary">{{ $totalUmkm ?? 0 }}</span>
@@ -581,6 +591,7 @@
                             <i class="ti ti-settings topbar-link-icon"></i>
                         </button>
                     </div> --}}
+
                     <div class="topbar-item d-none d-sm-flex">
                         <a class="topbar-link " type="button" href="/settings">
                             <i class="ti ti-settings topbar-link-icon"></i>
@@ -1091,6 +1102,7 @@
                     </li>
                 </ul>
             </div>
+
         </div>
         <!-- Sidenav Menu End -->
 
@@ -1124,7 +1136,49 @@
                 </div>
             </footer>
             <!-- end Footer -->
+            <div class="d-lg-none fixed-bottom bg-white border-top shadow-sm">
+                <div class="container">
+                    <div class="row text-center">
 
+                        <div class="col py-2">
+                            <a href="/dashboard" class="text-decoration-none small {{ Request::is('dashboard') ? 'text-primary' : 'text-muted' }}">
+                                <div><i class="ti ti-dashboard fs-5"></i></div>
+                                Dashboard
+                            </a>
+                        </div>
+
+                        <div class="col py-2">
+                            <a href="/project" class="text-decoration-none small {{ Request::is('project*') ? 'text-primary' : 'text-muted' }}">
+                                <div><i class="ti ti-folder fs-5"></i></div>
+                                Project
+                            </a>
+                        </div>
+
+                        <div class="col py-2">
+                            <a href="https://tidessa.inopakinstitute.or.id/login"
+                            target="_blank"
+                            class="text-decoration-none small text-muted">
+                                <div><i class="ti ti-folders fs-5"></i></div>
+                                TIDESSA
+                            </a>
+                        </div>
+
+                        <div class="col py-2">
+                            <a href="#"
+                            onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"
+                            class="text-decoration-none small text-muted">
+                                <div><i class="ti ti-logout fs-5"></i></div>
+                                Logout
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <form id="logoutForm" action="/logout" method="POST" class="d-none">
+                @csrf
+            </form>
         </div>
         <!-- ============================================================== -->
         <!-- End Main Content -->
@@ -1168,6 +1222,14 @@
             sidenavMenu.classList.add('d-none');
             if (sidebarShowHideCheckbox) sidebarShowHideCheckbox.checked = false;
         }
+    }
+
+    // Mobile Sidebar Toggle Button functionality
+    if (sidebarToggleBtn && sidenavMenu) {
+        sidebarToggleBtn.addEventListener('click', function() {
+            sidenavMenu.classList.toggle('d-none');
+            localStorage.setItem('sidebarHidden', sidenavMenu.classList.contains('d-none'));
+        });
     }
 
     // Theme toggle functionality

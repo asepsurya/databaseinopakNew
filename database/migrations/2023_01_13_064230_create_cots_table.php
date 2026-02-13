@@ -17,15 +17,15 @@ class CreateCotsTable extends Migration
             $table->id();
             $table->string('id_ikm');
             $table->string('id_project');
-            $table->text('sejarahSingkat');
-            $table->text('produkjual');
-            $table->text('carapemasaran');
-            $table->text('bahanbaku');
-            $table->text('prosesproduksi');
-            $table->text('omset');
-            $table->text('kapasitasProduksi');
-            $table->text('kendala');
-            $table->text('solusi');
+            $table->text('sejarahSingkat')->nullable();
+            $table->text('produkjual')->nullable();
+            $table->text('carapemasaran')->nullable();
+            $table->text('bahanbaku')->nullable();
+            $table->text('prosesproduksi')->nullable();
+            $table->text('omset')->nullable();
+            $table->text('kapasitasProduksi')->nullable();
+            $table->text('kendala')->nullable();
+            $table->text('solusi')->nullable();
             $table->timestamps();
         });
     }

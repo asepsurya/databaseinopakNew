@@ -128,6 +128,9 @@
                         <a class="nav-link" href="#activity-logs" data-bs-toggle="tab">
                             <i class="ti ti-history me-2"></i>Log Aktivitas
                         </a>
+                        <a class="nav-link" style="cursor: pointer;" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas">
+                            <i class="ti ti-history me-2"></i>Tema &amp; Tampilan
+                        </a>
                     </nav>
                 </div>
             </div>

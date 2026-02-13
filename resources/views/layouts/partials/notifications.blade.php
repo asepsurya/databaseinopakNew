@@ -332,9 +332,14 @@ $unreadCount = auth()->user()->unreadNotifications()->count();
     [data-theme="dark"] .notification-empty {
         color: #6c757d;
     }
+    @media (max-width: 991px) {
+        .notificationToggle {
+            display: none !important;
+        }
+}
 </style>
 
-<div class="dropdown topbar-item">
+<div class="dropdown topbar-item notificationToggle">
     {{-- Notification Toggle Button --}}
     <button class="topbar-link dropdown-toggle drop-arrow-none position-relative"
             data-bs-toggle="dropdown"

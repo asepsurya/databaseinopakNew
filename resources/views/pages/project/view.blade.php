@@ -37,78 +37,72 @@
 }
 </style>
 
-        <div class="row mb-3">
-            <div class="col-lg-12">
-                <form class="bg-light-subtle rounded border p-3" action="/project" method="GET">
-                    <div class="row gap-3">
-                        <div class="col">
-                            <div class="row gap-3">
-                                <div class="col-lg-4">
-                                    <div class="app-search">
-                                        <input type="text" class="form-control search-input" placeholder="Search project name..." value="{{ request('search') }}" name="search">
-                                        <i class="ti ti-search app-search-icon text-muted"></i>
-                                    </div>
-                                </div>
-                                <div class="col-auto">
-                                    <div class="d-flex flex-wrap align-items-center gap-2">
-                                        <span class="me-2 fw-semibold">Filter By:</span>
+       <div class="row mb-3">
+    <div class="col-12">
+        <form class="bg-light-subtle rounded border p-3" action="/project" method="GET">
 
-                                        <!-- Year Filter -->
-                                        <div class="app-search">
-                                            <select class="form-select form-control my-1 my-md-0" name="year">
-                                                <option value="">Tahun</option>
-                                                @php
-                                                    $currentYear = date('Y');
-                                                    for($y = $currentYear; $y >= $currentYear - 10; $y--):
-                                                @endphp
-                                                <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>{{ $y }}</option>
-                                                @php
-                                                    endfor;
-                                                @endphp
-                                            </select>
-                                            <i class="ti ti-calendar app-search-icon text-muted"></i>
-                                        </div>
+            <div class="row g-3 align-items-end">
 
-                                        <!-- Status Filter -->
-                                        <div class="app-search">
-                                            <select class="form-select form-control my-1 my-md-0" name="status">
-                                                <option value="">Status</option>
-                                                <option value="On Track" {{ request('status') == 'On Track' ? 'selected' : '' }}>On Track</option>
-                                                <option value="Delayed" {{ request('status') == 'Delayed' ? 'selected' : '' }}>Delayed</option>
-                                                <option value="At Risk" {{ request('status') == 'At Risk' ? 'selected' : '' }}>At Risk</option>
-                                                <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
-                                            </select>
-                                            <i class="ti ti-activity app-search-icon text-muted"></i>
-                                        </div>
+                <!-- Search -->
+                <div class="col-12 col-lg-4">
+                    <label class="form-label fw-semibold">Search</label>
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Search project name..."
+                           value="{{ request('search') }}"
+                           name="search">
+                </div>
 
-                                        <!-- UKM Count Filter -->
-                                        <div class="app-search">
-                                            <select class="form-select form-control my-1 my-md-0" name="ukm_count">
-                                                <option value="">Jumlah IKM</option>
-                                                <option value="0" {{ request('ukm_count') == '0' ? 'selected' : '' }}>0 Peserta</option>
-                                                <option value="1" {{ request('ukm_count') == '1' ? 'selected' : '' }}>1+ Peserta</option>
-                                                <option value="5" {{ request('ukm_count') == '5' ? 'selected' : '' }}>5+ Peserta</option>
-                                                <option value="10" {{ request('ukm_count') == '10' ? 'selected' : '' }}>10+ Peserta</option>
-                                            </select>
-                                            <i class="ti ti-users app-search-icon text-muted"></i>
-                                        </div>
+                <!-- Year -->
+                <div class="col-6 col-lg-2">
+                    <label class="form-label fw-semibold">Tahun</label>
+                    <select class="form-select" name="year">
+                        <option value="">Pilih Tahun</option>
+                        @php
+                            $currentYear = date('Y');
+                            for($y = $currentYear; $y >= $currentYear - 10; $y--):
+                        @endphp
+                        <option value="{{ $y }}" {{ request('year') == $y ? 'selected' : '' }}>
+                            {{ $y }}
+                        </option>
+                        @php endfor; @endphp
+                    </select>
+                </div>
 
-                                        <button type="submit" class="btn btn-secondary">Apply</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <!-- UKM Count -->
+                <div class="col-6 col-lg-3">
+                    <label class="form-label fw-semibold">Jumlah IKM</label>
+                    <select class="form-select" name="ukm_count">
+                        <option value="">Semua</option>
+                        <option value="0" {{ request('ukm_count') == '0' ? 'selected' : '' }}>0 Peserta</option>
+                        <option value="1" {{ request('ukm_count') == '1' ? 'selected' : '' }}>1+ Peserta</option>
+                        <option value="5" {{ request('ukm_count') == '5' ? 'selected' : '' }}>5+ Peserta</option>
+                        <option value="10" {{ request('ukm_count') == '10' ? 'selected' : '' }}>10+ Peserta</option>
+                    </select>
+                </div>
 
-                        <!-- Add New Project Button -->
-                        <div class="col-auto">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addItem">
-                                <i class="ti ti-plus me-2"></i>Add New
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                <!-- Apply Button -->
+                <div class="col-6 col-lg-1 d-grid">
+                    <button type="submit" class="btn btn-secondary">
+                        Apply
+                    </button>
+                </div>
+
+                <!-- Add New -->
+                <div class="col-6 col-lg-2 d-grid">
+                    <button type="button"
+                            class="btn btn-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addItem">
+                        <i class="ti ti-plus me-1"></i> Add
+                    </button>
+                </div>
+
             </div>
-        </div>
+
+        </form>
+    </div>
+</div>
 
 
 

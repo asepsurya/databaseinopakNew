@@ -9,6 +9,7 @@
 
 
 <style>
+
 /* MATIKAN SEMUA FOCUS TABLE */
 table:focus,
 table:focus-within,
@@ -340,20 +341,20 @@ td:focus-within {
                     <!-- Profile Header -->
                     <div class="card-header align-items-start p-4">
                         <div class="avatar-xxl me-3 position-relative">
-                                <a data-fslightbox href="{{ asset('storage/'.$ikm->first()->gambar) }}" title="Klik untuk perbesar">
-                                    @if($ikm->first()->gambar && file_exists(storage_path('app/public/' . $ikm->first()->gambar)))
-                                        <img src="{{ asset('storage/'.$ikm->first()->gambar) }}" alt="{{ $ikm->first()->nama }}" class="rounded" style="width: 72px; height: 72px; object-fit: cover;">
-                                    @else
-                                        <div class="rounded d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; background-color: #e9ecef;">
-                                            <i class="ti ti-user" style="font-size: 32px; color: #6c757d;"></i>
-                                        </div>
-                                    @endif
-                                </a>
-                                </a>
-                                <button class="btn btn-light btn-sm position-absolute bottom-0 end-0 rounded-circle p-1" data-bs-toggle="modal" data-bs-target="#UpdatePicture" title="Ubah foto" style="width: 24px; height: 24px; line-height: 1;">
-                                    <i class="ti ti-pencil" style="font-size: 12px;"></i>
-                                </button>
-                            </div>
+                            <a data-fslightbox href="{{ asset('storage/'.$ikm->first()->gambar) }}" title="Klik untuk perbesar">
+                                @if($ikm->first()->gambar && file_exists(storage_path('app/public/' . $ikm->first()->gambar)))
+                                <img src="{{ asset('storage/'.$ikm->first()->gambar) }}" alt="{{ $ikm->first()->nama }}" class="rounded" style="width: 72px; height: 72px; object-fit: cover;">
+                                @else
+                                <div class="rounded d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; background-color: #e9ecef;">
+                                    <i class="ti ti-user" style="font-size: 32px; color: #6c757d;"></i>
+                                </div>
+                                @endif
+                            </a>
+                            </a>
+                            <button class="btn btn-light btn-sm position-absolute bottom-0 end-0 rounded-circle p-1" data-bs-toggle="modal" data-bs-target="#UpdatePicture" title="Ubah foto" style="width: 24px; height: 24px; line-height: 1;">
+                                <i class="ti ti-pencil" style="font-size: 12px;"></i>
+                            </button>
+                        </div>
                         <div>
                             <h3 class="mb-1 d-flex fs-xl align-items-center">{{ $ikm->first()->nama }} - {{ $project->NamaProjek }} </h3>
                             <p class="text-muted mb-2 fs-xxs">Updated {{ $ikm->first()->updated_at->diffForHumans() }}</p>
@@ -363,27 +364,28 @@ td:focus-within {
                             <a href="{{ url()->previous() }}" class="btn btn-light">
                                 <i class="ti ti-arrow-left me-1"></i> Kembali
                             </a>
-                              <form action="/project/dataikm/{{ $project->id }}/update" method="POST" class="d-inline">
-                                        @csrf
-                                        <input type="text" value="{{ $ikm->first()->id_provinsi }}" name="getId_provinsi" hidden>
-                                        <input type="text" value="{{ $ikm->first()->id_kota }}" name="getId_kota" hidden>
-                                        <input type="text" value="{{ $ikm->first()->id_kecamatan }}" name="getId_kecamatan" hidden>
-                                        <input type="text" value="{{ $ikm->first()->id_desa }}" name="getId_desa" hidden>
-                                        <input type="text" value="{{ $project->id }}" name="getId_project" hidden>
-                                        <input type="text" value="{{ $ikm->first()->id }}" name="getId_IKM" hidden>
-                                        <input type="text" value="{{ $project->NamaProjek }}" name="get_Nmproject" hidden>
-                                        <button type="submit" class="btn btn-light" title="Ubah">
-                                            <i class="ti ti-pencil me-2"></i> Edit
-                                        </button>
-                                    </form>
+                            <form action="/project/dataikm/{{ $project->id }}/update" method="POST" class="d-inline">
+                                @csrf
+                                <input type="text" value="{{ $ikm->first()->id_provinsi }}" name="getId_provinsi" hidden>
+                                <input type="text" value="{{ $ikm->first()->id_kota }}" name="getId_kota" hidden>
+                                <input type="text" value="{{ $ikm->first()->id_kecamatan }}" name="getId_kecamatan" hidden>
+                                <input type="text" value="{{ $ikm->first()->id_desa }}" name="getId_desa" hidden>
+                                <input type="text" value="{{ $project->id }}" name="getId_project" hidden>
+                                <input type="text" value="{{ $ikm->first()->id }}" name="getId_IKM" hidden>
+                                <input type="text" value="{{ $project->NamaProjek }}" name="get_Nmproject" hidden>
+                                <button type="submit" class="btn btn-light" title="Ubah">
+                                    <i class="ti ti-pencil me-2"></i> Edit
+                                </button>
+                            </form>
 
-                               <a class="btn btn-soft-secondary btn-sm" href="/report/brainstorming/{{ $ikm->first()->id }}/{{ $ikm->first()->nama }}" target="_blank">
-                                                <i class="far fa-file-pdf me-1"></i> Export
-                                            </a>
+                            <a class="btn btn-soft-secondary btn-sm" href="/report/brainstorming/{{ $ikm->first()->id }}/{{ $ikm->first()->nama }}" target="_blank">
+                                <i class="ti ti-file-export me-1"></i> Export
+                            </a>
                         </div>
 
                     </div>
-                    <div class="card-body px-4">
+
+                    <div class="card-body ">
                         <!-- Project Info -->
                         <div class="mb-4">
                             <h5 class="fs-base mb-2">Informasi IKM:</h5>
@@ -435,7 +437,7 @@ td:focus-within {
                                 </a>
                             </li>
                         </ul>
-                        <div class="tab-content">
+                        <div class="tab-content p-0 m-0">
                             <!-- IKM Info Tab -->
                             <div class="tab-pane fade" id="tab-info" role="tabpanel">
                                 <div class="section1">
@@ -565,97 +567,99 @@ td:focus-within {
                             <!-- Brainstorming Tab -->
                             <div class="tab-pane fade active show" id="tab-bencmark" role="tabpanel">
 
+                                <div class="table-responsive">
+                                    <form action="/project/ikms/updateBrainstorming" method="post">
+                                        @csrf
 
-                                <form action="/project/ikms/updateBrainstorming" method="post">
-                                    @csrf
+                                        <input type="hidden" name="id_ikm" value="{{ $ikm->first()->id }}">
+                                        <input type="hidden" name="id_Project" value="{{ $ikm->first()->id_Project }}">
 
-                                    <input type="hidden" name="id_ikm" value="{{ $ikm->first()->id }}">
-                                    <input type="hidden" name="id_Project" value="{{ $ikm->first()->id_Project }}">
+                                        <table class="table table-bordered table-responsive" >
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:200px;">Produk</th>
+                                                    <th>Keterangan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
 
-                                    <table class="table table-bordered table-responsive" style="table-layout: fixed;">
-                                        <thead>
-                                            <tr>
-                                                <th style="width:200px;">Produk</th>
-                                                <th>Keterangan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                                                @php
+                                                $fields = [
+                                                'jenisProduk' => 'Jenis Produk',
+                                                'merk' => 'Merk',
+                                                'komposisi' => 'Komposisi',
+                                                'varian' => 'Varian Produk',
+                                                'kelebihan' => 'Kelebihan Produk',
+                                                'namaUsaha' => 'Nama Perusahaan',
+                                                'noPIRT' => 'PIRT',
+                                                'noHalal' => 'Halal',
+                                                'legalitasLain' => 'Legalitas lainnya',
+                                                'other' => 'Saran Penyajian',
+                                                'segmentasi' => 'Segmentasi',
+                                                'jenisKemasan' => 'Jenis Kemasan',
+                                                'harga' => 'Kemasan Pendukung',
+                                                'tagline' => 'Tagline',
+                                                'redaksi' => 'Redaksi',
+                                                'gramasi' => 'Gramasi'
+                                                ];
+                                                @endphp
 
-                                            @php
-                                            $fields = [
-                                            'jenisProduk' => 'Jenis Produk',
-                                            'merk' => 'Merk',
-                                            'komposisi' => 'Komposisi',
-                                            'varian' => 'Varian Produk',
-                                            'kelebihan' => 'Kelebihan Produk',
-                                            'namaUsaha' => 'Nama Perusahaan',
-                                            'noPIRT' => 'PIRT',
-                                            'noHalal' => 'Halal',
-                                            'legalitasLain' => 'Legalitas lainnya',
-                                            'other' => 'Saran Penyajian',
-                                            'segmentasi' => 'Segmentasi',
-                                            'jenisKemasan' => 'Jenis Kemasan',
-                                            'harga' => 'Kemasan Pendukung',
-                                            'tagline' => 'Tagline',
-                                            'redaksi' => 'Redaksi',
-                                            'gramasi' => 'Gramasi'
-                                            ];
-                                            @endphp
-
-                                            @foreach($fields as $key => $label)
-                                            <tr>
-                                                <td>{{ $label }}</td>
-                                                <td>
-                                                    <div class="position-relative">
-                                                        <div id="{{ $key }}" class="inline-editor" style="background: transparent;
-                                border-top-style: hidden;
-                                border-right-style: hidden;
-                                border-left-style: hidden;
-                                border-bottom-style: hidden;
-                                outline:none !important;
-                                outline-width: 0 !important;
-                                box-shadow: none;
-                                -moz-box-shadow: none;
-                                -webkit-box-shadow: none;
-                                margin:0;
-                                padding:0;
-                                padding-right: 40px;" contenteditable="true" data-placeholder="{{ $label }}">
-                                                            {!! $ikm->first()->$key ?? '' !!}
+                                                @foreach($fields as $key => $label)
+                                                <tr>
+                                                    <td>{{ $label }}</td>
+                                                    <td>
+                                                        <div class="position-relative">
+                                                            <div id="{{ $key }}" class="inline-editor" style="background: transparent;
+                                                            border-top-style: hidden;
+                                                            border-right-style: hidden;
+                                                            border-left-style: hidden;
+                                                            border-bottom-style: hidden;
+                                                            outline:none !important;
+                                                            outline-width: 0 !important;
+                                                            box-shadow: none;
+                                                            -moz-box-shadow: none;
+                                                            -webkit-box-shadow: none;
+                                                            margin:0;
+                                                            padding:0;
+                                                            padding-right: 40px;" contenteditable="true" data-placeholder="{{ $label }}">
+                                                                {!! $ikm->first()->$key ?? '' !!}
+                                                            </div>
+                                                            <a type="button" class=" ai-generate-btn position-absolute" style="top: 50%; right: 0; transform: translateY(-50%); border: none;" data-field="{{ $key }}" data-label="{{ $label }}" title="Generate dengan AI">
+                                                                <i class="ti ti-sparkles"></i>
+                                                            </a>
                                                         </div>
-                                                        <a type="button" class=" ai-generate-btn position-absolute" style="top: 50%; right: 0; transform: translateY(-50%); border: none;" data-field="{{ $key }}" data-label="{{ $label }}" title="Generate dengan AI">
-                                                            <i class="ti ti-sparkles"></i>
-                                                        </a>
-                                                    </div>
-                                                    <input type="hidden" name="{{ $key }}" id="{{ $key }}_input" data-field="{{ $key }}">
-                                                </td>
-                                            </tr>
-                                            @endforeach
+                                                        <input type="hidden" name="{{ $key }}" id="{{ $key }}_input" data-field="{{ $key }}">
+                                                    </td>
+                                                </tr>
+                                                @endforeach
 
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                        <div class="d-flex flex-column flex-sm-row align-items-center gap-2 mt-3 w-100">
 
-                                <div class="d-flex justify-content-end align-items-center gap-2 mt-3 flex-wrap">
+                                            <!-- Auto-save di kiri, fleksibel -->
+                                            <div id="autosaveIndicator" class="d-flex align-items-center flex-grow-1 mb-2 mb-sm-0">
+                                                <div class="autosave-icon d-flex align-items-center gap-2 w-100">
+                                                    <span id="autosaveIconContent"></span>
+                                                    <span id="autosaveMessage" class="text-truncate">Menyimpan data secara otomatis...</span>
+                                                </div>
+                                            </div>
 
-                                        <a href="{{ url()->previous() }}" class="btn btn-secondary">
-                                            Cancel
-                                        </a>
+                                            <!-- Tombol Cancel & Simpan -->
+                                            <div class="d-flex gap-2 flex-wrap w-100 w-sm-auto justify-content-center justify-content-sm-end">
+                                                <a href="{{ url()->previous() }}" class="btn btn-secondary flex-grow-1 flex-sm-grow-0">
+                                                    Cancel
+                                                </a>
 
-                                        <button type="submit" class="btn btn-primary">
-                                            Simpan Data
-                                        </button>
-
-                                    </div>
-                                       <!-- Auto-save Indicator -->
-                                        <div id="autosaveIndicator" class="autosave-indicator d-flex align-items-center me-2">
-                                            <div class="autosave-icon me-1">
-                                                <span id="autosaveIconContent"></span>
-                                                  <span id="autosaveMessage">Menyimpan...</span>
+                                                <button type="submit" class="btn btn-primary flex-grow-1 flex-sm-grow-0">
+                                                    Simpan Data
+                                                </button>
                                             </div>
 
                                         </div>
-                                </form>
+                                    </form>
                                 </div>
-
+                            </div>
 
                             <!-- COTS Tab -->
                             <div class="tab-pane fade" id="tab-cots" role="tabpanel">
@@ -823,7 +827,8 @@ td:focus-within {
                                                     class="w-100 h-100"
                                                     style="object-fit:cover;"
                                                     alt="Desain"
-                                                >
+                                                    loading="lazy"
+                                                />
                                             </a>
 
                                         </div>
@@ -1076,7 +1081,7 @@ td:focus-within {
 
 <!-- Update Picture Modal -->
 <div class="modal fade" id="UpdatePicture" tabindex="-1" aria-labelledby="UpdatePictureModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="UpdatePictureModalLabel"><i class="ti ti-user me-2"></i>Ubah Foto IKM</h5>

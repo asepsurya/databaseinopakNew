@@ -4,6 +4,7 @@
 @section('content')
    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.css" rel="stylesheet">
 <style>.select2-container--open {
     z-index: 9999999
       }
@@ -133,7 +134,7 @@
 <form action="{{ route('ikm.update', $a->id) }}" method="POST">
     @csrf
 
-    <div class="row justify-content-between align-items-end g-3 mb-5">
+    <div class="row justify-content-between align-items-end g-3 ">
         <div class="col-12 col-sm-auto col-xl-8">
             <h2>Update IKM</h2>
         </div>
@@ -187,7 +188,7 @@
                                 <label class="form-label" for="name">No Telepon<span style="color:red">*</span></label>
                                 <div class="input-group flex-nowrap">
                                     <span class="input-group-text" id="addon-wrapping">
-                                        <span data-feather="phone" width="15"></span>
+                                        <span class="ti ti-phone" width="15"></span>
                                     </span>
                                     <input class="form-control @error('telp') is-invalid @enderror" type="text " placeholder="Nomor Telepon" name="telp" id="telp" value="{{ $a->telp }}" />
                                 </div>
@@ -359,124 +360,130 @@
         </div>
 
         {{-- --}}
-        <div class="tab-content mt-3" id="myTabContent">
-            <div class="tab-pane fade  " id="tab-Updatehome" role="tabpanel" aria-labelledby="home-tab">
-                <div id="London" class="tabcontent" style="display: block;">
 
-                    <div class="row mg-b-30">
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label ">Jenis Produk <span style="color:red">*</span></label>
 
-                                <input class="form-control mb-3" type="text" id="jenisProduk" name="jenisProduk" placeholder="Enter lastname" value="{{ $a->jenisProduk }}">
-                            </div>
-                        </div><!-- col-4 -->
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">Merk<span style="color:red">*</span> </label>
-                                <input class="form-control mb-3" type="text" id="merk" name="merk" placeholder="Enter lastname" value="{!! $a->merk !!}">
-                            </div>
-                        </div><!-- col-4 -->
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">Tagline<span style="color:red">*</span></label>
-                                <input class="form-control mb-3" type="text" id="tagline" name="tagline" value="{!! $a->tagline !!}">
-                            </div>
-                        </div><!-- col-4 -->
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">Kelebihan Produk<span style="color:red">*</span></label>
-                                <input class="form-control mb-3" type="text" id="kelebihan" name="kelebihan" value="{!! $a->kelebihan !!}">
-                            </div>
-                        </div><!-- col-4 -->
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">Gramasi(g) <span style="color:red">*</span></label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control mb-3" id="gramasi" name="gramasi" value="{{ $a->gramasi }}">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">gram</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <label for="jenisKemasan" class="form-label">Jenis Kemasan dan Ukuran</label>
-                            <textarea name="jenisKemasan" id="jenisKemasan" placeholder="Jenis Kemasan" class="form-control">{!! $a->jenisKemasan !!}</textarea>
-                        </div>
+<div class="tab-content mt-3" id="myTabContent">
+<div class="tab-pane fade show active" id="tab-Updatehome">
 
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">Segmentasi Produk <span style="color:red">*</span></label>
-                                <input class="form-control mb-3" type="text" id="segmentasi" name="segmentasi" placeholder="Masukan Segementasi Produk" value="{!! $a->segmentasi !!}">
-                            </div>
-                        </div><!-- col-4 -->
-                        <div class="col-lg-6">
-                            <div class="form-group">
-                                <label class="form-label">Kemasan Pendukung <span style="color:red">*</span></label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control mb-3" name="harga" id="harga" value="{!! $a->harga !!}">
-                                </div>
-                            </div>
-                        </div><!-- col-4 -->
-                        <div class="col-lg-6">
-                            <div class="form-group  mb-3">
-                                <label class="form-label">Varian Produk <span style="color:red">*</span></label>
-                                <textarea rows="4" cols="100" name="varian" class="form-control" id="varian_prod">{!! $a->varian !!}</textarea>
-                                <small>* Masukan Varian Produk</small>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="form-group mb-3">
-                                <label class="form-label">Komposisi Produk <span style="color:red">*</span></label>
-                                <textarea rows="4" cols="100" name="komposisi" class="form-control" id="komposisi" value=" ">{!! $a->komposisi !!}</textarea>
-                                <small>* Masukan Komposisi Produk</small>
-                            </div>
-                        </div>
-                        <div class="row-lg-9">
-                            <div class="form-group mb-3">
-                                <label class="form-label">Redaksi Produk <span style="color:red">*</span></label>
-                                <textarea rows="6" cols="100" name="redaksi" class="form-control " id="redaksi" value=" ">{!! $a->redaksi !!}</textarea>
-                                <small>* Masukan redaksi Produk</small>
-                            </div>
-                        </div>
-                        <div class="row-lg-9">
-                            <div class="form-group mb-3">
-                                <label class="form-label">Keterangan Lainnya</label>
-                                <textarea rows="6" cols="100" name="other" class="form-control " id="other" value=" ">{!! $a->other !!}</textarea>
-                                <small>* Contoh : cara memasak , Saran Penyajian</small>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label class="form-label">Nama Perusahaan<span style="color:red">*</span></label>
-                                <input class="form-control mb-3 @error('namaUsaha') is-invalid @enderror" type="text" name="namaUsaha" id="namaUsaha" placeholder="Nama Perusahaan" value="{!! $a->namaUsaha !!}">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Nomor SP - IRT</label>
-                            <input class="form-control mb-3" type="text" name="noPIRT" id="noPIRT" placeholder="SP-IRT" value="{!! $a->noPIRT !!}">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Halal</label>
-                            <input class="form-control mb-3" type="text" name="noHalal" id="noHalal" placeholder="Halal" value="{!! $a->noHalal !!}">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Legalitas Lainnya</label>
-                            <textarea class="form-control mb-3" type="text" name="legalitasLain" id="legalitasLain" placeholder="Legalitas Lainnya">{!! $a->legalitasLain !!}</textarea>
-                            <small>* Catatan: Kosongkan Jika tidak memiliki legalitas atau sertifikasi</small>
-                        </div>
-                        {{-- id_project --}}
-                        <input type="text" name="id_Project" id="id_Project" value="{{ $project->id }}" hidden>
-                        {{-- end --}}
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-2">Simpan Data</button>
-                </div>
-            </div>
-        </div>
+<div class="row">
+
+<div class="col-lg-6">
+<label>Jenis Produk</label>
+<input class="form-control" type="text" name="jenisProduk" value="{{ $a->jenisProduk }}">
+</div>
+
+<div class="col-lg-6">
+<label>Merk</label>
+<textarea class="form-control editor" name="merk">{!! $a->merk !!}</textarea>
+</div>
+
+<div class="col-lg-6">
+<label>Tagline</label>
+<textarea class="form-control editor" name="tagline">{!! $a->tagline !!}</textarea>
+</div>
+
+<div class="col-lg-6">
+<label>Kelebihan Produk</label>
+<textarea class="form-control editor" name="kelebihan">{!! $a->kelebihan !!}</textarea>
+</div>
+
+<div class="col-lg-6">
+<label>Gramasi (gram)</label>
+<input type="text" class="form-control" name="gramasi" value="{{ $a->gramasi }}">
+</div>
+
+<div class="col-lg-6">
+<label>Jenis Kemasan</label>
+<textarea class="form-control editor" name="jenisKemasan">{!! $a->jenisKemasan !!}</textarea>
+</div>
+
+<div class="col-lg-6">
+<label>Segmentasi Produk</label>
+<textarea class="form-control editor" name="segmentasi">{!! $a->segmentasi !!}</textarea>
+</div>
+
+<div class="col-lg-6">
+<label>Kemasan Pendukung</label>
+<textarea class="form-control editor" name="harga">{!! $a->harga !!}</textarea>
+</div>
+
+<div class="col-lg-6">
+<label>Varian Produk</label>
+<textarea class="form-control editor" name="varian">{!! $a->varian !!}</textarea>
+</div>
+
+<div class="col-lg-6">
+<label>Komposisi Produk</label>
+<textarea class="form-control editor" name="komposisi">{!! $a->komposisi !!}</textarea>
+</div>
+
+<div class="col-lg-12">
+<label>Redaksi Produk</label>
+<textarea class="form-control editor" name="redaksi">{!! $a->redaksi !!}</textarea>
+</div>
+
+<div class="col-lg-12">
+<label>Keterangan Lainnya</label>
+<textarea class="form-control editor" name="other">{!! $a->other !!}</textarea>
+</div>
+
+<div class="col-lg-12">
+<label>Nama Perusahaan</label>
+<textarea class="form-control editor" name="namaUsaha">{!! $a->namaUsaha !!}</textarea>
+</div>
+
+<div class="col-lg-6">
+<label>Nomor SP-IRT</label>
+<textarea class="form-control editor" name="noPIRT">{!! $a->noPIRT !!}</textarea>
+</div>
+
+<div class="col-lg-6">
+<label>Halal</label>
+<textarea class="form-control editor" name="noHalal">{!! $a->noHalal !!}</textarea>
+</div>
+
+<div class="col-lg-12">
+<label>Legalitas Lainnya</label>
+<textarea class="form-control editor" name="legalitasLain">{!! $a->legalitasLain !!}</textarea>
+</div>
+
+<input type="hidden" name="id_Project" value="{{ $project->id }}">
+
+<div class="col-lg-12 mt-3">
+<button type="submit" class="btn btn-primary">Simpan Data</button>
+</div>
+
+</div>
+</div>
+</div>
+
+
     </div>
 </form>
 @endforeach
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<!-- Bootstrap -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+<!-- Summernote JS -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    $('.editor').summernote({
+        height: 180,
+        toolbar: [
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['fontsize']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link']],
+            ['view', ['codeview']]
+        ]
+    });
+});
+</script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>

@@ -3,6 +3,14 @@
 @section('title', 'Sign In - Database INOPAK')
 
 @section('content')
+<style>
+    /* Mobile */
+@media (max-width: 576px) {
+    .auth-box {
+        padding: 0 !important;
+    }
+}
+</style>
 <form action="{{ route('login.process') }}" method="POST" id="loginForm">
     @csrf
     <div class="mb-3">

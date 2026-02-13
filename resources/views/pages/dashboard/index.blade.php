@@ -6,6 +6,23 @@
     <i class="ti-home me-1"></i> Dashboard
 @endsection
 
+<style>
+    .container-fluid {
+        padding: 0 !important;
+    }
+
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding: 0 !important;
+        }
+
+        footer {
+            display: none !important;
+        }
+    }
+
+</style>
+
 @section('content')
 
 
@@ -38,12 +55,12 @@
     </ul>
 
     <!-- Tab Content -->
-    <div class="tab-content p-3 border border-top-0" id="myTabContent">
+    <div class="tab-content  border border-top-0" id="myTabContent">
 
         <div class="tab-pane fade show active"
              id="home"
              role="tabpanel">
-            <div class="card border-0 shadow-sm h-100 w-100 overflow-hidden position-relative">
+            <div class="card border-0  h-100 w-100 overflow-hidden position-relative">
 
  <!-- Background Top Right -->
 <div class="position-absolute top-0 end-0 d-none d-md-block opacity-25"
@@ -61,7 +78,7 @@
             background-size: contain;">
 </div>
 
-    <div class="card-body px-5 py-5 position-relative">
+    <div class="card-body  position-relative">
 
         <!-- Badge Date Time -->
         <span class="badge bg-warning text-dark mb-4 fs-6">
@@ -71,7 +88,7 @@
 
         <!-- Heading -->
         <h3 class="mb-4 fw-bold">
-            Selamat Datang, INOPAK INSTITUTE
+            Selamat Datang, {{ auth()->user()->name }}
         </h3>
 
         <!-- Text -->
@@ -85,7 +102,7 @@
 
     </div>
 
-    <div class="  border-0 px-5 pb-4">
+    <div class="  border-0 px-3 pb-4">
         <p class="text-secondary fw-semibold mb-0">
             Follow Us
             <a href="https://inopakinstitute.or.id" class="fw-bold text-decoration-none">
@@ -97,16 +114,16 @@
 </div>
         </div>
 
-        <div class="tab-pane fade"
+        <div class="tab-pane fade p-2"
              id="profile"
              role="tabpanel">
             <!-- Page Title Start -->
-    <div class="page-title-head d-flex align-items-center">
+    <div class="page-title-head d-flex align-items-center ">
         <div class="flex-grow-1">
             <h4 class="fs-18 fw-bold m-0">Dashboard Overview</h4>
         </div>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex align-items-center gap-2 ">
             <!-- Date Range Picker -->
             <div class="dropdown">
                 <button class="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
