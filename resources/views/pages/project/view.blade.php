@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-title', 'project')
+@section('title', 'Daftar Projek')
 @section('content')
 
 <style>

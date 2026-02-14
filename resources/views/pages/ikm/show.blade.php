@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-title', 'Data Ikm - ' . $project->NamaProjek)
+@section('title', 'Data Ikm - ' . $project->NamaProjek)
 
 @section('content')
 @push('styles')
@@ -202,7 +202,14 @@
             gap: 12px;
             text-align: center;
         }
+
     }
+@media (max-width: 768px) {
+    .thumbnail-wrapper {
+        display: none;
+    }
+}
+
     </style>
 @endpush
 
@@ -287,15 +294,7 @@
                                                      class="thumbnail-image"
                                                      loading="lazy">
                                             </a>
-                                            {{-- @if(\App\Helpers\ThumbnailHelper::isValidImage($data->gambar))
-                                                <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($data->gambar) }}"
-                                                   class="thumbnail-download"
-                                                   title="Unduh gambar asli"
-                                                   download="{{ basename($data->gambar) }}"
-                                                   onclick="event.stopPropagation();">
-                                                    <i class="ti ti-download"></i>
-                                                </a>
-                                            @endif --}}
+
                                         @else
                                             <div class="thumbnail-fallback d-flex align-items-center justify-content-center w-100 h-100">
                                                 <i class="ti ti-user"></i>
@@ -311,7 +310,7 @@
                             <td>{!! $data->jenisProduk !!}</td>
                             <td>
                                 @if($data->merk)
-                                    <span class="badge badge-label badge-soft-secondary">{!! $data->merk !!}</span>
+                                    {!! $data->merk !!}
                                 @else
                                     <span class="text-muted">-</span>
                                 @endif
@@ -332,14 +331,9 @@
                                     <a href="/project/Ikms/{{ encrypt($data->id) }}/{{ $project->id }}" class="btn btn-sm btn-light btn-icon" title="Detail">
                                         <i class="ti ti-eye"></i>
                                     </a>
-                                    <form action="/project/dataIkm/{{ $project->id }}/update" method="GET" class="d-inline">
-                                        <input type="text" value="{{ $data->id_provinsi }}" name="getId_provinsi" hidden>
-                                        <input type="text" value="{{ $data->id_kota }}" name="getId_kota" hidden>
-                                        <input type="text" value="{{ $data->id_kecamatan }}" name="getId_kecamatan" hidden>
-                                        <input type="text" value="{{ $data->id_desa }}" name="getId_desa" hidden>
-                                        <input type="text" value="{{ $project->id }}" name="getId_project" hidden>
-                                        <input type="text" value="{{ $data->id }}" name="getId_Ikm" hidden>
-                                        <input type="text" value="{{ $project->NamaProjek }}" name="get_Nmproject" hidden>
+                                    <form action="{{ route('ikm.edit', ['ikm' => $data->id]) }}" method="GET" class="d-inline">
+                                        @csrf
+
                                         <button type="submit" class="btn btn-sm btn-light btn-icon" title="Ubah">
                                             <i class="ti ti-pencil"></i>
                                         </button>

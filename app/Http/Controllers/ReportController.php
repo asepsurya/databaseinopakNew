@@ -34,12 +34,12 @@ class ReportController extends Controller
                 "harga"=>$a->harga
             ];
          }
-       
+
         array_push($dataDummy, $people);
         $data = [
             "row" => $dataDummy
         ];
-       
+
         $pdf = PDF::loadView('report.brainstorming', $data);
 
         $pdf->setOption('enable-local-file-access', true);
@@ -48,25 +48,24 @@ class ReportController extends Controller
 
     }
     public function Reportcots($id, $name){
-       
-        
+
+
         $dataDummy = [];
-        $data = Ikm::where('id',$id)->get();
+        $data = Ikm::with(['province', 'regency', 'district', 'village', 'cots'])->where('id',$id)->get();
         $datadoc = DokumentasiCots::where('id_Ikm',$id)->get();
-        
+
          foreach($data as $a){
             foreach ($a->cots as $cots){
-                
-                
+
             $items= (Object) [
                 "nama" => $a->nama,
                 "NamaProduk"=>$a->jenisProduk,
                 "merk"=>$a->merk,
                 "alamat"=>$a->alamat,
-                "provinsi"=>$a->province->name,
-                "kota"=>$a->regency->name,
-                "kecamatan"=>$a->district->name,
-                "desa"=>$a->village->name,
+                "provinsi"=>$a->province->name ?? '',
+                "kota"=>$a->regency->name ?? '',
+                "kecamatan"=>$a->district->name ?? '',
+                "desa"=>$a->village->name ?? '',
                 "no_hp"=>$a->telp,
                 "sejarahSingkat"=>$cots->sejarahSingkat,
                 "produkjual"=>$cots->produkjual,
@@ -78,27 +77,50 @@ class ReportController extends Controller
                 "kendala"=>$cots->kendala,
                 "solusi"=>$cots->solusi,
                 "gambar"=>$a->gambar,
-                
-            ];
-             
-            }
-          
-        }
-        array_push($dataDummy, $items);
-        $data =  $dataDummy;
 
+            ];
+
+            array_push($dataDummy, $items);
+            }
+
+        }
+
+        if (count($dataDummy) === 0) {
+            $items = (Object) [
+                "nama" => "",
+                "NamaProduk" => "",
+                "merk" => "",
+                "alamat" => "",
+                "provinsi" => "",
+                "kota" => "",
+                "kecamatan" => "",
+                "desa" => "",
+                "no_hp" => "",
+                "sejarahSingkat" => "",
+                "produkjual" => "",
+                "bahanbaku" => "",
+                "carapemasaran" => "",
+                "prosesproduksi" => "",
+                "omset" => "",
+                "kapasitasproduksi" => "",
+                "kendala" => "",
+                "solusi" => "",
+                "gambar" => "",
+            ];
+            array_push($dataDummy, $items);
+        }
 
         $pdf = PDF::loadView('report.cots', [
-            'row'=>$data,
+            'row'=> $dataDummy,
             'dokumentasi'=>$datadoc
         ]);
         $pdf->setOption('enable-local-file-access', true);
 
         return $pdf->download('Laporan COTS-'.$name.'.pdf');
-        
+
     }
     public function ikmReport($id_project, $nama_project){
-      
+
         $dataDummy = [];
         $dataikm = Ikm::where('id_Project',$id_project)->get();
         $pdf = PDF::loadView('report.ikm',[

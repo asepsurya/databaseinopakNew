@@ -1,146 +1,158 @@
 @extends('layouts.master')
 
-@section('page-title', 'Update Ikm - ' . ($project->NamaProjek ?? 'Edit IKM'))
+@section('title', 'Update Ikm - ' . ($project->NamaProjek ?? 'Edit IKM'))
 @section('content')
-   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.css" rel="stylesheet">
-<style>.select2-container--open {
-    z-index: 9999999
-      }
-     .select2.select2-container {
-         width: 100% !important;
-     }
 
-     .select2.select2-container .select2-selection {
-         font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-         font-size: 12px;
-         border: 1px solid #cbd0dd;
-         -webkit-border-radius: 3px;
-         -moz-border-radius: 3px;
-         border-radius: 0.375rem;
-         height: 36px;
-         padding: 2px;
-         margin-bottom: 15px;
-         outline: none !important;
-         transition: all .15s ease-in-out;
-     }
+<style>
+    .select2-container--open {
+        z-index: 9999999
+    }
 
-     .select2.select2-container .select2-selection .select2-selection__rendered {
-         font-weight: 600;
-         color: #3b3b3b;
-         line-height: 32px;
-         padding-right: 33px;
-     }
+    .select2.select2-container {
+        width: 100% !important;
+    }
 
-     .select2.select2-container .select2-selection .select2-selection__arrow {
-         background: #f8f8f8;
+    .select2.select2-container .select2-selection {
+        font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        font-size: 12px;
+        border: 1px solid #cbd0dd;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 0.375rem;
+        height: 36px;
+        padding: 2px;
+        margin-bottom: 15px;
+        outline: none !important;
+        transition: all .15s ease-in-out;
+    }
 
-         border-left: 1px solid #ccc;
-         -webkit-border-radius: 0 3px 3px 0;
-         -moz-border-radius: 0 3px 3px 0;
-         border-radius: 0 3px 3px 0;
-         height: 32px;
-         width: 33px;
-     }
+    .select2.select2-container .select2-selection .select2-selection__rendered {
+        font-weight: 600;
+        color: #3b3b3b;
+        line-height: 32px;
+        padding-right: 33px;
+    }
 
-     .select2.select2-container.select2-container--open .select2-selection.select2-selection--single {
-         background: #f8f8f8;
-     }
+    .select2.select2-container .select2-selection .select2-selection__arrow {
+        background: #f8f8f8;
 
-     .select2.select2-container.select2-container--open .select2-selection.select2-selection--single .select2-selection__arrow {
-         -webkit-border-radius: 0 3px 0 0;
-         -moz-border-radius: 0 3px 0 0;
-         border-radius: 0 3px 0 0;
-     }
+        border-left: 1px solid #ccc;
+        -webkit-border-radius: 0 3px 3px 0;
+        -moz-border-radius: 0 3px 3px 0;
+        border-radius: 0 3px 3px 0;
+        height: 32px;
+        width: 33px;
+    }
 
-     .select2.select2-container.select2-container--open .select2-selection.select2-selection--multiple {
-         border: 1px solid #34495e;
-     }
+    .select2.select2-container.select2-container--open .select2-selection.select2-selection--single {
+        background: #f8f8f8;
+    }
 
-     .select2.select2-container .select2-selection--multiple {
-         height: auto;
-         min-height: 34px;
-     }
+    .select2.select2-container.select2-container--open .select2-selection.select2-selection--single .select2-selection__arrow {
+        -webkit-border-radius: 0 3px 0 0;
+        -moz-border-radius: 0 3px 0 0;
+        border-radius: 0 3px 0 0;
+    }
 
-     .select2.select2-container .select2-selection--multiple .select2-search--inline .select2-search__field {
-         margin-top: 0;
-         height: 32px;
-     }
+    .select2.select2-container.select2-container--open .select2-selection.select2-selection--multiple {
+        border: 1px solid #34495e;
+    }
 
-     .select2.select2-container .select2-selection--multiple .select2-selection__rendered {
-         display: block;
-         padding: 0 4px;
-         line-height: 29px;
-     }
+    .select2.select2-container .select2-selection--multiple {
+        height: auto;
+        min-height: 34px;
+    }
 
-     .select2.select2-container .select2-selection--multiple .select2-selection__choice {
-         background-color: #f8f8f8;
-         border: 1px solid #ccc;
-         -webkit-border-radius: 3px;
-         -moz-border-radius: 3px;
-         border-radius: 3px;
-         margin: 4px 4px 0 0;
-         padding: 0 6px 0 22px;
-         height: 24px;
-         line-height: 24px;
-         font-size: 12px;
-         position: relative;
-     }
+    .select2.select2-container .select2-selection--multiple .select2-search--inline .select2-search__field {
+        margin-top: 0;
+        height: 32px;
+    }
 
-     .select2.select2-container .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove {
-         position: absolute;
-         top: 0;
-         left: 0;
-         height: 22px;
-         width: 22px;
-         margin: 0;
-         text-align: center;
-         color: #e74c3c;
-         font-weight: bold;
-         font-size: 16px;
-     }
+    .select2.select2-container .select2-selection--multiple .select2-selection__rendered {
+        display: block;
+        padding: 0 4px;
+        line-height: 29px;
+    }
 
-     .select2-container .select2-dropdown {
-         background: transparent;
-         border: none;
-         margin-top: -5px;
-     }
+    .select2.select2-container .select2-selection--multiple .select2-selection__choice {
+        background-color: #f8f8f8;
+        border: 1px solid #ccc;
+        -webkit-border-radius: 3px;
+        -moz-border-radius: 3px;
+        border-radius: 3px;
+        margin: 4px 4px 0 0;
+        padding: 0 6px 0 22px;
+        height: 24px;
+        line-height: 24px;
+        font-size: 12px;
+        position: relative;
+    }
 
-     .select2-container .select2-dropdown .select2-search {
-         padding: 0;
-     }
+    .select2.select2-container .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 22px;
+        width: 22px;
+        margin: 0;
+        text-align: center;
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 16px;
+    }
 
-     .select2-container .select2-dropdown .select2-search input {
-         outline: none !important;
-         border: 1px solid #aab2ca !important;
-         border-bottom: none !important;
-         padding: 4px 6px !important;
-     }
+    .select2-container .select2-dropdown {
+        background: transparent;
+        border: none;
+        margin-top: -5px;
+    }
 
-     .select2-container .select2-dropdown .select2-results {
-         padding: 0;
-     }
+    .select2-container .select2-dropdown .select2-search {
+        padding: 0;
+    }
 
-     .select2-container .select2-dropdown .select2-results ul {
-         background: #fff;
-         border: 1px solid #aab2ca;
-     }
+    .select2-container .select2-dropdown .select2-search input {
+        outline: none !important;
+        border: 1px solid #aab2ca !important;
+        border-bottom: none !important;
+        padding: 4px 6px !important;
+    }
 
-     .select2-container .select2-dropdown .select2-results ul .select2-results__option--highlighted[aria-selected] {
-         background-color: #3498db;
-     }</style>
-   @foreach ( $dataIkm as $a)
-<form action="{{ route('ikm.update', $a->id) }}" method="POST">
+    .select2-container .select2-dropdown .select2-results {
+        padding: 0;
+    }
+
+    .select2-container .select2-dropdown .select2-results ul {
+        background: #fff;
+        border: 1px solid #aab2ca;
+    }
+
+    .select2-container .select2-dropdown .select2-results ul .select2-results__option--highlighted[aria-selected] {
+        background-color: #3498db;
+    }
+
+</style>
+@foreach ( $dataIkm as $a)
+<form action="{{ route('ikm.update') }}" method="POST">
     @csrf
 
-    <div class="row justify-content-between align-items-end g-3 ">
+    <!-- Header -->
+    <div class="row justify-content-between align-items-end g-3 mb-4">
         <div class="col-12 col-sm-auto col-xl-8">
-            <h2>Update Ikm</h2>
+            <h2 class="fw-bold"><i class="ti ti-user-edit me-2"></i>Update Ikm</h2>
+            <p class="text-muted mb-0">Perbarui data informasi IKM</p>
         </div>
         <div class="col-12 col-sm-auto col-xl-4">
-            <div class="d-flex"><a href="/project/dataIkm/{{ $project->id }}" class="btn btn-phoenix-primary px-5 me-2">Batal</a>
-                <button type="submit" class="btn btn-primary px-5 w-100 text-nowrap">Simpan</button>
+            <div class="d-flex gap-2">
+                <a href="/project/dataIkm/{{ $project->id }}" class="btn btn-outline-secondary flex-fill">
+                    <i class="ti ti-arrow-left me-1"></i> Batal
+                </a>
+                <button type="submit" class="btn btn-primary flex-fill">
+                    <i class="ti ti-check me-1"></i> Simpan
+                </button>
             </div>
         </div>
     </div>
@@ -160,10 +172,7 @@
                     Ikm</a></li>
             <li class="nav-item" role="presentation"><a class="nav-link " id="home-tab" data-bs-toggle="tab" href="#tab-Updatehome" role="tab" aria-controls="tab-Updatehome" aria-selected="false" tabindex="-1"><i data-feather="box"></i> Infomasi
                     Product</a></li>
-            <!--<li class="nav-item" role="presentation"><a class="nav-link" id="profile-tab" data-bs-toggle="tab"-->
-            <!--        href="#tab-Updateprofile" role="tab" aria-controls="tab-profile" aria-selected="false"-->
-            <!--        tabindex="-1"><i data-feather="command"></i> Legalitas-->
-            <!--        / Informasi</a></li>-->
+
 
         </ul>
         <div class="tab-content mt-3" id="myTabContent">
@@ -223,7 +232,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="id_Project" class="form-label"> Asosiasi / Komunitas </label>
-                                <select name="id_Project" id="" class="form-control" disabled>
+                                <select name="id_Project" id="" class="form-control" readonly>
                                     <option value="{{ $project->id }}">{{ $project->NamaProjek }}</option>
                                 </select>
                             </div>
@@ -362,100 +371,100 @@
         {{-- --}}
 
 
-<div class="tab-content mt-3" id="myTabContent">
-<div class="tab-pane fade show active" id="tab-Updatehome">
+        <div class="tab-content mt-3" id="myTabContent">
+            <div class="tab-pane fade " id="tab-Updatehome">
 
-<div class="row">
+                <div class="row">
 
-<div class="col-lg-6">
-<label>Jenis Produk</label>
-<input class="form-control" type="text" name="jenisProduk" value="{{ $a->jenisProduk }}">
-</div>
+                    <div class="col-lg-6">
+                        <label>Jenis Produk</label>
+                        <input class="form-control" type="text" name="jenisProduk" value="{{ $a->jenisProduk }}">
+                    </div>
 
-<div class="col-lg-6">
-<label>Merk</label>
-<textarea class="form-control editor" name="merk">{!! $a->merk !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Merk</label>
+                        <textarea class="form-control editor" name="merk">{!! $a->merk !!}</textarea>
+                    </div>
 
-<div class="col-lg-6">
-<label>Tagline</label>
-<textarea class="form-control editor" name="tagline">{!! $a->tagline !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Tagline</label>
+                        <textarea class="form-control editor" name="tagline">{!! $a->tagline !!}</textarea>
+                    </div>
 
-<div class="col-lg-6">
-<label>Kelebihan Produk</label>
-<textarea class="form-control editor" name="kelebihan">{!! $a->kelebihan !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Kelebihan Produk</label>
+                        <textarea class="form-control editor" name="kelebihan">{!! $a->kelebihan !!}</textarea>
+                    </div>
 
-<div class="col-lg-6">
-<label>Gramasi (gram)</label>
-<input type="text" class="form-control" name="gramasi" value="{{ $a->gramasi }}">
-</div>
+                    <div class="col-lg-6">
+                        <label>Gramasi (gram)</label>
+                        <input type="text" class="form-control" name="gramasi" value="{{ $a->gramasi }}">
+                    </div>
 
-<div class="col-lg-6">
-<label>Jenis Kemasan</label>
-<textarea class="form-control editor" name="jenisKemasan">{!! $a->jenisKemasan !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Jenis Kemasan</label>
+                        <textarea class="form-control editor" name="jenisKemasan">{!! $a->jenisKemasan !!}</textarea>
+                    </div>
 
-<div class="col-lg-6">
-<label>Segmentasi Produk</label>
-<textarea class="form-control editor" name="segmentasi">{!! $a->segmentasi !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Segmentasi Produk</label>
+                        <textarea class="form-control editor" name="segmentasi">{!! $a->segmentasi !!}</textarea>
+                    </div>
 
-<div class="col-lg-6">
-<label>Kemasan Pendukung</label>
-<textarea class="form-control editor" name="harga">{!! $a->harga !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Kemasan Pendukung</label>
+                        <textarea class="form-control editor" name="harga">{!! $a->harga !!}</textarea>
+                    </div>
 
-<div class="col-lg-6">
-<label>Varian Produk</label>
-<textarea class="form-control editor" name="varian">{!! $a->varian !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Varian Produk</label>
+                        <textarea class="form-control editor" name="varian">{!! $a->varian !!}</textarea>
+                    </div>
 
-<div class="col-lg-6">
-<label>Komposisi Produk</label>
-<textarea class="form-control editor" name="komposisi">{!! $a->komposisi !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Komposisi Produk</label>
+                        <textarea class="form-control editor" name="komposisi">{!! $a->komposisi !!}</textarea>
+                    </div>
 
-<div class="col-lg-12">
-<label>Redaksi Produk</label>
-<textarea class="form-control editor" name="redaksi">{!! $a->redaksi !!}</textarea>
-</div>
+                    <div class="col-lg-12">
+                        <label>Redaksi Produk</label>
+                        <textarea class="form-control editor" name="redaksi">{!! $a->redaksi !!}</textarea>
+                    </div>
 
-<div class="col-lg-12">
-<label>Keterangan Lainnya</label>
-<textarea class="form-control editor" name="other">{!! $a->other !!}</textarea>
-</div>
+                    <div class="col-lg-12">
+                        <label>Keterangan Lainnya</label>
+                        <textarea class="form-control editor" name="other">{!! $a->other !!}</textarea>
+                    </div>
 
-<div class="col-lg-12">
-<label>Nama Perusahaan</label>
-<textarea class="form-control editor" name="namaUsaha">{!! $a->namaUsaha !!}</textarea>
-</div>
+                    <div class="col-lg-12">
+                        <label>Nama Perusahaan</label>
+                        <textarea class="form-control editor" name="namaUsaha">{!! $a->namaUsaha !!}</textarea>
+                    </div>
 
-<div class="col-lg-6">
-<label>Nomor SP-IRT</label>
-<textarea class="form-control editor" name="noPIRT">{!! $a->noPIRT !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Nomor SP-IRT</label>
+                        <textarea class="form-control editor" name="noPIRT">{!! $a->noPIRT !!}</textarea>
+                    </div>
 
-<div class="col-lg-6">
-<label>Halal</label>
-<textarea class="form-control editor" name="noHalal">{!! $a->noHalal !!}</textarea>
-</div>
+                    <div class="col-lg-6">
+                        <label>Halal</label>
+                        <textarea class="form-control editor" name="noHalal">{!! $a->noHalal !!}</textarea>
+                    </div>
 
-<div class="col-lg-12">
-<label>Legalitas Lainnya</label>
-<textarea class="form-control editor" name="legalitasLain">{!! $a->legalitasLain !!}</textarea>
-</div>
+                    <div class="col-lg-12">
+                        <label>Legalitas Lainnya</label>
+                        <textarea class="form-control editor" name="legalitasLain">{!! $a->legalitasLain !!}</textarea>
+                    </div>
 
-<input type="hidden" name="id_Project" value="{{ $project->id }}">
+                    <input type="hidden" name="id_Project" value="{{ $project->id }}">
 
-<div class="col-lg-12 mt-3">
-<button type="submit" class="btn btn-primary">Simpan Data</button>
-</div>
+                    <div class="col-lg-12 mt-3">
+                        <button type="submit" class="btn btn-primary">Simpan Data</button>
+                    </div>
 
-</div>
-</div>
-</div>
+                </div>
+            </div>
+        </div>
 
 
     </div>
@@ -471,85 +480,93 @@
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('.editor').summernote({
-        height: 180,
-        toolbar: [
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['font', ['fontsize']],
-            ['para', ['ul', 'ol', 'paragraph']],
-            ['insert', ['link']],
-            ['view', ['codeview']]
-        ]
+    $(document).ready(function() {
+        $('.editor').summernote({
+            height: 180
+            , toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']]
+                , ['font', ['fontsize']]
+                , ['para', ['ul', 'ol', 'paragraph']]
+                , ['insert', ['link']]
+                , ['view', ['codeview']]
+            ]
+        });
     });
-});
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-    $(function(){
+    $(function() {
         $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
         });
 
-        $(function (){
-            $('#provinsiUpdate').on('change',function(){
+        $(function() {
+            $('#provinsiUpdate').on('change', function() {
                 let id_provinsi = $('#provinsiUpdate').val();
 
                 $.ajax({
-                    type : 'POST',
-                    url : '/getkabupatenUpdate',
-                    data : {id_provinsi : id_provinsi},
-                    cache : false,
+                    type: 'POST'
+                    , url: '/getkabupatenUpdate'
+                    , data: {
+                        id_provinsi: id_provinsi
+                    }
+                    , cache: false,
 
-                    success: function(msg){
+                    success: function(msg) {
                         $('#kabupatenUpdate').html(msg);
                         $('#kecamatanUpdate').html('<option value=""> Kecamatan </option>');
                         $('#desaUpdate').html('<option value=""> Kelurahan/Desa </option>');
-                    },
-                    error: function(data){
-                        console.log('error:',data);
+                    }
+                    , error: function(data) {
+                        console.log('error:', data);
                     }
                 })
             })
         })
 
-        $(function (){
-            $('#kabupatenUpdate').on('change',function(){
+        $(function() {
+            $('#kabupatenUpdate').on('change', function() {
                 let id_kabupaten = $('#kabupatenUpdate').val();
 
                 $.ajax({
-                    type : 'POST',
-                    url : '/getkecamatanUpdate',
-                    data : {id_kabupaten : id_kabupaten},
-                    cache : false,
+                    type: 'POST'
+                    , url: '/getkecamatanUpdate'
+                    , data: {
+                        id_kabupaten: id_kabupaten
+                    }
+                    , cache: false,
 
-                    success: function(msg){
+                    success: function(msg) {
                         $('#kecamatanUpdate').html(msg);
                         $('#desaUpdate').html('<option value=""> Kelurahan/Desa </option>');
-                    },
-                    error: function(data){
-                        console.log('error:',data);
+                    }
+                    , error: function(data) {
+                        console.log('error:', data);
                     }
                 })
             })
         })
-        $(function (){
-            $('#kecamatanUpdate').on('change',function(){
+        $(function() {
+            $('#kecamatanUpdate').on('change', function() {
                 let id_kecamatan = $('#kecamatanUpdate').val();
 
                 $.ajax({
-                    type : 'POST',
-                    url : '/getdesaUpdate',
-                    data : {id_kecamatan : id_kecamatan},
-                    cache : false,
+                    type: 'POST'
+                    , url: '/getdesaUpdate'
+                    , data: {
+                        id_kecamatan: id_kecamatan
+                    }
+                    , cache: false,
 
-                    success: function(msg){
+                    success: function(msg) {
                         $('#desaUpdate').html(msg);
-                    },
-                    error: function(data){
-                        console.log('error:',data);
+                    }
+                    , error: function(data) {
+                        console.log('error:', data);
                     }
                 })
             })
@@ -573,5 +590,11 @@ $(document).ready(function() {
             }
         });
     });
+    $('#nextTab').click(e => {
+        e.preventDefault();
+        $('a[href="#tab-produk"]').tab('show');
+    });
+
 </script>
+
 @endsection

@@ -285,6 +285,75 @@ class DetileIkmController extends Controller
             ], 500);
         }
     }
+    /**
+     * Auto-save COTS data via AJAX
+     * Saves form data without requiring manual submission
+     */
+    public function autoSaveCots(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'id_Ikm' => 'required|exists:ikms,id',
+                'id_Project' => 'required|exists:projects,id',
+                'id_Cots' => 'required|exists:cots,id',
+            ]);
+
+            // Get all COTS fields
+            $fields = [
+                'sejarahSingkat', 'produkjual', 'carapemasaran', 'bahanbaku',
+                'prosesproduksi', 'omset', 'kapasitasProduksi', 'kendala', 'solusi'
+            ];
+
+            $updateData = [];
+            foreach ($fields as $field) {
+                if ($request->has($field)) {
+                    $updateData[$field] = $request->input($field);
+                }
+            }
+
+            if (!empty($updateData)) {
+                $cots = Cots::where('id', $request->id_Cots)->first();
+                if ($cots) {
+                    $cots->update($updateData);
+
+                    Log::info('Auto-save COTS successful', [
+                        'cots_id' => $request->id_Cots,
+                        'ikm_id' => $request->id_Ikm,
+                        'project_id' => $request->id_Project,
+                        'fields_updated' => array_keys($updateData),
+                        'saved_at' => now()->toISOString()
+                    ]);
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Data berhasil disimpan',
+                        'saved_at' => now()->format('H:i:s'),
+                        'fields_updated' => count($updateData)
+                    ], 200);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tidak ada perubahan untuk disimpan',
+                'saved_at' => now()->format('H:i:s')
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Auto-save COTS failed: ' . $e->getMessage(), [
+                'ikm_id' => $request->id_Ikm ?? null,
+                'project_id' => $request->id_Project ?? null,
+                'cots_id' => $request->id_Cots ?? null,
+                'exception' => $e
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menyimpan data. Silakan coba lagi atau hubungi administrator.',
+                'error' => config('app.debug') ? $e->getMessage() : null
+            ], 500);
+        }
+    }
 
     public function bencmark(Request $request){
         // Validate input with proper rules
@@ -318,23 +387,17 @@ class DetileIkmController extends Controller
     }
 
     public function cots(Request $request){
-        $validated = $request->validate([
-            'id_Ikm' => 'required|string',
-            'id_project' => 'required|string',
-        ]);
 
-        Cots::create([
-            'id_Ikm' => $validated['id_Ikm'],
-            'id_project' => $validated['id_project'],
-        ]);
+        // Check if COTS already exists for this IKM
+        $existingCots = Cots::where('id_Ikm', $request->id_Ikm)->first();
+        if ($existingCots) {
+            $request->session()->flash('Error', 'Data COTS untuk IKM ini sudah ada!');
+            return redirect()->back();
+        }
 
-        $request->session()->flash('Berhasil', 'Data COTS Berhasil ditambahkan');
-        return redirect()->back();
-    }
-    public function Updatecots(Request $request){
         $validated = $request->validate([
-            'id_Ikm' => 'required|string',
-            'id_project' => 'required|string',
+            'id_Ikm' => 'required|string|unique:cots,id_Ikm',
+            'id_Project' => 'required|string',
             'sejarahSingkat' => 'nullable|string',
             'produkjual' => 'nullable|string',
             'carapemasaran' => 'nullable|string',
@@ -346,12 +409,58 @@ class DetileIkmController extends Controller
             'solusi' => 'nullable|string',
         ]);
 
-        Cots::where('id_Ikm', $validated['id_Ikm'])->update($validated);
+        Cots::create([
+            'id_Ikm' => $validated['id_Ikm'],
+            'id_Project' => $validated['id_Project'],
+            'sejarahSingkat' => $validated['sejarahSingkat'] ?? null,
+            'produkjual' => $validated['produkjual'] ?? null,
+            'carapemasaran' => $validated['carapemasaran'] ?? null,
+            'bahanbaku' => $validated['bahanbaku'] ?? null,
+            'prosesproduksi' => $validated['prosesproduksi'] ?? null,
+            'omset' => $validated['omset'] ?? null,
+            'kapasitasProduksi' => $validated['kapasitasProduksi'] ?? null,
+            'kendala' => $validated['kendala'] ?? null,
+            'solusi' => $validated['solusi'] ?? null,
+        ]);
+
+        $request->session()->flash('Berhasil', 'Data COTS Berhasil ditambahkan');
+        return redirect()->back();
+    }
+    public function Updatecots(Request $request){
+        $validated = $request->validate([
+            'id_Ikm' => 'required|string',
+            'id_Project' => 'required|string',
+            'id_Cots' => 'nullable|string',
+            'sejarahSingkat' => 'nullable|string',
+            'produkjual' => 'nullable|string',
+            'carapemasaran' => 'nullable|string',
+            'bahanbaku' => 'nullable|string',
+            'prosesproduksi' => 'nullable|string',
+            'omset' => 'nullable|string',
+            'kapasitasProduksi' => 'nullable|string',
+            'kendala' => 'nullable|string',
+            'solusi' => 'nullable|string',
+        ]);
+
+        // Update data except id_Cots
+        $updateData = $validated;
+        unset($updateData['id_Cots']);
+
+        Cots::where('id', $validated['id_Cots'])->update($updateData);
+
+        // Check if AJAX request
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data COTS Berhasil Diubah'
+            ]);
+        }
+
         $request->session()->flash('UpdateBerhasil', 'Data COTS Berhasil Diubah');
         return redirect()->route('detail',[
             'id_Ikm' => encrypt($validated['id_Ikm']),
-            'id_project' => $validated['id_project']
-        ]);
+            'id_project' => $validated['id_Project']
+        ])->with('tab', 'tab-Cots');
     }
     // Upload multiple documentation images
     public function dokumentasi(Request $request){

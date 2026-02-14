@@ -29,6 +29,9 @@
     <!-- App css -->
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
 
+    <!-- Product Gallery CSS -->
+    <link href="{{ asset('assets/css/product-gallery.css') }}" rel="stylesheet" type="text/css" />
+
     <!-- SweetAlert2 CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
@@ -1937,6 +1940,7 @@ typeEffect();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- FsLightbox JS -->
+    <script src="{{ asset('assets/js/image-gallery.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/fslightbox@3.4.2/index.min.js"></script>
 
     @stack('scripts')

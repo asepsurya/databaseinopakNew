@@ -15,8 +15,8 @@ class CreateCotsTable extends Migration
     {
         Schema::create('cots', function (Blueprint $table) {
             $table->id();
-            $table->string('id_ikm');
-            $table->string('id_project');
+            $table->string('id_Ikm');
+            $table->string('id_Project');
             $table->text('sejarahSingkat')->nullable();
             $table->text('produkjual')->nullable();
             $table->text('carapemasaran')->nullable();

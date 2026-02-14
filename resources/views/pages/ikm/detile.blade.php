@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('page-title', 'Detail Ikm - ' . ($Ikm->first()->nama ?? 'N/A'))
+@section('title', 'Detail Ikm - ' . ($Ikm->first()->nama ?? 'N/A'))
 
 
 @section('content')
@@ -69,6 +69,119 @@
 
 [data-bs-theme="dark"] .empty-desc {
     color: #a1a4c0;
+}
+
+/* COTS Dark Mode Support */
+[data-bs-theme="dark"] #tab-Cots .table-bordered {
+    border-color: #33354a;
+}
+
+[data-bs-theme="dark"] #tab-Cots .table-bordered td {
+    border-color: #33354a;
+}
+
+[data-bs-theme="dark"] #tab-Cots .cots-label-cell {
+    background-color: #2a2c4000 !important;
+    color: #e6e7f2;
+}
+
+[data-bs-theme="dark"] #tab-Cots .cots-label-cell strong {
+    color: #e6e7f2;
+}
+
+[data-bs-theme="dark"] #tab-Cots td:nth-child(2) {
+
+}
+
+[data-bs-theme="dark"] #tab-Cots .inline-editor {
+    color: #e6e7f2;
+
+}
+
+[data-bs-theme="dark"] #tab-Cots .inline-editor:empty:before {
+    color: #6c757d;
+}
+
+[data-bs-theme="dark"] #tab-Cots h5.cots-title {
+    color: #e6e7f2;
+}
+
+[data-bs-theme="dark"] #tab-Cots .table {
+    --bs-table-bg: #1f1f2e00;
+}
+
+/* COTS Table Styles */
+.cots-title {
+    color: #333;
+}
+
+/* COTS Auto-save Indicator Styles */
+#autosaveIndicatorCots {
+    transition: all 0.3s ease;
+}
+
+#autosaveIndicatorCots.autosave-indicator.saving {
+    background-color: #fff3cd !important;
+    border-left: 3px solid #ffc107;
+}
+
+
+
+#autosaveIndicatorCots.autosave-indicator.error {
+    background-color: #f8d7da !important;
+    border-left: 3px solid #dc3545;
+}
+
+[data-bs-theme="dark"] #autosaveIndicatorCots {
+    background-color: #2a2c40 !important;
+}
+
+[data-bs-theme="dark"] #autosaveIndicatorCots.autosave-indicator.saving {
+    background-color: #3d3200 !important;
+}
+
+[data-bs-theme="dark"] #autosaveIndicatorCots.autosave-indicator.success {
+    background-color: #1a3324 !important;
+}
+
+[data-bs-theme="dark"] #autosaveIndicatorCots.autosave-indicator.error {
+    background-color: #3d1a1f !important;
+}
+
+[data-bs-theme="dark"] #autosaveMessageCots {
+    color: #adb5bd !important;
+}
+
+.cots-label-cell {
+    padding-left: 10px;
+    background-color: #f5f5f5;
+    width: 200px;
+}
+
+.cots-label-cell strong {
+    color: #333;
+}
+
+.inline-editor {
+    background: transparent;
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: hidden;
+    outline: none !important;
+    outline-width: 0 !important;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    margin: 0;
+    padding: 0;
+    min-height: 60px;
+
+}
+
+.inline-editor:empty:before {
+    content: attr(data-placeholder);
+    color: #999;
 }
 
 .design-gallery {
@@ -201,18 +314,12 @@
                             <span class="badge badge-soft-success fs-xxs badge-label">In Progress</span>
                         </div>
                         <div class="ms-auto d-flex gap-2">
-                            <a href="{{ url()->previous() }}" class="btn btn-light">
+                            <a href="/project/dataIkm/{{ $project->id }}" class="btn btn-light">
                                 <i class="ti ti-arrow-left me-1"></i> Kembali
                             </a>
-                            <form action="/project/dataIkm/{{ $project->id }}/update" method="POST" class="d-inline">
+                            <form action="{{ route('ikm.edit', ['ikm' => $Ikm->first()->id]) }}" method="GET" class="d-inline">
                                 @csrf
-                                <input type="text" value="{{ $Ikm->first()->id_provinsi }}" name="getId_provinsi" hidden>
-                                <input type="text" value="{{ $Ikm->first()->id_kota }}" name="getId_kota" hidden>
-                                <input type="text" value="{{ $Ikm->first()->id_kecamatan }}" name="getId_kecamatan" hidden>
-                                <input type="text" value="{{ $Ikm->first()->id_desa }}" name="getId_desa" hidden>
-                                <input type="text" value="{{ $project->id }}" name="getId_project" hidden>
-                                <input type="text" value="{{ $Ikm->first()->id }}" name="getId_Ikm" hidden>
-                                <input type="text" value="{{ $project->NamaProjek }}" name="get_Nmproject" hidden>
+
                                 <button type="submit" class="btn btn-light" title="Ubah">
                                     <i class="ti ti-pencil me-2"></i> Edit
                                 </button>
@@ -503,11 +610,11 @@
 
                             <!-- Cots Tab -->
                             <div class="tab-pane fade" id="tab-Cots" role="tabpanel">
-                                @if(isset($Cots) && $Cots != 0 && isset($Cotsview))
-                                    @foreach($Cotsview as $a)
+                                @if($cots > 0 && $cotsview->count() > 0)
+                                    @foreach($cotsview as $a)
                                         <div class="row justify-content-between align-items-end g-3 mb-4">
                                             <div class="col-12 col-sm-auto">
-                                                <h5 class="mb-0">Form Coaching on The Spot (Cots)</h5>
+                                                <h5 class="mb-0 cots-title">Form Coaching on The Spot (Cots)</h5>
                                             </div>
                                             <div class="col-12 col-sm-auto">
                                                 <div class="d-flex gap-2">
@@ -537,8 +644,16 @@
                                             <input type="text" name="id_Ikm" value="{{ $Ikm->first()->id }}" hidden>
                                             <input type="text" name="id_Project" value="{{ $project->id }}" hidden>
                                             <input type="text" name="id_Cots" value="{{ $a->id }}" hidden>
+                                              <!-- COTS Auto-save indicator -->
+                                            <div id="autosaveIndicatorCots" class="d-flex align-items-center mb-3 p-2 rounded" style=" transition: all 0.3s;margin-bottom:10px;">
+                                                <div class="autosave-icon d-flex align-items-center gap-2">
+                                                    <span id="autosaveIconContentCots"><i class="ti ti-check" style="color: #28a745;"></i></span>
+                                                    <span id="autosaveMessageCots" class="text-muted">Auto-save aktif</span>
+                                                </div>
+                                            </div>
 
-                                            <table class="table table-bordered" style="table-layout: fixed; overflow-wrap: break-word;">
+
+                                            <table class="table table-bordered table-dark-mode" style="table-layout: fixed; overflow-wrap: break-word;">
                                                 <tbody>
                                                     @php
                                                     $CotsFields = [
@@ -556,11 +671,11 @@
 
                                                     @foreach($CotsFields as $key => $label)
                                                     <tr>
-                                                        <td style="padding-left:10px;background-color:#f5f5f5;width:200px;"><strong>{{ $label }}</strong></td>
+                                                        <td class="cots-label-cell"><strong>{{ $label }}</strong></td>
                                                     </tr>
                                                     <tr>
                                                         <td class="p-2">
-                                                            <div id="{{ $key }}" class="inline-editor" style="background: transparent; border-top-style: hidden; border-right-style: hidden; border-left-style: hidden; border-bottom-style: hidden; outline:none !important; outline-width: 0 !important; box-shadow: none; -moz-box-shadow: none; -webkit-box-shadow: none; margin:0; padding:0; min-height: 60px;" contenteditable="true" data-placeholder="{{ $label }}" readonly>
+                                                            <div id="{{ $key }}" class="inline-editor" contenteditable="true" data-placeholder="{{ $label }}" readonly>
                                                                 {!! $a->$key ?? '' !!}
                                                             </div>
                                                             <input type="hidden" name="{{ $key }}" id="{{ $key }}_input">
@@ -578,13 +693,14 @@
                                         <form action="/project/Ikms/{{ $Ikm->first()->id }}/Cots" method="post" class="d-inline">
                                             @csrf
                                             <input type="text" name="id_Ikm" value="{{ $Ikm->first()->id }}" hidden>
-                                            <input type="text" name="id_project" value="{{ $Ikm->first()->id_Project }}" hidden>
+                                            <input type="text" name="id_Project" value="{{ $Ikm->first()->id_Project }}" hidden>
                                             <button class="btn btn-phoenix-primary" type="submit">
                                                 <i class="fas fa-plus me-1"></i> Buat Laporan Cots
                                             </button>
                                         </form>
                                     </div>
                                 @endif
+
                             </div>
                         </div>
                     </div>
@@ -624,9 +740,9 @@
 
                                                 {{-- Thumbnail --}}
                                                 <a href="{{ \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
-                                                data-fslightbox="benchmark-gallery">
+                                                data-fslightbox="benchmark-gallery" >
                                                     <img src="{{ \App\Helpers\ThumbnailHelper::thumbnailUrl($image->gambar, 'medium', true) ?? \App\Helpers\ThumbnailHelper::originalUrl($image->gambar) }}"
-                                                        loading="lazy">
+                                                        loading="lazy" >
                                                 </a>
 
                                                 {{-- Overlay Actions --}}
@@ -1086,7 +1202,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="/project/Ikms/{{ $Ikm->first()->id }}/update" method="POST" enctype="multipart/form-data" id="cropForm">
+                <form action="/project/dataIkm/Ikm/{{ $Ikm->first()->id }}/update" method="POST" enctype="multipart/form-data" id="cropForm">
                     @csrf
                     <input type="text" name="id_projek" value="{{ $project->id }}" hidden>
                     <input type="text" name="id_Ikm" value="{{ $Ikm->first()->id }}" hidden>
@@ -1227,16 +1343,57 @@ document.addEventListener("DOMContentLoaded", function () {
             setup: function (editor) {
                 editor.on('init', function () {
                     const hidden = document.getElementById(id + '_input');
-                    hidden.value = editor.getContent();
+                    if (hidden) hidden.value = editor.getContent();
                 });
 
                 editor.on('change keyup', function () {
                     const hidden = document.getElementById(id + '_input');
-                    hidden.value = editor.getContent();
+                    if (hidden) hidden.value = editor.getContent();
                 });
             }
         });
     });
+
+    // Initialize TinyMCE for Cots fields
+    CotsFields.forEach(function(id) {
+        if (document.getElementById(id)) {
+            tinymce.init({
+                selector: '#' + id,
+                inline: true,
+                menubar: false,
+                plugins: 'lists wordcount',
+                toolbar: 'bold italic underline | bullist numlist',
+                setup: function (editor) {
+                    editor.on('init', function () {
+                        const hidden = document.getElementById(id + '_input');
+                        if (hidden) hidden.value = editor.getContent();
+                    });
+
+                    editor.on('change keyup', function () {
+                        const hidden = document.getElementById(id + '_input');
+                        if (hidden) hidden.value = editor.getContent();
+                    });
+                }
+            });
+        }
+    });
+
+    // Cots form submit handler - copy TinyMCE values to hidden inputs before submit
+    const cotsForm = document.querySelector('form[action*="updateCots"]');
+    if (cotsForm) {
+        cotsForm.addEventListener('submit', function(e) {
+            // Save all TinyMCE editors before submit
+            CotsFields.forEach(function(id) {
+                const editor = tinymce.get(id);
+                if (editor) {
+                    const hiddenInput = document.getElementById(id + '_input');
+                    if (hiddenInput) {
+                        hiddenInput.value = editor.getContent();
+                    }
+                }
+            });
+        });
+    }
 
     // Cots Edit functionality
     const enableCotsBtn = document.getElementById('enableCots');
@@ -2447,6 +2604,350 @@ function updateLastSavedTimestamp() {
             initAutoSave();
         }
     });
+
+    // ========================================
+    // COTS AUTO-SAVE FUNCTIONALITY
+    // ========================================
+
+    // COTS Configuration
+    const COTS_CONFIG = {
+        debounceDelay: 5000,        // Save 5 seconds after user stops typing
+        intervalDelay: 30000,        // Save every 30 seconds regardless
+        maxRetries: 3,               // Maximum retry attempts
+        retryDelay: 2000             // Delay between retries (ms)
+    };
+
+    // COTS State
+    let cotsSaveTimeout = null;
+    let cotsIntervalId = null;
+    let cotsIsSaving = false;
+    let cotsLastSavedContent = {};
+    let cotsRetryCount = 0;
+
+    // COTS fields to auto-save
+    const cotsFields = [
+        'sejarahSingkat', 'produkjual', 'carapemasaran', 'bahanbaku',
+        'prosesproduksi', 'omset', 'kapasitasProduksi', 'kendala', 'solusi'
+    ];
+
+    // Get COTS IDs from hidden inputs
+    function getCotsIds() {
+        const idIkmInput = document.querySelector('form[action*="updateCots"] input[name="id_Ikm"]');
+        const idProjectInput = document.querySelector('form[action*="updateCots"] input[name="id_Project"]');
+        const idCotsInput = document.querySelector('form[action*="updateCots"] input[name="id_Cots"]');
+
+        return {
+            id_Ikm: idIkmInput ? idIkmInput.value : null,
+            id_Project: idProjectInput ? idProjectInput.value : null,
+            id_Cots: idCotsInput ? idCotsInput.value : null
+        };
+    }
+
+    // Get current content from all COTS fields
+    function getCotsCurrentContent() {
+        const content = {};
+
+        cotsFields.forEach(field => {
+            const editor = document.getElementById(field);
+            const hiddenInput = document.getElementById(field + '_input');
+
+            if (editor && editor.contentEditable === 'true') {
+                content[field] = editor.innerHTML;
+            } else if (hiddenInput) {
+                content[field] = hiddenInput.value;
+            }
+        });
+
+        return content;
+    }
+
+    // Sync COTS contenteditable to hidden inputs
+    function syncCotsInputs() {
+        cotsFields.forEach(field => {
+            const editor = document.getElementById(field);
+            const hiddenInput = document.getElementById(field + '_input');
+
+            if (editor && hiddenInput) {
+                hiddenInput.value = editor.innerHTML;
+            }
+        });
+    }
+
+    // Send COTS data to server
+    async function sendCotsAutoSave(data) {
+        const ids = getCotsIds();
+
+        if (!ids.id_Ikm || !ids.id_Project || !ids.id_Cots) {
+            console.warn('COTS Auto-save: Missing required IDs');
+            return { success: false, message: 'ID tidak valid' };
+        }
+
+        // Sync inputs first
+        syncCotsInputs();
+
+        const payload = {
+            id_Ikm: ids.id_Ikm,
+            id_Project: ids.id_Project,
+            id_Cots: ids.id_Cots,
+            ...data
+        };
+
+        try {
+            const response = await fetch('/project/Ikms/auto-save-cots', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || 'Server error');
+            }
+
+            return result;
+
+        } catch (error) {
+            console.error('COTS Auto-save fetch error:', error);
+            throw error;
+        }
+    }
+
+    // Perform COTS auto-save
+    async function performCotsAutoSave() {
+        if (cotsIsSaving) {
+            console.log('COTS Auto-save already in progress, skipping...');
+            return;
+        }
+
+        const currentContent = getCotsCurrentContent();
+
+        // Check if content has changed
+        const contentChanged = Object.keys(currentContent).some(key => {
+            return cotsLastSavedContent[key] !== currentContent[key];
+        });
+
+        if (!contentChanged) {
+            console.log('COTS No content changes detected, skipping auto-save');
+            return;
+        }
+
+        cotsIsSaving = true;
+        showCotsIndicator('saving', 'Menyimpan...');
+
+        try {
+            const result = await sendCotsAutoSave(currentContent);
+
+            if (result.success) {
+                cotsLastSavedContent = { ...currentContent };
+                cotsRetryCount = 0;
+
+                // Show success message with timestamp
+                const time = result.saved_at || new Date().toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+
+                showCotsIndicator('success', 'Tersimpan ' + time, 4000);
+                updateCotsLastSavedTimestamp(time);
+
+                console.log('COTS Auto-save successful:', result);
+            } else {
+                throw new Error(result.message || 'Save failed');
+            }
+
+        } catch (error) {
+            cotsRetryCount++;
+
+            console.error('COTS Auto-save error:', error);
+
+            if (cotsRetryCount <= COTS_CONFIG.maxRetries) {
+                showCotsIndicator('saving', `Gagal, mencoba lagi (${cotsRetryCount}/${COTS_CONFIG.maxRetries})...`);
+
+                // Retry after delay
+                setTimeout(async () => {
+                    cotsIsSaving = false;
+                    await performCotsAutoSave();
+                }, COTS_CONFIG.retryDelay);
+                return;
+            }
+
+            // Max retries reached
+            showCotsIndicator('error', 'Gagal menyimpan. Klik untuk coba lagi.', 0);
+
+            // Add click handler to dismiss error and retry
+            const indicator = document.getElementById('autosaveIndicatorCots');
+            if (indicator) {
+                indicator.style.cursor = 'pointer';
+                indicator.onclick = async function() {
+                    indicator.onclick = null;
+                    indicator.style.cursor = 'default';
+                    cotsRetryCount = 0;
+                    cotsIsSaving = false;
+                    await performCotsAutoSave();
+                };
+            }
+        } finally {
+            if (cotsRetryCount === 0 || cotsRetryCount > COTS_CONFIG.maxRetries) {
+                cotsIsSaving = false;
+            }
+        }
+    }
+
+    // Show COTS indicator
+    function showCotsIndicator(type, message, duration = 3000) {
+        const indicator = document.getElementById('autosaveIndicatorCots');
+        if (!indicator) return;
+
+        const iconContent = document.getElementById('autosaveIconContentCots');
+        const messageEl = document.getElementById('autosaveMessageCots');
+
+        // Reset classes
+        indicator.className = 'autosave-indicator show ' + type;
+
+        // Set icon
+        if (type === 'saving') {
+            iconContent.innerHTML = '<div class="autosave-spinner"></div>';
+        } else if (type === 'success') {
+            iconContent.innerHTML = '<i class="ti ti-check" style="color: #28a745;"></i>';
+        } else if (type === 'error') {
+            iconContent.innerHTML = '<i class="ti ti-alert-triangle" style="color: #dc3545;"></i>';
+        }
+
+        messageEl.textContent = message;
+
+        // Auto-hide after duration (except for error - user must click to dismiss)
+        if (type !== 'error' && duration > 0) {
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, duration);
+        }
+    }
+
+    // Update COTS last saved timestamp in UI
+    function updateCotsLastSavedTimestamp() {
+        const now = new Date();
+        const timestamp = now.toLocaleString('id-ID', {
+            timeZone: 'Asia/Jakarta',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+
+        let timestampEl = document.getElementById('lastCotsAutoSaveTime');
+        if (!timestampEl) {
+            const form = document.querySelector('form[action*="updateCots"]');
+            if (form) {
+                timestampEl = document.createElement('small');
+                timestampEl.id = 'lastCotsAutoSaveTime';
+                timestampEl.className = 'text-muted d-block mt-2';
+                timestampEl.style.fontSize = '12px';
+                form.appendChild(timestampEl);
+            }
+        }
+
+        if (timestampEl) {
+            timestampEl.innerHTML = `
+                <i class="ti ti-check-circle me-1" style="color: #28a745;"></i>
+                Terakhir disimpan: ${timestamp} WIB
+            `;
+        }
+    }
+
+    // Debounced COTS save trigger
+    function triggerCotsDebouncedSave() {
+        if (cotsSaveTimeout) {
+            clearTimeout(cotsSaveTimeout);
+        }
+
+        cotsSaveTimeout = setTimeout(() => {
+            console.log('COTS Debounce timer fired, triggering save...');
+            performCotsAutoSave();
+        }, COTS_CONFIG.debounceDelay);
+    }
+
+    // Initialize COTS auto-save
+    function initCotsAutoSave() {
+        // Check if we're on the COTS tab form
+        const form = document.querySelector('form[action*="updateCots"]');
+        if (!form) {
+            console.log('COTS Auto-save: Form not found');
+            return;
+        }
+
+        // Check if COTS record exists
+        const ids = getCotsIds();
+        if (!ids.id_Cots) {
+            console.log('COTS Auto-save: No COTS record ID found');
+            return;
+        }
+
+        // Store initial content
+        cotsLastSavedContent = getCotsCurrentContent();
+
+        // Set up contenteditable change listeners
+        cotsFields.forEach(field => {
+            const editor = document.getElementById(field);
+            if (editor) {
+                editor.addEventListener('input', triggerCotsDebouncedSave);
+                editor.addEventListener('paste', triggerCotsDebouncedSave);
+            }
+        });
+
+        // Also listen for form input changes
+        form.addEventListener('input', triggerCotsDebouncedSave);
+
+        // Set up interval save
+        cotsIntervalId = setInterval(() => {
+            console.log('COTS Interval timer fired, triggering save...');
+            // Sync inputs before interval save
+            syncCotsInputs();
+            performCotsAutoSave();
+        }, COTS_CONFIG.intervalDelay);
+
+        // Save before unload
+        window.addEventListener('beforeunload', function(e) {
+            if (cotsIsSaving) {
+                e.preventDefault();
+                e.returnValue = '';
+                return '';
+            }
+        });
+
+        console.log('COTS Auto-save initialized');
+
+        // Show initial status
+        showCotsIndicator('success', 'Auto-save aktif', 3000);
+    }
+
+    // Initialize COTS auto-save when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+        // Small delay to ensure DOM is fully loaded
+        setTimeout(() => {
+            initCotsAutoSave();
+        }, 500);
+    });
+
+    // Also initialize on COTS tab show
+    document.addEventListener('shown.bs.tab', function(e) {
+        if (e.target.getAttribute('href') === '#tab-Cots') {
+            console.log('COTS tab shown, initializing auto-save...');
+            initCotsAutoSave();
+        }
+    });
+
+    // Check for success message and switch to COTS tab
+    @if(Session::has('UpdateBerhasil') || Session::has('Berhasil'))
+        const cotsTab = document.querySelector('a[href="#tab-Cots"]');
+        if (cotsTab) {
+            cotsTab.click();
+        }
+    @endif
 
 })();
 </script>
