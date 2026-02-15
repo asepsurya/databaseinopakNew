@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\AppSetting;
 use App\Models\Ikm;
 use App\Models\LogoSetting;
-use App\Models\AppSetting;
 use App\Services\BrandingService;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 // Load ThumbnailHelper for Blade views
@@ -31,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
             $totalUmkm = Ikm::count();
             $view->with('totalUmkm', $totalUmkm);
         });
-
+         if (config('app.env') === 'production') { URL::forceScheme('https'); }
         // Share branding settings with all views
         view()->composer(['layouts.master', 'layouts.auth', 'layouts.public'], function ($view) {
             // Get logo settings
