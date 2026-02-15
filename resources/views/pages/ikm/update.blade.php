@@ -7,131 +7,125 @@
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-bs4.min.css" rel="stylesheet">
 
 <style>
-    .select2-container--open {
-        z-index: 9999999
+
+    /* Tinggi konsisten */
+    .select2-container .select2-selection--single {
+        height: 48px;
+        display: flex;
+        align-items: center;
     }
 
-    .select2.select2-container {
-        width: 100% !important;
+    /* Text & placeholder */
+    .select2-container--default .select2-selection--single
+    .select2-selection__rendered {
+        line-height: normal !important;
+        padding-left: 12px;
+        padding-right: 20px;
     }
 
-    .select2.select2-container .select2-selection {
-        font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-        font-size: 12px;
-        border: 1px solid #cbd0dd;
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
+    /* Placeholder */
+    .select2-container--default
+    .select2-selection__placeholder {
+        color: #adb5bd;
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+     /* Custom Select2 Styling to Match App Theme */
+    .select2-container .select2-selection--single {
+        height: 40px;
+        border: 1px solid #e4e6ef;
         border-radius: 0.375rem;
-        height: 36px;
-        padding: 2px;
-        margin-bottom: 15px;
-        outline: none !important;
-        transition: all .15s ease-in-out;
+        background-color: #fff;
     }
 
-    .select2.select2-container .select2-selection .select2-selection__rendered {
-        font-weight: 600;
-        color: #3b3b3b;
-        line-height: 32px;
-        padding-right: 33px;
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 28px;
+        padding-left: 12px;
+        padding-right: 30px;
+        color: #495057;
+        display: flex;
+        align-items: center;
     }
 
-    .select2.select2-container .select2-selection .select2-selection__arrow {
-        background: #f8f8f8;
-
-        border-left: 1px solid #ccc;
-        -webkit-border-radius: 0 3px 3px 0;
-        -moz-border-radius: 0 3px 3px 0;
-        border-radius: 0 3px 3px 0;
-        height: 32px;
-        width: 33px;
+    .select2-container--default .select2-selection--single .select2-selection__placeholder {
+        color: #6c757d;
+        display: flex;
+        align-items: center;
     }
 
-    .select2.select2-container.select2-container--open .select2-selection.select2-selection--single {
-        background: #f8f8f8;
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 40px;
+        width: 40px;
     }
 
-    .select2.select2-container.select2-container--open .select2-selection.select2-selection--single .select2-selection__arrow {
-        -webkit-border-radius: 0 3px 0 0;
-        -moz-border-radius: 0 3px 0 0;
-        border-radius: 0 3px 0 0;
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+        border-color: #6c757d transparent transparent transparent;
+        border-width: 6px 6px 0 6px;
+        margin-left: -12px;
+        margin-top: -3px;
     }
 
-    .select2.select2-container.select2-container--open .select2-selection.select2-selection--multiple {
-        border: 1px solid #34495e;
+    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+        border-color: transparent transparent #6c757d transparent;
+        border-width: 0 6px 6px 6px;
     }
 
-    .select2.select2-container .select2-selection--multiple {
-        height: auto;
-        min-height: 34px;
+    .select2-dropdown {
+        border: 1px solid #e4e6ef;
+        border-radius: 0.375rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .select2.select2-container .select2-selection--multiple .select2-search--inline .select2-search__field {
-        margin-top: 0;
-        height: 32px;
+    .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: #f3f4f6;
     }
 
-    .select2.select2-container .select2-selection--multiple .select2-selection__rendered {
-        display: block;
-        padding: 0 4px;
-        line-height: 29px;
+    .select2-container--default .select2-results__option--highlighted[aria-selected] {
+        background-color: #0d6efd;
+        color: white;
     }
 
-    .select2.select2-container .select2-selection--multiple .select2-selection__choice {
-        background-color: #f8f8f8;
-        border: 1px solid #ccc;
-        -webkit-border-radius: 3px;
-        -moz-border-radius: 3px;
-        border-radius: 3px;
-        margin: 4px 4px 0 0;
-        padding: 0 6px 0 22px;
-        height: 24px;
-        line-height: 24px;
-        font-size: 12px;
-        position: relative;
+    .select2-search--dropdown {
+        padding: 8px;
     }
 
-    .select2.select2-container .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 22px;
-        width: 22px;
-        margin: 0;
-        text-align: center;
-        color: #e74c3c;
-        font-weight: bold;
-        font-size: 16px;
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        border: 1px solid #e4e6ef;
+        border-radius: 0.25rem;
+        padding: 8px 12px;
     }
 
-    .select2-container .select2-dropdown {
-        background: transparent;
-        border: none;
-        margin-top: -5px;
+    /* Dark mode support for Select2 */
+    [data-bs-theme="dark"] .select2-container .select2-selection--single {
+        background-color: #1f1f2e;
+        border-color: #33354a;
+        color: #e6e7f2;
     }
 
-    .select2-container .select2-dropdown .select2-search {
-        padding: 0;
+    [data-bs-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #e6e7f2;
+        display: flex;
+        align-items: center;
     }
 
-    .select2-container .select2-dropdown .select2-search input {
-        outline: none !important;
-        border: 1px solid #aab2ca !important;
-        border-bottom: none !important;
-        padding: 4px 6px !important;
+    [data-bs-theme="dark"] .select2-dropdown {
+        background-color: #1f1f2e;
+        border-color: #33354a;
     }
 
-    .select2-container .select2-dropdown .select2-results {
-        padding: 0;
+    [data-bs-theme="dark"] .select2-container--default .select2-results__option {
+        color: #e6e7f2;
     }
 
-    .select2-container .select2-dropdown .select2-results ul {
-        background: #fff;
-        border: 1px solid #aab2ca;
+    [data-bs-theme="dark"] .select2-container--default .select2-search--dropdown .select2-search__field {
+        background-color: #2a2c40;
+        border-color: #33354a;
+        color: #e6e7f2;
     }
 
-    .select2-container .select2-dropdown .select2-results ul .select2-results__option--highlighted[aria-selected] {
-        background-color: #3498db;
+    [data-bs-theme="dark"] .select2-container--default .select2-results__option[aria-selected=true] {
+        background-color: #2a2c40;
     }
 
 </style>
@@ -249,7 +243,7 @@
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label class="form-label" for="provinsi">Provinsi<span style="color:red">*</span></label>
-                                <select class="form-control select2 js-example-basic-single-Update @error('provinsi') is-invalid @enderror" id="provinsiUpdate" name="id_provinsi">
+                                <select class="form-control select2 @error('provinsi') is-invalid @enderror" id="provinsiUpdate" name="id_provinsi">
                                     <option value="
                                     @if ($a->province !="")
                                         {{ $a->province->id }}
@@ -274,7 +268,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="kabupaten">Kota/Kabupaten<span style="color:red">*</span></label>
-                                <select id="kabupatenUpdate" name="id_kota" class="select2 form-control js-example-basic-single-Update @error('kota') is-invalid @enderror">
+                                <select id="kabupatenUpdate" name="id_kota" class="select2 form-control @error('kota') is-invalid @enderror">
                                     <option value="
                                  @if ($a->regency != "")
                                     {{ $a->regency->id }}
@@ -497,7 +491,15 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
-    $(function() {
+    $(document).ready(function() {
+        // Initialize Select2
+        $('.select2').select2({
+            placeholder: 'Pilih opsi',
+            allowClear: false,
+            width: '100%',
+            minimumResultsForSearch: 5
+        });
+
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

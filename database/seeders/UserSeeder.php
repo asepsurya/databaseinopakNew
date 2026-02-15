@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
             'name' => 'INOPAK INSTITUTE',
             'email' => 'admin.inopak@gmail.com',
             'password' => bcrypt('tasik2026'),
+            'is_admin' => true,
         ]);
     }
 }

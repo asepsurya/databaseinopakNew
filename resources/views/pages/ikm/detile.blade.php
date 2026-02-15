@@ -261,6 +261,17 @@
     text-align: center;
     color: #999;
 }
+/* Desktop default */
+.myth-th {
+    width: 200px;
+}
+
+/* Mobile */
+@media (max-width: 767.98px) {
+    .myth-th {
+        width: 30%;
+    }
+}
 
 </style>
 @if($Ikm->first())
@@ -524,7 +535,7 @@
                                         <table class="table table-bordered table-responsive" >
                                             <thead>
                                                 <tr>
-                                                    <th style="width:200px;">Produk</th>
+                                                    <th  class="myth-th">Produk</th>
                                                     <th>Keterangan</th>
                                                 </tr>
                                             </thead>

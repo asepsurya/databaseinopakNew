@@ -58,7 +58,7 @@ class SettingsSeeder extends Seeder
         $appSettings = [
             [
                 'key' => 'registration_enabled',
-                'value' => 'true',
+                'value' => 'false',
                 'type' => 'boolean',
                 'description' => 'Enable or disable user registration',
             ],

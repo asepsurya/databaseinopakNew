@@ -30,6 +30,26 @@
 </head>
 
 <body>
+    <style>
+        .auth-form-column {
+            max-width: 480px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 576px) {
+            .auth-form-column {
+                max-width: 100%;
+                padding: 0 15px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .auth-form-column {
+                max-width: 520px;
+            }
+        }
+    </style>
     <!-- Background -->
     <div class="position-absolute top-0 end-0">
         <img src="{{ asset('assets/images/auth-card-bg.svg') }}" class="auth-card-bg-img" alt="auth-card-bg" />
@@ -37,11 +57,12 @@
     <div class="position-absolute bottom-0 start-0" style="transform: rotate(180deg)">
         <img src="{{ asset('assets/images/auth-card-bg.svg') }}" class="auth-card-bg-img" alt="auth-card-bg" />
     </div>
-
+<div class="d-flex justify-content-center">
+    <div class="w-100" style="max-width:1200px;">
     <div class="auth-box overflow-hidden align-items-center d-flex">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-xxl-5 col-md-8">
+                <div class="auth-form-column col-xxl-5 col-md-8">
                     <div class="card p-4">
                         <div class="auth-brand text-center mb-4">
                             @php $loginLogo = $logos['login'] ?? null; @endphp
@@ -87,14 +108,15 @@
 
                         <!-- Footer -->
                         <div class="text-center mt-4">
-                            <p class="text-muted">{{ $copyrightText ?? date('Y') . ' © Database INOPAK' }}</p>
+                            <p class="text-muted">{{  date('Y') . ' © Database INOPAK' }}</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
+    </div>
+</div>
     <!-- Vendor js -->
     <script src="{{ asset('assets/js/vendors.min.js') }}"></script>
 

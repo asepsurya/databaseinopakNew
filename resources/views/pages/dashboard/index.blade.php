@@ -10,11 +10,25 @@
 
 @section('content')
 <style>
-    /* Fixed container styling */
-    .dashboard-container {
-        padding: 0 !important;
-    }
+  /* Global remove padding */
+.content-page,
+.container-fluid,
+.dashboard-container {
+    padding: 0 !important;
+}
 
+/* Footer tetap normal */
+.footer {
+    padding-left: 30px !important;
+     padding-right: 30px !important;
+}
+
+/* KECUALI FILTER */
+.content-page .filter,
+.container-fluid .filter,
+.dashboard-container .filter {
+    padding: 16px !important;
+}
     @media (max-width: 768px) {
         .dashboard-container {
             padding: 0 !important;
@@ -59,7 +73,7 @@
     </ul>
 
     <!-- Tab Content -->
-    <div class="tab-content  border border-top-0" id="myTabContent">
+    <div class="tab-content p-2 " id="myTabContent">
 
         <div class="tab-pane fade show active"
              id="home"

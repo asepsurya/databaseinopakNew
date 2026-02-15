@@ -15,6 +15,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DetileIkmController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\BackupController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,10 +69,12 @@ Route::delete('/project/hapus/{id}',[ProjectController::class,'hapus'])->middlew
 Route::get('/project/dataIkm/{project:id}',[IkmController::class,'view'])->middleware('auth')->name('Ikm.index');
 Route::get('/project/dataIkm/Ikm/{ikm}/edit',[IkmController::class,'edit'])->middleware('auth')->name('ikm.edit');
 Route::post('/project/dataIkm/Ikm/update',[IkmController::class,'UpdateIkm'])->middleware('auth')->name('ikm.update');
+Route::post('/project/dataIkm/Ikm/{id}/update',[DetileIkmController::class,'ubahFotoIkm'])->middleware('auth')->name('ikm.updatePhoto');
 Route::post('/project/dataIkm/createIkm',[IkmController::class,'createIkm'])->middleware('auth');
 Route::post('/project/dataIkm/tambahIkm',[IkmController::class,'tambahIkm'])->middleware('auth');
 
 Route::post('/project/dataIkm/{id}/delete',[IkmController::class,'deleteIkm'])->middleware('auth');
+Route::post('/project/dataIkm/ajax-delete',[IkmController::class,'ajaxDeleteIkm'])->middleware('auth')->name('ikm.ajaxDelete');
 Route::post('/getkabupatenUpdate',[IkmController::class,'getkabupaten'])->name('getkabupatenUpdate');
 Route::post('/getkecamatanUpdate',[IkmController::class,'getkecamatan'])->name('getkecamatanUpdate');
 Route::post('/getdesaUpdate',[IkmController::class,'getdesa'])->name('getdesaUpdate');
@@ -218,4 +221,35 @@ Route::prefix('settings')->middleware('auth')->group(function () {
     // Seed defaults (admin only)
     Route::post('/seed', [SettingsController::class, 'seedDefaults'])->name('settings.seed');
 
+});
+
+// Backup Routes
+Route::prefix('backup')->middleware(['auth', 'admin'])->group(function () {
+    // Main backup page
+    Route::get('/', [BackupController::class, 'index'])->name('backup.index');
+
+    // Settings API
+    Route::get('/settings', [BackupController::class, 'getSettings'])->name('backup.settings');
+    Route::put('/settings', [BackupController::class, 'updateSettings'])->name('backup.settings.update');
+    Route::post('/toggle-auto-backup', [BackupController::class, 'toggleAutoBackup'])->name('backup.toggle');
+
+    // Database tables
+    Route::get('/tables', [BackupController::class, 'getTables'])->name('backup.tables');
+    Route::post('/estimate', [BackupController::class, 'estimateBackup'])->name('backup.estimate');
+
+    // Backup operations
+    Route::post('/full', [BackupController::class, 'createFullBackup'])->name('backup.full');
+    Route::post('/per-table', [BackupController::class, 'createPerTableBackup'])->name('backup.per-table');
+    Route::post('/csv', [BackupController::class, 'createCsvBackup'])->name('backup.csv');
+
+    // Download & Delete
+    Route::get('/download/{id}', [BackupController::class, 'downloadBackup'])->name('backup.download');
+    Route::delete('/delete', [BackupController::class, 'deleteBackup'])->name('backup.delete');
+
+    // History & Status
+    Route::get('/history', [BackupController::class, 'getBackupHistory'])->name('backup.history');
+    Route::get('/status/{id}', [BackupController::class, 'getBackupStatus'])->name('backup.status');
+
+    // Cleanup
+    Route::post('/cleanup', [BackupController::class, 'cleanupOldBackups'])->name('backup.cleanup');
 });

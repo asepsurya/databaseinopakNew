@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Models\BackupSetting;
 
 class Kernel extends ConsoleKernel
 {
@@ -22,7 +23,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        // Schedule the backup command
+        // We'll run it every hour and let the command decide if it should run based on settings
+        $schedule->command('backup:run-scheduled')->hourly();
+
+        // Also run cleanup command daily at 3 AM
+        $schedule->command('backup:cleanup')->dailyAt('03:00');
     }
 
     /**

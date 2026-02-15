@@ -338,11 +338,11 @@
                                             <i class="ti ti-pencil"></i>
                                         </button>
                                     </form>
-                                    <form action="/project/dataIkm/{{ $project->id }}/delete" method="POST" class="d-inline">
+                                    <form action="/project/dataIkm/{{ $project->id }}/delete" method="POST" class="d-inline delete-form" data-ikm-name="{{ $data->nama }}">
                                         @csrf
                                         <input type="text" value="{{ $data->id }}" name="id_Ikm" hidden>
                                         <input type="text" value="{{ $project->id }}" name="id_Project" hidden>
-                                        <button type="submit" class="btn btn-sm btn-light btn-icon" title="Hapus" onclick="return confirm('Anda Yakin data ini akan dihapus?')">
+                                        <button type="button" class="btn btn-sm btn-light btn-icon delete-btn" title="Hapus" data-id="{{ $data->id }}" data-name="{{ $data->nama }}">
                                             <i class="ti ti-trash"></i>
                                         </button>
                                     </form>
@@ -393,6 +393,71 @@
 </div>
 
 
+</div>
+
+<!-- Modal Konfirmasi Hapus IKM -->
+<div class="modal fade" id="deleteIkmModal" tabindex="-1" aria-labelledby="deleteIkmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteIkmModalLabel">
+                    <i class="ti ti-alert-circle text-danger me-2"></i>Konfirmasi Penghapusan
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus data <strong id="deleteIkmName"></strong>?</p>
+                <div class="alert alert-warning">
+                    <i class="ti ti-info-circle me-2"></i>
+                    <strong>Peringatan:</strong> Data yang dihapus meliputi:
+                    <ul class="mb-0 mt-2">
+                        <li>Data utama IKM</li>
+                        <li>Data Benchmark Produk</li>
+                        <li>Data Desain Produk</li>
+                        <li>Data COTS dan dokumentasinya</li>
+                        <li>Semua file gambar terkait</li>
+                    </ul>
+                </div>
+                <p class="text-muted small mb-0">Tindakan ini tidak dapat dibatalkan.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                    <i class="ti ti-x me-1"></i>Batal
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="ti ti-trash me-1"></i>Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Success Notification Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+    <div id="successToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="ti ti-check-circle me-2"></i>
+                <span id="successMessage"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- Error Notification Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i class="ti ti-alert-circle me-2"></i>
+                <span id="errorMessage"></span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
 <!-- jQuery -->
 <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
@@ -405,6 +470,7 @@
 
 <script>
     $(document).ready(function () {
+        // Initialize DataTable
         $('#Ikm-table').DataTable({
             pageLength: 10,
             lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
@@ -426,6 +492,109 @@
                 }
             }
         });
+
+        // Delete button click handler
+        let currentDeleteBtn = null;
+        let currentForm = null;
+
+        $(document).on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            currentDeleteBtn = $(this);
+            currentForm = currentDeleteBtn.closest('.delete-form');
+
+            const ikmName = currentDeleteBtn.data('name');
+            const ikmId = currentDeleteBtn.data('id');
+
+            // Set the IKM name in the modal
+            $('#deleteIkmName').text(ikmName);
+
+            // Show the modal
+            $('#deleteIkmModal').modal('show');
+        });
+
+        // Confirm delete button handler
+        $('#confirmDeleteBtn').on('click', function() {
+            if (!currentForm) return;
+
+            const $btn = $(this);
+            const originalText = $btn.html();
+
+            // Show loading state
+            $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Menghapus...');
+
+            // Get form data
+            const formData = {
+                _token: currentForm.find('input[name="_token"]').val(),
+                id_Ikm: currentForm.find('input[name="id_Ikm"]').val(),
+                id_Project: currentForm.find('input[name="id_Project"]').val()
+            };
+
+            // Send AJAX request
+            $.ajax({
+                url: '{{ route("ikm.ajaxDelete") }}',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                success: function(response) {
+                    // Hide modal
+                    $('#deleteIkmModal').modal('hide');
+
+                    if (response.success) {
+                        // Show success toast
+                        $('#successMessage').text(response.message);
+                        $('#successToast').toast('show');
+
+                        // Reload page after short delay to show the updated data
+                        setTimeout(function() {
+                            window.location.href = response.redirect;
+                        }, 1500);
+                    } else {
+                        // Show error toast
+                        $('#errorMessage').text(response.message);
+                        $('#errorToast').toast('show');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Hide modal
+                    $('#deleteIkmModal').modal('hide');
+
+                    // Show error toast
+                    let errorMessage = 'Terjadi kesalahan saat menghapus data';
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.message) {
+                            errorMessage = response.message;
+                        }
+                    } catch(e) {}
+
+                    $('#errorMessage').text(errorMessage);
+                    $('#errorToast').toast('show');
+                },
+                complete: function() {
+                    // Reset button state
+                    $btn.prop('disabled', false).html(originalText);
+                    currentDeleteBtn = null;
+                    currentForm = null;
+                }
+            });
+        });
+
+        // Reset form when modal is closed
+        $('#deleteIkmModal').on('hidden.bs.modal', function() {
+            currentDeleteBtn = null;
+            currentForm = null;
+        });
+
+        // Check for flash messages and show toasts
+        @if(Session::has('HapusBerhasil'))
+            $('#successMessage').text('{{ Session::get("HapusBerhasil") }}');
+            $('#successToast').toast('show');
+        @endif
+
+        @if(Session::has('HapusGagal'))
+            $('#errorMessage').text('{{ Session::get("HapusGagal") }}');
+            $('#errorToast').toast('show');
+        @endif
     });
 </script>
 @endpush

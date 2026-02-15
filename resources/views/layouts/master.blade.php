@@ -38,6 +38,19 @@
 
     <!-- Toastr Custom Styles -->
     <style>
+        .mobile-menu {
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] .mobile-menu {
+            background-color: #1e1f27;
+        }
+
+        .card-header {
+            background-color: transparent !important;
+        }
+        .dataTable  .thead-sm th {
+            background-color: transparent !important;
+        }
         @media (max-width: 576px) {
             .Ikm-counter {
                display: none !important;
@@ -594,12 +607,13 @@
                             <i class="ti ti-settings topbar-link-icon"></i>
                         </button>
                     </div> --}}
-
-                    <div class="topbar-item d-none d-sm-flex">
-                        <a class="topbar-link " type="button" href="/settings">
-                            <i class="ti ti-settings topbar-link-icon"></i>
-                        </a>
-                    </div>
+                     @if(Auth::check() && Auth::user()->isAdmin())
+                        <div class="topbar-item d-none d-sm-flex">
+                            <a class="topbar-link " type="button" href="/settings">
+                                <i class="ti ti-settings topbar-link-icon"></i>
+                            </a>
+                        </div>
+                    @endif
 
                     <!-- User Profile -->
                     <div class="topbar-item nav-user">
@@ -1068,6 +1082,17 @@
                             <span class="menu-text">Project</span>
                         </a>
                     </li>
+
+                    @if(Auth::check() && Auth::user()->isAdmin())
+                    <li class="side-nav-item">
+                        <a href="/backup" class="side-nav-link">
+                            <span class="menu-icon"><i class="ti ti-database"></i></span>
+                            <span class="menu-text">Backup Database</span>
+                        </a>
+                    </li>
+                    @endif
+
+
                     <li class="side-nav-item">
                         <a href="https://tidessa.inopakinstitute.or.id/login" class="side-nav-link" target="_Blank">
                             <span class="menu-icon"><i class="ti ti-folders"></i></span>
@@ -1108,7 +1133,13 @@
 
         </div>
         <!-- Sidenav Menu End -->
-
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('sidebarToggleBtn')?.addEventListener('click', function () {
+        document.body.classList.toggle('sidebar-collapsed');
+    });
+});
+</script>
         <!-- ============================================================== -->
         <!-- Start Main Content -->
         <!-- ============================================================== -->
@@ -1139,7 +1170,7 @@
                 </div>
             </footer>
             <!-- end Footer -->
-            <div class="d-lg-none fixed-bottom bg-white border-top shadow-sm">
+            <div class="d-lg-none fixed-bottom  border-top shadow-sm mobile-menu">
                 <div class="container">
                     <div class="row text-center">
 
@@ -1196,45 +1227,56 @@
     <script src="{{ asset('assets/js/app.js') }}"></script>
 
     <!-- Customizer Settings -->
-    <script>
-    // Sidebar Show/Hide Toggle
-    const sidebarShowHideBtn = document.getElementById('sidebarShowHideBtn');
-    const sidebarShowHide = document.getElementById('sidebar-showhide');
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
     const sidenavMenu = document.getElementById('sidenavMenu');
+    const sidebarShowHideBtn = document.getElementById('sidebarShowHideBtn');
     const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    const sidebarShowHideCheckbox = document.getElementById('sidebarShowHide');
 
-    if (sidebarShowHideBtn && sidebarShowHide && sidenavMenu) {
-        // Toggle from button
-        sidebarShowHideBtn.addEventListener('click', function() {
-            sidenavMenu.classList.toggle('d-none');
-            localStorage.setItem('sidebarHidden', sidenavMenu.classList.contains('d-none'));
-        });
+    if (!sidenavMenu) return;
 
-        // Toggle from settings
-        const sidebarShowHideCheckbox = document.getElementById('sidebarShowHide');
-        if (sidebarShowHideCheckbox) {
-            sidebarShowHideCheckbox.addEventListener('change', function() {
-                sidenavMenu.classList.toggle('d-none', !this.checked);
-                localStorage.setItem('sidebarHidden', sidenavMenu.classList.contains('d-none'));
-            });
-        }
+    /* ===============================
+       Helper Functions
+    =============================== */
+    function hideSidebar() {
 
-        // Load saved state
-        const sidebarHidden = localStorage.getItem('sidebarHidden') === 'true';
-        if (sidebarHidden) {
-            sidenavMenu.classList.add('d-none');
-            if (sidebarShowHideCheckbox) sidebarShowHideCheckbox.checked = false;
-        }
+        localStorage.setItem('sidebarHidden', 'true');
+        if (sidebarShowHideCheckbox) sidebarShowHideCheckbox.checked = false;
     }
 
-    // Mobile Sidebar Toggle Button functionality
-    if (sidebarToggleBtn && sidenavMenu) {
-        sidebarToggleBtn.addEventListener('click', function() {
-            sidenavMenu.classList.toggle('d-none');
-            localStorage.setItem('sidebarHidden', sidenavMenu.classList.contains('d-none'));
-        });
+    function showSidebar() {
+        sidenavMenu.classList.remove('d-none');
+        localStorage.setItem('sidebarHidden', 'false');
+        if (sidebarShowHideCheckbox) sidebarShowHideCheckbox.checked = true;
     }
 
+    function toggleSidebar() {
+        const isHidden = sidenavMenu.classList.contains('d-none');
+        isHidden ? showSidebar() : hideSidebar();
+    }
+
+    /* ===============================
+       Load Saved State (IMPORTANT)
+    =============================== */
+    const sidebarHidden = localStorage.getItem('sidebarHidden') === 'true';
+    sidebarHidden ? hideSidebar() : showSidebar();
+
+    /* ===============================
+       Event Bindings
+    =============================== */
+    sidebarShowHideBtn?.addEventListener('click', toggleSidebar);
+    sidebarToggleBtn?.addEventListener('click', toggleSidebar);
+
+    sidebarShowHideCheckbox?.addEventListener('change', function () {
+        this.checked ? showSidebar() : hideSidebar();
+    });
+
+});
+</script>
+<script>
     // Theme toggle functionality
     document.querySelectorAll('[data-thememode="dropdown"] label').forEach(function(label) {
         label.addEventListener('click', function() {
@@ -1942,6 +1984,7 @@ typeEffect();
     <!-- FsLightbox JS -->
     <script src="{{ asset('assets/js/image-gallery.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/fslightbox@3.4.2/index.min.js"></script>
+    <script src="{{ asset('assets/js/fslightbox-zoom.js') }}"></script>
 
     @stack('scripts')
 </body>

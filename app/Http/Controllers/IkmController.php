@@ -9,7 +9,15 @@ use App\Models\Project;
 use App\Models\Province;
 use App\Models\Regency;
 use App\Models\Village;
+use App\Models\BencmarkProduk;
+use App\Models\ProdukDesign;
+use App\Models\Cots;
+use App\Models\DokumentasiCots;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use App\Helpers\ThumbnailHelper;
 
 class IkmController extends Controller
 {
@@ -145,10 +153,187 @@ class IkmController extends Controller
 
             ]);
         }
-    public function deleteIkm(request $request){
-        Ikm::destroy($request->id_Ikm);
-        $request->session()->flash('HapusBerhasil', 'Data Berhasil dihapus');
-        return redirect('/project/dataikm/'.$request->id_Project);
+    public function deleteIkm(Request $request){
+        // Validate the request
+        $validated = $request->validate([
+            'id_Ikm' => 'required|integer|exists:ikms,id',
+            'id_Project' => 'required|integer|exists:projects,id',
+        ]);
+
+        $ikmId = $validated['id_Ikm'];
+        $projectId = $validated['id_Project'];
+
+        try {
+            DB::beginTransaction();
+
+            // Get the Ikm record first
+            $ikm = Ikm::findOrFail($ikmId);
+
+            // Delete related records first (to handle foreign key constraints)
+            // Delete Bencmark Produk
+            $bencmarks = BencmarkProduk::where('id_Ikm', $ikmId)->get();
+            foreach ($bencmarks as $bencmark) {
+                // Delete images if exists
+                if ($bencmark->gambar) {
+                    self::deleteImageFile($bencmark->gambar);
+                }
+                $bencmark->delete();
+            }
+
+            // Delete Produk Design
+            $designs = ProdukDesign::where('id_Ikm', $ikmId)->get();
+            foreach ($designs as $design) {
+                // Delete images if exists
+                if ($design->gambar) {
+                    self::deleteImageFile($design->gambar);
+                }
+                $design->delete();
+            }
+
+            // Delete Cots and their Dokumentasi
+            $cots = Cots::where('id_Ikm', $ikmId)->get();
+            foreach ($cots as $cot) {
+                // Delete dokumentasi related to this cots
+                $dokumentasis = DokumentasiCots::where('id_Ikm', $cot->id)->get();
+                foreach ($dokumentasis as $doc) {
+                    if ($doc->gambar) {
+                        self::deleteImageFile($doc->gambar);
+                    }
+                    $doc->delete();
+                }
+                // Delete cots image if exists
+                if ($cot->gambar) {
+                    self::deleteImageFile($cot->gambar);
+                }
+                $cot->delete();
+            }
+
+            // Delete main Ikm image if exists
+            if ($ikm->gambar) {
+                self::deleteImageFile($ikm->gambar);
+            }
+
+            // Delete the Ikm record
+            $ikm->delete();
+
+            DB::commit();
+
+            // Flash success message
+            $request->session()->flash('HapusBerhasil', 'Data IKM berhasil dihapus beserta semua file terkait.');
+            return redirect('/project/dataIkm/' . $projectId);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error deleting IKM: ' . $e->getMessage());
+            $request->session()->flash('HapusGagal', 'Gagal menghapus data IKM: ' . $e->getMessage());
+            return redirect('/project/dataIkm/' . $projectId)->withErrors(['error' => 'Gagal menghapus data IKM']);
+        }
+    }
+
+    /**
+     * AJAX delete Ikm - handles deletion via AJAX request
+     */
+    public function ajaxDeleteIkm(Request $request)
+    {
+        // Validate the request
+        $validated = $request->validate([
+            'id_Ikm' => 'required|integer|exists:ikms,id',
+            'id_Project' => 'required|integer|exists:projects,id',
+        ]);
+
+        $ikmId = $validated['id_Ikm'];
+        $projectId = $validated['id_Project'];
+
+        try {
+            DB::beginTransaction();
+
+            // Get the Ikm record first
+            $ikm = Ikm::findOrFail($ikmId);
+
+            // Delete related records first (to handle foreign key constraints)
+            // Delete Bencmark Produk
+            $bencmarks = BencmarkProduk::where('id_Ikm', $ikmId)->get();
+            foreach ($bencmarks as $bencmark) {
+                if ($bencmark->gambar) {
+                    self::deleteImageFile($bencmark->gambar);
+                }
+                $bencmark->delete();
+            }
+
+            // Delete Produk Design
+            $designs = ProdukDesign::where('id_Ikm', $ikmId)->get();
+            foreach ($designs as $design) {
+                if ($design->gambar) {
+                    self::deleteImageFile($design->gambar);
+                }
+                $design->delete();
+            }
+
+            // Delete Cots and their Dokumentasi
+            $cots = Cots::where('id_Ikm', $ikmId)->get();
+            foreach ($cots as $cot) {
+                $dokumentasis = DokumentasiCots::where('id_Ikm', $cot->id)->get();
+                foreach ($dokumentasis as $doc) {
+                    if ($doc->gambar) {
+                        self::deleteImageFile($doc->gambar);
+                    }
+                    $doc->delete();
+                }
+                if ($cot->gambar) {
+                    self::deleteImageFile($cot->gambar);
+                }
+                $cot->delete();
+            }
+
+            // Delete main Ikm image if exists
+            if ($ikm->gambar) {
+                self::deleteImageFile($ikm->gambar);
+            }
+
+            // Delete the Ikm record
+            $ikm->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data IKM berhasil dihapus beserta semua file terkait.',
+                'redirect' => '/project/dataIkm/' . $projectId
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error deleting IKM via AJAX: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data IKM: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Helper function to delete image files from storage
+     */
+    private static function deleteImageFile(string $imagePath): bool
+    {
+        try {
+            // Delete thumbnails first
+            if (class_exists('App\Helpers\ThumbnailHelper')) {
+                \App\Helpers\ThumbnailHelper::deleteThumbnails($imagePath);
+            }
+
+            // Delete the original file
+            $fullPath = storage_path('app/public/' . $imagePath);
+            if (file_exists($fullPath)) {
+                return unlink($fullPath);
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            Log::error('Error deleting image file: ' . $e->getMessage());
+            return false;
+        }
     }
 
     public function getkabupaten(request $request){

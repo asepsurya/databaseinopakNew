@@ -171,7 +171,7 @@ class DetileIkmController extends Controller
         $validated = $request->validate([
             'id_Ikm' => 'required|string',
             'id_projek' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'croppedImage' => 'nullable|string',
             'oldImage' => 'nullable|string',
         ]);
@@ -216,7 +216,10 @@ class DetileIkmController extends Controller
         }
 
         $request->session()->flash('UpdateBerhasil', 'Photo Berhasil Diubah');
-        return redirect('/project/dataIkm/'.$validated['id_projek']);
+        return redirect()->route('detail.encrypted', [
+            'encrypted_id' => encryptId($validated['id_Ikm']),
+            'encrypted_project' => encryptId($validated['id_projek'])
+        ]);
     }
     /**
      * Auto-save brainstorming data via AJAX
