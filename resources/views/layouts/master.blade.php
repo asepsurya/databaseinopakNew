@@ -444,6 +444,9 @@
             #sidebarToggleBtn{
                 display: none !important;
             }
+            .sidenav-menu{
+                display: none !important;
+            }
         }
     </style>
 
@@ -496,9 +499,9 @@
                     </div>
 
                     <!-- Sidebar Toggle Button -->
-                    <button class="sidenav-toggle-button btn btn-primary btn-icon" id="sidebarToggleBtn">
+                    {{-- <button class="sidenav-toggle-button btn btn-primary btn-icon" id="sidebarToggleBtn">
                         <i class="ti ti-menu-4"></i>
-                    </button>
+                    </button> --}}
                
                     {{-- <span id="sidebarToggleBtn"></span> --}}
                     <!-- Search Box -->
