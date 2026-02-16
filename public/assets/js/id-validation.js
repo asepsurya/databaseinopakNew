@@ -1,249 +1,126 @@
 /**
- * Indonesian Form Validation Messages
- * Mengubah semua pesan validasi HTML5 menjadi bahasa Indonesia
+ * Indonesian HTML5 Form Validation
+ * Clean & Safe Version
  */
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Indonesian validation messages
-    const validationMessages = {
+document.addEventListener('DOMContentLoaded', function () {
+
+    const messages = {
         valueMissing: 'Bidang ini wajib diisi',
-        typeMismatch: {
-            email: 'Masukkan alamat email yang valid',
-            url: 'Masukkan URL yang valid'
-        },
-        patternMismatch: 'Format tidak sesuai',
+        email: 'Masukkan alamat email yang valid',
+        url: 'Masukkan URL yang valid',
+        pattern: 'Format tidak sesuai',
         tooLong: 'Nilai terlalu panjang',
-        tooShort: {
-            default: 'Nilai terlalu pendek',
-            // Will be dynamically set based on minlength attribute
-        },
-        rangeUnderflow: 'Nilai terlalu kecil',
-        rangeOverflow: 'Nilai terlalu besar',
-        stepMismatch: 'Nilai tidak valid'
+        tooShort: min => `Minimal ${min} karakter`,
+        rangeMin: min => `Nilai minimal adalah ${min}`,
+        rangeMax: max => `Nilai maksimal adalah ${max}`,
+        step: 'Nilai tidak valid'
     };
 
-    /**
-     * Get validation message based on input type and validity
-     */
-    function getValidationMessage(input, validity) {
-        const type = input.type || input.tagName.toLowerCase();
-
-        if (validity.valueMissing) {
-            return validationMessages.valueMissing;
-        }
-
-        if (validity.typeMismatch) {
-            if (type === 'email') {
-                return validationMessages.typeMismatch.email;
-            }
-            if (type === 'url') {
-                return validationMessages.typeMismatch.url;
-            }
-            return 'Format tidak valid';
-        }
-
-        if (validity.patternMismatch) {
-            return validationMessages.patternMismatch;
-        }
-
-        if (validity.tooLong) {
-            return validationMessages.tooLong;
-        }
-
-        if (validity.tooShort) {
-            const minLength = input.getAttribute('minlength');
-            if (minLength) {
-                return `Minimal ${minLength} karakter`;
-            }
-            return validationMessages.tooShort.default;
-        }
-
-        if (validity.rangeUnderflow) {
-            const min = input.getAttribute('min');
-            if (min) {
-                return `Nilai minimal adalah ${min}`;
-            }
-            return validationMessages.rangeUnderflow;
-        }
-
-        if (validity.rangeOverflow) {
-            const max = input.getAttribute('max');
-            if (max) {
-                return `Nilai maksimal adalah ${max}`;
-            }
-            return validationMessages.rangeOverflow;
-        }
-
-        if (validity.stepMismatch) {
-            return validationMessages.stepMismatch;
-        }
-
-        return 'Data tidak valid';
-    }
-
-    /**
-     * Set custom validation message for an input
-     */
     function setValidationMessage(input) {
-        // Skip if novalidate is set on form
-        const form = input.form;
-        if (form && form.getAttribute('novalidate') !== null) {
+        if (!input || input.validity.valid) {
+            input.setCustomValidity('');
             return;
         }
 
-        // Skip password fields for type-specific validation
-        const type = input.type || '';
+        const v = input.validity;
 
-        if (!input.validity.valid) {
-            // For missing value, use the appropriate message
-            if (input.validity.valueMissing) {
-                input.setCustomValidity(validationMessages.valueMissing);
-            } else if (input.validity.typeMismatch) {
-                if (type === 'email') {
-                    input.setCustomValidity(validationMessages.typeMismatch.email);
-                } else if (type === 'url') {
-                    input.setCustomValidity(validationMessages.typeMismatch.url);
-                } else {
-                    input.setCustomValidity('Format tidak valid');
-                }
-            } else if (input.validity.patternMismatch) {
-                input.setCustomValidity(validationMessages.patternMismatch);
-            } else if (input.validity.tooLong) {
-                input.setCustomValidity(validationMessages.tooLong);
-            } else if (input.validity.tooShort) {
-                const minLength = input.getAttribute('minlength');
-                if (minLength) {
-                    input.setCustomValidity(`Minimal ${minLength} karakter`);
-                } else {
-                    input.setCustomValidity(validationMessages.tooShort.default);
-                }
-            } else if (input.validity.rangeUnderflow) {
-                const min = input.getAttribute('min');
-                if (min) {
-                    input.setCustomValidity(`Nilai minimal adalah ${min}`);
-                } else {
-                    input.setCustomValidity(validationMessages.rangeUnderflow);
-                }
-            } else if (input.validity.rangeOverflow) {
-                const max = input.getAttribute('max');
-                if (max) {
-                    input.setCustomValidity(`Nilai maksimal adalah ${max}`);
-                } else {
-                    input.setCustomValidity(validationMessages.rangeOverflow);
-                }
-            } else if (input.validity.stepMismatch) {
-                input.setCustomValidity(validationMessages.stepMismatch);
-            } else {
-                // For other types (password, text, etc.), if not valid but no specific error, clear message
-                input.setCustomValidity('');
-            }
+        if (v.valueMissing) {
+            input.setCustomValidity(messages.valueMissing);
+        } else if (v.typeMismatch) {
+            input.setCustomValidity(
+                input.type === 'email' ? messages.email :
+                input.type === 'url' ? messages.url :
+                'Format tidak valid'
+            );
+        } else if (v.patternMismatch) {
+            input.setCustomValidity(messages.pattern);
+        } else if (v.tooLong) {
+            input.setCustomValidity(messages.tooLong);
+        } else if (v.tooShort) {
+            const min = input.getAttribute('minlength');
+            input.setCustomValidity(min ? messages.tooShort(min) : messages.tooLong);
+        } else if (v.rangeUnderflow) {
+            const min = input.getAttribute('min');
+            input.setCustomValidity(min ? messages.rangeMin(min) : '');
+        } else if (v.rangeOverflow) {
+            const max = input.getAttribute('max');
+            input.setCustomValidity(max ? messages.rangeMax(max) : '');
+        } else if (v.stepMismatch) {
+            input.setCustomValidity(messages.step);
         } else {
             input.setCustomValidity('');
         }
     }
 
-    /**
-     * Initialize validation for all forms
-     */
     function initFormValidation() {
-        // Skip certain forms that use server-side validation
+
         const skipForms = ['registerForm', 'loginForm', 'password-form'];
 
-        // Select all inputs with validation attributes - be more specific
-        // Exclude password type inputs as they often cause validation issues
-        const inputs = document.querySelectorAll(
-            'input[required]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
-            'input[min]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
-            'input[max]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
-            'input[minlength]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
-            'input[maxlength]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
-            'input[pattern]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
-            'input[type="email"][required]:not([type="hidden"]), ' +
-            'input[type="url"][required]:not([type="hidden"]), ' +
-            'select[required], ' +
-            'textarea[required], ' +
-            'textarea[minlength], ' +
-            'textarea[maxlength]'
-        );
+        const inputs = document.querySelectorAll(`
+            input[required]:not([type="hidden"]):not([type="password"]),
+            input[min]:not([type="hidden"]):not([type="password"]),
+            input[max]:not([type="hidden"]):not([type="password"]),
+            input[minlength]:not([type="hidden"]):not([type="password"]),
+            input[maxlength]:not([type="hidden"]):not([type="password"]),
+            input[pattern]:not([type="hidden"]):not([type="password"]),
+            select[required],
+            textarea[required],
+            textarea[minlength],
+            textarea[maxlength]
+        `);
 
         inputs.forEach(input => {
-            // Track if input has been touched
             let touched = false;
 
-            // Mark as touched on blur
-            input.addEventListener('blur', function() {
-                touched = true;
+            input.addEventListener('blur', () => touched = true);
+
+            input.addEventListener('input', function () {
+                if (touched) setValidationMessage(this);
             });
 
-            // Only validate on input if already touched
-            input.addEventListener('input', function() {
-                if (touched) {
-                    setValidationMessage(this);
-                }
-            });
-
-            // Handle invalid event - this is when browser detects an error
-            input.addEventListener('invalid', function(e) {
-                // Prevent default browser message
+            input.addEventListener('invalid', function (e) {
                 e.preventDefault();
-                // Set the custom validation message
-                // Note: We don't call reportValidity() here as it can cause infinite recursion
                 setValidationMessage(this);
             });
         });
 
-        // Also handle form submission
         document.querySelectorAll('form').forEach(form => {
-            // Skip forms with novalidate (they use server-side validation)
-            if (form.getAttribute('novalidate') !== null) {
-                return;
-            }
 
-            form.addEventListener('submit', function(e) {
+            if (
+                form.hasAttribute('novalidate') ||
+                skipForms.includes(form.id)
+            ) return;
+
+            form.addEventListener('submit', function (e) {
                 if (!this.checkValidity()) {
                     e.preventDefault();
-                    e.stopPropagation();
 
-                    // Find first invalid input in THIS form only
-                    const firstInvalid = this.querySelector('input:invalid, select:invalid, textarea:invalid');
+                    const firstInvalid = this.querySelector(':invalid');
                     if (firstInvalid) {
                         firstInvalid.focus();
                         setValidationMessage(firstInvalid);
                     }
                 }
+
                 this.classList.add('was-validated');
-            }, false);
+            });
         });
     }
 
-    // Run initialization
     initFormValidation();
 });
 
-/**
- * Additional helper functions for common validations
- */
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-
-function validatePhone(phone) {
-    const re = /^(\+62|62|0)[0-9]{9,12}$/;
-    return re.test(phone.replace(/\s/g, ''));
-}
+/* Helper utilities */
 
 function showValidationError(inputId, message) {
     const input = document.getElementById(inputId);
-    if (input) {
-        input.setCustomValidity(message);
-        input.reportValidity();
-    }
+    if (!input) return;
+    input.setCustomValidity(message);
+    input.reportValidity();
 }
 
 function clearValidationError(inputId) {
     const input = document.getElementById(inputId);
-    if (input) {
-        input.setCustomValidity('');
-    }
+    if (input) input.setCustomValidity('');
 }
