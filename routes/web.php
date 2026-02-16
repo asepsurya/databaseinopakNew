@@ -28,9 +28,9 @@ use App\Http\Controllers\BackupController;
 |
 */
 
-Route::get('/', function () {
-    return redirect('/login');
-    });
+// Route::get('/', function () {
+//     return redirect('/login');
+//     });
  Route::get('/imagesearch', [SettingsController::class, 'searchImage']);
 
 Route::resource('/register', RegisterController::class);
@@ -39,7 +39,7 @@ Route::post('/getkabupaten',[RegisterController::class,'getkabupaten'])->name('g
 Route::post('/getkecamatan',[RegisterController::class,'getkecamatan'])->name('getkecamatan');
 Route::post('/getdesa',[RegisterController::class,'getdesa'])->name('getdesa');
 //login
-Route::get('/login',[LoginController::class,'index'])->name('login')->middleware('guest');
+Route::get('/',[LoginController::class,'index'])->name('login')->middleware('guest');
 Route::post('/logout',[LoginController::class,'logout']);
 Route::post('/login',[LoginController::class,'login'])->middleware('guest')->name('login.process');
 Route::get('/dashboard',[DashboardController::class,'index'])->middleware('auth')->name('dashboard');
