@@ -441,12 +441,16 @@
             color: #adb5bd;
         }
          @media (max-width: 768px) {
-            #sidebarToggleBtn{
+            #sidebarToggleBtn,.sidenav-menu{
                 display: none !important;
             }
-            .sidenav-menu{
-                display: none !important;
+            .page-wrapper,
+            .page-body,
+            .content-page,.app-topbar {
+                margin-left: 0 !important;
+                padding-left: 0 !important;
             }
+                    
         }
     </style>
 
