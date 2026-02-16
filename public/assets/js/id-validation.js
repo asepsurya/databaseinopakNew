@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         inputs.forEach(input => {
             let touched = false;
-
+            let isHandlingInvalid = false;
             input.addEventListener('blur', () => touched = true);
 
             input.addEventListener('input', function () {
@@ -80,8 +80,15 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             input.addEventListener('invalid', function (e) {
+                isHandlingInvalid = true;
                 e.preventDefault();
+
                 setValidationMessage(this);
+
+                // Lepas flag di tick berikutnya
+                setTimeout(() => {
+                    isHandlingInvalid = false;
+                }, 0);
             });
         });
 
@@ -117,7 +124,7 @@ function showValidationError(inputId, message) {
     const input = document.getElementById(inputId);
     if (!input) return;
     input.setCustomValidity(message);
-    input.reportValidity();
+
 }
 
 function clearValidationError(inputId) {
