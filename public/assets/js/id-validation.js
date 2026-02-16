@@ -146,6 +146,9 @@ document.addEventListener('DOMContentLoaded', function() {
      * Initialize validation for all forms
      */
     function initFormValidation() {
+        // Skip certain forms that use server-side validation
+        const skipForms = ['registerForm', 'loginForm', 'password-form'];
+
         // Select all inputs with validation attributes - be more specific
         const inputs = document.querySelectorAll(
             'input[required]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
@@ -190,6 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Also handle form submission
         document.querySelectorAll('form').forEach(form => {
+            // Skip forms with novalidate (they use server-side validation)
+            if (form.getAttribute('novalidate') !== null) {
+                return;
+            }
+
             form.addEventListener('submit', function(e) {
                 if (!this.checkValidity()) {
                     e.preventDefault();

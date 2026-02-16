@@ -11,7 +11,7 @@
     }
 }
 </style>
-<form action="{{ route('login.process') }}" method="POST" id="loginForm">
+<form action="{{ route('login.process') }}" method="POST" id="loginForm" >
     @csrf
     <div class="mb-3">
         <label for="userEmail" class="form-label">

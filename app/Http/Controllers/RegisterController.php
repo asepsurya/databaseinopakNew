@@ -68,7 +68,7 @@ class RegisterController extends Controller
 
         $validatedData = $request->validate([
             'nik'=>'required|min:16',
-            'nama'=>'required|max:255',
+            'name'=>'required|max:255',
             'telp'=>'required|unique:users',
             'komunitas'=>'',
             'gender'=>'required',
@@ -80,7 +80,7 @@ class RegisterController extends Controller
             'rt'=>'required',
             'rw'=>'required',
             'email'=>'required|email|unique:users',
-            'password'=>'required|same:confirmPassword|min:6',
+            'password'=>'required|same:confirmPassword',
         ]);
 
         // enkripsi password using bcrypt

@@ -242,7 +242,7 @@
     }
 </style>
 
-<form action="{{ route('register.store') }}" method="POST" class="register-form" id="registerForm">
+<form action="{{ route('register.store') }}" method="POST" class="register-form" id="registerForm" >
     @csrf
 
     <!-- Stepper -->
@@ -274,7 +274,7 @@
             <div class="col-md-6">
                 <div class="mb-1">
                     <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                    <input type="text" name="nama" class="form-control" required value="{{ old('nama') }}" placeholder="Masukkan nama lengkap">
+                    <input type="text" name="name" class="form-control" required value="{{ old('name') }}" placeholder="Masukkan nama lengkap">
                 </div>
             </div>
 
@@ -401,7 +401,7 @@
                 <div class="mb-1">
                     <label class="form-label">Password <span class="text-danger">*</span></label>
                     <div class="input-group">
-                        <input type="password" name="password" class="form-control" required minlength="6" id="passwordInput" placeholder="Min. 6 karakter">
+                        <input type="password" id="passwordInput" name="password" class="form-control" required minlength="6" placeholder="Min. 6 karakter">
                         <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('passwordInput', 'passwordEye')" tabindex="-1">
                             <i class="ti ti-eye" id="passwordEye"></i>
                         </button>
@@ -413,7 +413,7 @@
                 <div class="mb-1">
                     <label class="form-label">Konfirmasi Password <span class="text-danger">*</span></label>
                     <div class="input-group">
-                        <input type="password" name="confirmPassword" class="form-control" required id="confirmPasswordInput" placeholder="Masukkan password lagi">
+                        <input type="password" id="confirmPasswordInput" name="confirmPassword" class="form-control" required  placeholder="Masukkan password lagi">
                         <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirmPasswordInput', 'confirmPasswordEye')" tabindex="-1">
                             <i class="ti ti-eye" id="confirmPasswordEye"></i>
                         </button>

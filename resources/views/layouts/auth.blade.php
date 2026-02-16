@@ -11,8 +11,12 @@
     <title>@yield('title', 'Authentication') | {{ $appName ?? 'Database INOPAK' }}</title>
 
     <!-- App favicon - Dynamic from settings -->
-    @php $faviconLogo = $logos['favicon'] ?? null; @endphp
-    <link rel="shortcut icon" href="{{ $faviconLogo && $faviconLogo->is_active ? $faviconLogo->getUrl() : asset('assets/images/favicon.ico') }}" />
+      @php $faviconLogo = $logos['favicon'] ?? null; @endphp
+    @if($faviconLogo && $faviconLogo->is_active && $faviconLogo->image_url)
+        <link rel="shortcut icon" href="{{ asset($faviconLogo->image_url) }}" />
+    @else
+        <link rel="shortcut icon" href="{{ asset('assets/images/inopak/logo.png') }}" />
+    @endif
       <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <!-- Theme Config Js -->
     <script src="{{ asset('assets/js/config.js') }}"></script>
