@@ -11,6 +11,9 @@
 
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
     <script src="{{ asset('assets/js/config.js') }}"></script>
+
+    <!-- Indonesian Validation Messages -->
+    <script src="{{ asset('assets/js/id-validation.js') }}"></script>
     <link href="{{ asset('assets/css/vendors.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
 

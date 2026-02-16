@@ -17,6 +17,9 @@
     <!-- Theme Config Js -->
     <script src="{{ asset('assets/js/config.js') }}"></script>
 
+    <!-- Indonesian Validation Messages -->
+    <script src="{{ asset('assets/js/id-validation.js') }}"></script>
+
     <!-- Vendor css -->
     <link href="{{ asset('assets/css/vendors.min.css') }}" rel="stylesheet" type="text/css" />
 
@@ -70,7 +73,7 @@
                                 @if($loginLogo && $loginLogo->is_active && $loginLogo->image_url)
                                     <img src="{{ $loginLogo->getUrl() }}" alt="logo" style="{{ $loginLogo->width ? 'width:'.$loginLogo->width.'px;' : '' }}{{ $loginLogo->height ? 'height:'.$loginLogo->height.'px;' : '' }}{{ $loginLogo->getStyles() }}" />
                                 @else
-                                    <img src="{{ asset('assets/images/inopak/fav.png') }}" alt="dark logo" style="width: 60px; height: auto;" />
+                                    <img src="{{ asset('assets/images/inopak/logo.png') }}" alt="dark logo" style="width: 60px; height: auto;" />
                                 @endif
                             </a>
                             <h4 class="fw-bold text-dark mt-3">{{ $appName ?? 'Database INOPAK' }}</h4>

@@ -1,9 +1,8 @@
 @extends('layouts.master')
 
 @section('title', 'Detail Ikm - ' . ($Ikm->first()->nama ?? 'N/A'))
-
-
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 .design-gallery{
     padding: 0%;
@@ -274,6 +273,16 @@
 }
 
 </style>
+@if ($errors->any())
+<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Validasi Gagal',
+    html: `{!! implode('<br>', $errors->all()) !!}`,
+    confirmButtonText: 'OK'
+});
+</script>
+@endif
 @if($Ikm->first())
 <div class="row">
     <div class="col-xxl-12">

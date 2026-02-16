@@ -21,6 +21,9 @@
     <!-- Theme Config Js -->
     <script src="{{ asset('assets/js/config.js') }}"></script>
 
+    <!-- Indonesian Validation Messages -->
+    <script src="{{ asset('assets/js/id-validation.js') }}"></script>
+
     <!-- Vendor css -->
     <link href="{{ asset('assets/css/vendors.min.css') }}" rel="stylesheet" type="text/css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -496,10 +499,11 @@
                     </div>
 
                     <!-- Sidebar Toggle Button -->
-                    <button class="sidenav-toggle-button btn btn-primary btn-icon" id="sidebarToggleBtn">
+                    {{-- <button class="sidenav-toggle-button btn btn-primary btn-icon" id="sidebarToggleBtn">
                         <i class="ti ti-menu-4"></i>
-                    </button>
-
+                    </button> --}}
+                    <span id="sidebarToggleBtn"></span>
+                    {{-- <span id="sidebarToggleBtn"></span> --}}
                     <!-- Search Box -->
                     <div id="search-box" class="app-search d-none d-xl-flex position-relative">
                         <input type="search" class="form-control rounded-pill topbar-search" name="search" placeholder="Search..." id="topSearch" autocomplete="off" />
