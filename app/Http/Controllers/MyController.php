@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Enums\NotificationType;
 use App\Http\Controllers\Controller;
+use App\Traits\CreatesNotifications;
 use App\Models\District;
 use App\Models\Ikm;
 use App\Models\Province;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 
 class MyController extends Controller
 {
+     use CreatesNotifications;
     // Ollama Proxy - Forward requests to myollama.scrollwebid.com
     // Maps /api/generate to /api/tags
     public function ollamaProxy(Request $request, $endpoint)
@@ -103,7 +105,6 @@ class MyController extends Controller
 
     public function updatePassword(Request $request)
     {
-
         $user = auth()->user();
         $id_user = $request->input('id_user');
         $validator = Validator::make($request->all(), [
@@ -117,6 +118,14 @@ class MyController extends Controller
         ]);
 
         if ($validator->fails()) {
+            // Check if AJAX request
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors(),
+                    'message' => 'Validasi gagal.'
+                ], 422);
+            }
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
@@ -125,6 +134,13 @@ class MyController extends Controller
 
         // Check current password
         if (!Hash::check($request->current_password, $user->password)) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => ['current_password' => ['Kata sandi saat ini tidak cocok.']],
+                    'message' => 'Kata sandi saat ini tidak cocok.'
+                ], 422);
+            }
             return redirect()->back()
                 ->with('error', 'Kata sandi saat ini tidak cocok.')
                 ->withInput();
@@ -139,5 +155,12 @@ class MyController extends Controller
             'message' => 'Kata sandi Anda telah diubah'
         ]);
 
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Kata sandi berhasil diperbarui.'
+            ]);
+        }
+        return redirect()->back()->with('success', 'Kata sandi berhasil diperbarui.');
     }
 }

@@ -21,9 +21,6 @@
     <!-- Theme Config Js -->
     <script src="{{ asset('assets/js/config.js') }}"></script>
 
-    <!-- Indonesian Validation Messages -->
-    <script src="{{ asset('assets/js/id-validation.js') }}"></script>
-
     <!-- Vendor css -->
     <link href="{{ asset('assets/css/vendors.min.css') }}" rel="stylesheet" type="text/css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -636,7 +633,7 @@
                                 <div class="d-lg-flex align-items-center gap-1 d-none">
                                     <span>
                                         <h5 class="my-0 lh-1 pro-username">{{ Auth::user()->name ?? 'User' }}</h5>
-                                        <span class="fs-xs lh-1">{{ Auth::user()->phone ?? 'Administration' }}</span>
+                                        <span class="fs-xs lh-1">{{ Auth::user()->email ?? 'Administration' }}</span>
                                     </span>
                                     <i class="ti ti-chevron-down align-middle"></i>
                                 </div>
@@ -653,11 +650,7 @@
                                     <span class="align-middle">Profile</span>
                                 </a>
 
-                                <!-- Settings -->
-                                <a href="/profile" class="dropdown-item">
-                                    <i class="ti ti-settings-2 me-1 fs-lg align-middle"></i>
-                                    <span class="align-middle">Account Settings</span>
-                                </a>
+                             
 
                                 <!-- Change Password -->
                                 <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
@@ -1310,6 +1303,158 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         </div>
     </div>
+
+    <!-- Password Toggle & AJAX Handler Script -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (!input) return;
+
+                const icon = this.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('ti-eye');
+                    icon.classList.add('ti-eye-off');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('ti-eye-off');
+                    icon.classList.add('ti-eye');
+                }
+            });
+        });
+
+        // Handle password change form submission via AJAX
+        const changePasswordForm = document.querySelector('form[action="{{ route("profile.password") }}"]');
+        if (changePasswordForm) {
+            changePasswordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const form = this;
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                const modal = document.getElementById('changePasswordModal');
+                const modalBody = modal.querySelector('.modal-body');
+
+                // Clear previous error messages
+                form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                form.querySelectorAll('.alert-danger').forEach(el => el.remove());
+
+                // Disable button during submission
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Menyimpan...';
+
+                const formData = new FormData(form);
+                const url = form.getAttribute('action');
+
+                fetch(url, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Hide modal
+                        const bsModal = bootstrap.Modal.getInstance(modal);
+                        if (bsModal) {
+                            bsModal.hide();
+                        }
+
+                        // Reset form
+                        form.reset();
+
+                        // Show success message
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil',
+                                text: data.message || 'Kata sandi berhasil diperbarui.',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            alert(data.message || 'Kata sandi berhasil diperbarui.');
+                        }
+                    } else {
+                        // Show validation errors
+                        if (data.errors) {
+                            // Show errors in modal
+                            let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+                            errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                            errorHtml += '<ul class="mb-0">';
+                            
+                            // Collect all errors
+                            for (const [field, messages] of Object.entries(data.errors)) {
+                                messages.forEach(message => {
+                                    errorHtml += '<li>' + message + '</li>';
+                                    
+                                    // Add invalid class to input
+                                    const input = form.querySelector('[name="' + field + '"]');
+                                    if (input) {
+                                        input.classList.add('is-invalid');
+                                        
+                                        // Add error message below input
+                                        let feedbackDiv = input.parentElement.querySelector('.invalid-feedback');
+                                        if (!feedbackDiv) {
+                                            feedbackDiv = document.createElement('div');
+                                            feedbackDiv.className = 'invalid-feedback';
+                                            input.parentElement.appendChild(feedbackDiv);
+                                        }
+                                        feedbackDiv.textContent = message;
+                                    }
+                                });
+                            }
+                            errorHtml += '</ul></div>';
+                            
+                            // Insert error at top of modal body
+                            modalBody.insertAdjacentHTML('afterbegin', errorHtml);
+                        } else if (data.message) {
+                            // General error message
+                            let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+                            errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                            errorHtml += data.message;
+                            errorHtml += '</div>';
+                            modalBody.insertAdjacentHTML('afterbegin', errorHtml);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+                    errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                    errorHtml += 'Terjadi kesalahan. Silakan coba lagi.';
+                    errorHtml += '</div>';
+                    modalBody.insertAdjacentHTML('afterbegin', errorHtml);
+                })
+                .finally(() => {
+                    // Re-enable button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                });
+            });
+
+            // Reset form when modal is closed
+            const modal = document.getElementById('changePasswordModal');
+            if (modal) {
+                modal.addEventListener('hidden.bs.modal', function() {
+                    const form = changePasswordForm;
+                    form.reset();
+                    form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+                    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                    form.querySelectorAll('.alert-danger').forEach(el => el.remove());
+                });
+            }
+        }
+    });
+    </script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
