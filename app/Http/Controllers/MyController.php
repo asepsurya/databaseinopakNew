@@ -1,14 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Enums\NotificationType;
+use App\Http\Controllers\Controller;
+use App\Models\District;
+use App\Models\Ikm;
 use App\Models\Province;
 use App\Models\Regency;
-use App\Models\District;
+use App\Models\User;
 use App\Models\Village;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Models\Ikm;
+use Illuminate\Support\Facades\Validator;
 
 class MyController extends Controller
 {
@@ -96,4 +101,70 @@ class MyController extends Controller
     return response()->json($results);
     }
 
+    public function updatePassword(Request $request)
+    {
+        $user = auth()->user();
+        $id_user = $request->input('id_user');
+
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:8|confirmed',
+            'new_password_confirmation' => 'required|string|min:8',
+        ], [
+            'current_password.required' => 'Kata sandi saat ini wajib diisi.',
+            'new_password.required' => 'Kata sandi baru wajib diisi.',
+            'new_password.min' => 'Kata sandi baru minimal 8 karakter.',
+            'new_password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'new_password_confirmation.required' => 'Konfirmasi kata sandi wajib diisi.',
+        ]);
+
+        if ($validator->fails()) {
+            // Return JSON for AJAX, redirect for traditional form
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validasi gagal.',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error', 'Gagal memperbarui kata sandi.');
+        }
+
+        // Check current password
+        if (!Hash::check($request->current_password, $user->password)) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kata sandi saat ini tidak cocok.',
+                    'errors' => ['current_password' => ['Kata sandi saat ini tidak cocok.']]
+                ], 422);
+            }
+            return redirect()->back()
+                ->with('error', 'Kata sandi saat ini tidak cocok.')
+                ->withInput();
+        }
+
+        User::where('id', $id_user)->update([
+            'password' => Hash::make($request->new_password),
+        ]);
+
+        // Create notification for password change
+        $this->createNotification(NotificationType::PASSWORD_CHANGED, [
+            'message' => 'Kata sandi Anda telah diubah'
+        ]);
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Kata sandi berhasil diperbarui.'
+            ], 200);
+        }
+
+        return redirect()->route('profile.index')
+            ->with('success', 'Kata sandi berhasil diperbarui.')
+            ->with('UpdateBerhasil', 'Kata sandi telah diperbarui.');
+    }
 }

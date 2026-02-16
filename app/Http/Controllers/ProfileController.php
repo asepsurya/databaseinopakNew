@@ -333,7 +333,7 @@ class ProfileController extends Controller
     public function updatePassword(Request $request)
     {
         $user = auth()->user();
-
+        $id_user = $request->input('id_user');
         $validator = Validator::make($request->all(), [
             'current_password' => 'required|string',
             'new_password' => 'required|string|min:8|confirmed',
@@ -358,7 +358,7 @@ class ProfileController extends Controller
                 ->withInput();
         }
 
-        $user->update([
+        User::where('id', $id_user)->update([
             'password' => Hash::make($request->new_password),
         ]);
 

@@ -8,6 +8,7 @@
 
 @section('content')
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
 <style>
     .profile-photo-container {
         position: relative;
@@ -134,8 +135,13 @@
     }
 
     @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
 
     /* Cropper Container in Modal */
@@ -165,7 +171,7 @@
         overflow: hidden;
         border-radius: 50%;
         border: 3px solid #fff;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         margin: 0 auto;
     }
 
@@ -304,7 +310,9 @@
             height: 120px;
         }
     }
+
 </style>
+
 <div>
     <div>
         <!-- Start Content-->
@@ -332,18 +340,12 @@
                         <div class="profile-header text-center">
                             <div class="profile-photo-container">
                                 @if(auth()->user()->profile_photo && Storage::disk('public')->exists(auth()->user()->profile_photo))
-                                    <img src="/storage/{{ auth()->user()->profile_photo }}"
-                                         alt="Profile Photo"
-                                         class="profile-photo"
-                                         id="currentProfilePhoto">
+                                <img src="/storage/{{ auth()->user()->profile_photo }}" alt="Profile Photo" class="profile-photo" id="currentProfilePhoto">
                                 @else
-                                    <div class="profile-photo-placeholder" id="profilePhotoPlaceholder">
-                                        <i class="ti ti-user"></i>
-                                    </div>
-                                    <img src=""
-                                         alt="Profile Photo Preview"
-                                         class="profile-preview"
-                                         id="profilePhotoPreview">
+                                <div class="profile-photo-placeholder" id="profilePhotoPlaceholder">
+                                    <i class="ti ti-user"></i>
+                                </div>
+                                <img src="" alt="Profile Photo Preview" class="profile-preview" id="profilePhotoPreview">
                                 @endif
 
                                 <label class="photo-upload-btn" title="Ubah Foto Profil" data-bs-toggle="modal" data-bs-target="#updateProfilePhoto">
@@ -351,12 +353,9 @@
                                 </label>
 
                                 @if(auth()->user()->profile_photo)
-                                    <button type="button"
-                                            class="photo-remove-btn"
-                                            title="Hapus Foto Profil"
-                                            onclick="event.preventDefault(); document.getElementById('removePhotoForm').submit();">
-                                        <i class="ti ti-trash"></i>
-                                    </button>
+                                <button type="button" class="photo-remove-btn" title="Hapus Foto Profil" onclick="event.preventDefault(); document.getElementById('removePhotoForm').submit();">
+                                    <i class="ti ti-trash"></i>
+                                </button>
                                 @endif
 
                                 <div class="photo-upload-spinner" id="photoUploadSpinner">
@@ -370,19 +369,16 @@
 
                         <div class="profile-content">
 
-                            <form action="{{ route('profile.photo.remove') }}"
-                                  method="POST"
-                                  id="removePhotoForm"
-                                  style="display: none;">
+                            <form action="{{ route('profile.photo.remove') }}" method="POST" id="removePhotoForm" style="display: none;">
                                 @csrf
                                 @method('DELETE')
                             </form>
 
                             @error('profile_photo')
-                                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    {{ $message }}
-                                </div>
+                            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                {{ $message }}
+                            </div>
                             @enderror
 
                             <div class="info-item">
@@ -431,111 +427,73 @@
                             <!-- Tabs Navigation -->
                             <ul class="nav nav-pills navtab-bg nav-justified tabs-profile mb-3" id="profileTabs" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link active"
-                                            id="profile-tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#profile"
-                                            type="button"
-                                            role="tab"
-                                            aria-controls="profile"
-                                            aria-selected="true">
+                                    <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="true">
                                         <i class="ti ti-user me-1"></i> Profil
                                     </button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link"
-                                            id="password-tab"
-                                            data-bs-toggle="tab"
-                                            data-bs-target="#password"
-                                            type="button"
-                                            role="tab"
-                                            aria-controls="password"
-                                            aria-selected="false">
-                                        <i class="ti ti-lock me-1"></i> Kata Sandi
-                                    </button>
-                                </li>
                             </ul>
+                            <form action="{{ route('profile.update', auth()->id()) }}" method="POST" class="profile-form">
+                                @csrf
+                                @method('PUT')
+                                <!-- Tabs Content -->
+                                <div class="tab-content p-2" id="profileTabsContent">
+                                    <!-- Profile Edit Tab -->
+                                    <div class="tab-pane fade show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
 
-                            <!-- Tabs Content -->
-                            <div class="tab-content p-2" id="profileTabsContent">
-                                <!-- Profile Edit Tab -->
-                                <div class="tab-pane fade show active"
-                                     id="profile"
-                                     role="tabpanel"
-                                     aria-labelledby="profile-tab">
-
-                                    <form action="{{ route('profile.update', auth()->id()) }}"
-                                          method="POST"
-                                          class="profile-form">
-                                        @csrf
-                                        @method('PUT')
+                                        @if ($errors->any() && ($errors->has('nama') || $errors->has('email')))
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                            <ul class="mb-0">
+                                                @foreach ($errors->all() as $error)
+                                                @if (in_array($error, $errors->get('nama') ?: []) || in_array($error, $errors->get('email') ?: []))
+                                                <li>{{ $error }}</li>
+                                                @endif
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        @endif
 
                                         <h5 class="section-title">Informasi Pribadi</h5>
 
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label for="nama" class="form-label form-label-custom">Nama Lengkap <span class="text-danger">*</span></label>
-                                                <input type="text"
-                                                       class="form-control form-control-custom @error('nama') is-invalid @enderror"
-                                                       id="nama"
-                                                       name="nama"
-                                                       value="{{ old('nama', auth()->user()->nama ?? auth()->user()->name) }}"
-                                                       required
-                                                       placeholder="Masukkan nama lengkap">
+                                                <input type="text" class="form-control form-control-custom @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ old('nama', auth()->user()->nama ?? auth()->user()->name) }}" required placeholder="Masukkan nama lengkap">
                                                 @error('nama')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
 
                                             <div class="col-md-6 mb-3">
                                                 <label for="email" class="form-label form-label-custom">Email <span class="text-danger">*</span></label>
-                                                <input type="email"
-                                                       class="form-control form-control-custom @error('email') is-invalid @enderror"
-                                                       id="email"
-                                                       name="email"
-                                                       value="{{ old('email', auth()->user()->email) }}"
-                                                       required
-                                                       placeholder="Masukkan email">
+                                                <input type="email" class="form-control form-control-custom @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', auth()->user()->email) }}" required placeholder="Masukkan email">
                                                 @error('email')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
 
                                             <div class="col-md-6 mb-3">
                                                 <label for="phone" class="form-label form-label-custom">Telepon</label>
-                                                <input type="tel"
-                                                       class="form-control form-control-custom @error('phone') is-invalid @enderror"
-                                                       id="phone"
-                                                       name="phone"
-                                                       value="{{ old('phone', auth()->user()->phone) }}"
-                                                       placeholder="Masukkan nomor telepon">
+                                                <input type="tel" class="form-control form-control-custom @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', auth()->user()->phone) }}" placeholder="Masukkan nomor telepon">
                                                 @error('phone')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
 
                                         <div class="mb-3">
                                             <label for="bio" class="form-label form-label-custom">Bio</label>
-                                            <textarea class="form-control form-control-custom @error('bio') is-invalid @enderror"
-                                                      id="bio"
-                                                      name="bio"
-                                                      rows="3"
-                                                      placeholder="Ceritakan tentang diri Anda">{{ old('bio', auth()->user()->bio) }}</textarea>
+                                            <textarea class="form-control form-control-custom @error('bio') is-invalid @enderror" id="bio" name="bio" rows="3" placeholder="Ceritakan tentang diri Anda">{{ old('bio', auth()->user()->bio) }}</textarea>
                                             @error('bio')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
                                         <div class="mb-4">
                                             <label for="address" class="form-label form-label-custom">Alamat</label>
-                                            <textarea class="form-control form-control-custom"
-                                                      id="address"
-                                                      name="address"
-                                                      rows="2"
-                                                      placeholder="Masukkan alamat lengkap">{{ old('address', auth()->user()->address) }}</textarea>
+                                            <textarea class="form-control form-control-custom" id="address" name="address" rows="2" placeholder="Masukkan alamat lengkap">{{ old('address', auth()->user()->address) }}</textarea>
                                             @error('address')
-                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -547,98 +505,25 @@
                                                 <i class="ti ti-refresh me-1"></i> Reset
                                             </button>
                                         </div>
-                                    </form>
+                                    </div>
                                 </div>
+                            </form>
 
-                                <!-- Password Change Tab -->
-                                <div class="tab-pane fade"
-                                     id="password"
-                                     role="tabpanel"
-                                     aria-labelledby="password-tab">
 
-                                    <form action="{{ route('profile.password.update') }}"
-                                          method="POST"
-                                          class="password-form"
-                                          novalidate>
-                                        @csrf
-                                        @method('PUT')
 
-                                        <h5 class="section-title">Ubah Kata Sandi</h5>
-
-                                        <div class="mb-3">
-                                            <label for="current_password" class="form-label form-label-custom">Kata Sandi Saat Ini <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <input type="password"
-                                                       class="form-control form-control-custom @error('current_password') is-invalid @enderror"
-                                                       id="current_password"
-                                                       name="current_password"
-                                                       required
-                                                       placeholder="Masukkan kata sandi saat ini">
-                                                <button class="btn btn-outline-secondary toggle-password"
-                                                        type="button"
-                                                        data-target="current_password">
-                                                    <i class="ti ti-eye"></i>
-                                                </button>
-                                                @error('current_password')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="new_password" class="form-label form-label-custom">Kata Sandi Baru <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <input type="password"
-                                                       class="form-control form-control-custom @error('new_password') is-invalid @enderror"
-                                                       id="new_password"
-                                                       name="new_password"
-                                                       required
-                                                       minlength="8"
-                                                       placeholder="Masukkan kata sandi baru (min. 8 karakter)">
-                                                <button class="btn btn-outline-secondary toggle-password"
-                                                        type="button"
-                                                        data-target="new_password">
-                                                    <i class="ti ti-eye"></i>
-                                                </button>
-                                                @error('new_password')
-                                                    <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-4">
-                                            <label for="new_password_confirmation" class="form-label form-label-custom">Konfirmasi Kata Sandi Baru <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <input type="password"
-                                                       class="form-control form-control-custom"
-                                                       id="new_password_confirmation"
-                                                       name="new_password_confirmation"
-                                                       required
-                                                       placeholder="Konfirmasi kata sandi baru">
-                                                <button class="btn btn-outline-secondary toggle-password"
-                                                        type="button"
-                                                        data-target="new_password_confirmation">
-                                                    <i class="ti ti-eye"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex gap-2">
-                                            <button type="submit" class="btn btn-primary btn-profile">
-                                                <i class="ti ti-lock me-1"></i> Ubah Kata Sandi
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
-        <!-- end container-fluid -->
     </div>
-    <!-- end content -->
+</div>
+
+</div>
+<!-- end container-fluid -->
+</div>
+<!-- end content -->
 </div>
 
 <!-- Update Profile Photo Modal -->
@@ -660,7 +545,10 @@
                     <!-- Image Input -->
                     <div class="mb-3">
                         <label class="form-label">Pilih Foto</label>
-                        <input type="file" name="profile_photo" class="form-control" id="imageInput" accept="image/*">
+                        <input type="file" name="profile_photo" class="form-control @error('profile_photo') is-invalid @enderror" id="imageInput" accept="image/*">
+                        @error('profile_photo')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <!-- Cropper Container -->
@@ -732,14 +620,14 @@
         const updateProfilePhotoModal = document.getElementById('updateProfilePhoto');
 
         console.log('Elements found:', {
-            imageInput: !!imageInput,
-            imageToCrop: !!imageToCrop,
-            cropperContainer: !!cropperContainer,
-            cropButton: !!cropButton,
-            resetButton: !!resetButton,
-            saveButton: !!saveButton,
-            croppedImageInput: !!croppedImageInput,
-            modal: !!updateProfilePhotoModal
+            imageInput: !!imageInput
+            , imageToCrop: !!imageToCrop
+            , cropperContainer: !!cropperContainer
+            , cropButton: !!cropButton
+            , resetButton: !!resetButton
+            , saveButton: !!saveButton
+            , croppedImageInput: !!croppedImageInput
+            , modal: !!updateProfilePhotoModal
         });
 
         // Handle file selection
@@ -755,10 +643,10 @@
                     // Validate file type
                     if (!VALID_TYPES.includes(file.type)) {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Format Tidak Valid',
-                            text: 'File harus berupa gambar dengan format JPEG, PNG, JPG, atau WEBP.',
-                            confirmButtonColor: '#435ebe'
+                            icon: 'error'
+                            , title: 'Format Tidak Valid'
+                            , text: 'File harus berupa gambar dengan format JPEG, PNG, JPG, atau WEBP.'
+                            , confirmButtonColor: '#435ebe'
                         });
                         imageInput.value = '';
                         return;
@@ -767,10 +655,10 @@
                     // Validate file size
                     if (file.size > MAX_SIZE) {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'File Terlalu Besar',
-                            text: 'Ukuran file maksimal adalah 5MB.',
-                            confirmButtonColor: '#435ebe'
+                            icon: 'error'
+                            , title: 'File Terlalu Besar'
+                            , text: 'Ukuran file maksimal adalah 5MB.'
+                            , confirmButtonColor: '#435ebe'
                         });
                         imageInput.value = '';
                         return;
@@ -789,12 +677,12 @@
                         cropperContainer.classList.add('show');
 
                         cropper = new Cropper(imageToCrop, {
-                            aspectRatio: 1,
-                            viewMode: 1,
-                            autoCropArea: 1,
-                            responsive: true,
-                            preview: '#previewCircle',
-                            ready: function() {
+                            aspectRatio: 1
+                            , viewMode: 1
+                            , autoCropArea: 1
+                            , responsive: true
+                            , preview: '#previewCircle'
+                            , ready: function() {
                                 console.log('Cropper is ready');
                             }
                         });
@@ -816,11 +704,11 @@
                 console.log('Crop button clicked');
                 if (cropper) {
                     const canvas = cropper.getCroppedCanvas({
-                        width: 300,
-                        height: 300,
-                        fillColor: '#fff',
-                        imageSmoothingEnabled: true,
-                        imageSmoothingQuality: 'high'
+                        width: 300
+                        , height: 300
+                        , fillColor: '#fff'
+                        , imageSmoothingEnabled: true
+                        , imageSmoothingQuality: 'high'
                     });
 
                     if (canvas) {
@@ -831,18 +719,18 @@
                         }
 
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: 'Foto berhasil di-crop. Klik Simpan untuk menyimpan.',
-                            confirmButtonColor: '#435ebe'
+                            icon: 'success'
+                            , title: 'Berhasil!'
+                            , text: 'Foto berhasil di-crop. Klik Simpan untuk menyimpan.'
+                            , confirmButtonColor: '#435ebe'
                         });
                     } else {
                         console.error('Failed to get cropped canvas');
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'Gagal memproses gambar. Silakan coba lagi.',
-                            confirmButtonColor: '#435ebe'
+                            icon: 'error'
+                            , title: 'Error'
+                            , text: 'Gagal memproses gambar. Silakan coba lagi.'
+                            , confirmButtonColor: '#435ebe'
                         });
                     }
                 }
@@ -883,7 +771,9 @@
                     byteNumbers[i] = byteCharacters.charCodeAt(i);
                 }
                 const byteArray = new Uint8Array(byteNumbers);
-                return new Blob([byteArray], { type: mimeType });
+                return new Blob([byteArray], {
+                    type: mimeType
+                });
             } catch (e) {
                 console.error('Error converting base64 to blob:', e);
                 return null;
@@ -896,10 +786,10 @@
 
             if (!croppedImageInput || !croppedImageInput.value) {
                 Swal.fire({
-                    icon: 'warning',
-                    title: 'Peringatan',
-                    text: 'Silakan crop foto terlebih dahulu.',
-                    confirmButtonColor: '#435ebe'
+                    icon: 'warning'
+                    , title: 'Peringatan'
+                    , text: 'Silakan crop foto terlebih dahulu.'
+                    , confirmButtonColor: '#435ebe'
                 });
                 return;
             }
@@ -948,56 +838,56 @@
             } else {
                 console.error('Failed to create blob from base64');
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Gagal memproses gambar.',
-                    confirmButtonColor: '#435ebe'
+                    icon: 'error'
+                    , title: 'Error'
+                    , text: 'Gagal memproses gambar.'
+                    , confirmButtonColor: '#435ebe'
                 });
                 return;
             }
 
             // Submit via AJAX
             fetch('{{ route("profile.photo.cropped") }}', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
-                if (loadingEl) loadingEl.style.display = 'none';
-                return response.json();
-            })
-            .then(data => {
-                console.log('Response data:', data);
-                if (data.success) {
+                    method: 'POST'
+                    , body: formData
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success'
+                            , title: 'Berhasil!'
+                            , text: data.message
+                            , confirmButtonColor: '#435ebe'
+                            , timer: 3000
+                            , timerProgressBar: true
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error'
+                            , title: 'Gagal!'
+                            , text: data.message || 'Gagal mengunggah foto profil.'
+                            , confirmButtonColor: '#435ebe'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Upload error:', error);
+                    if (loadingEl) loadingEl.style.display = 'none';
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: data.message,
-                        confirmButtonColor: '#435ebe',
-                        timer: 3000,
-                        timerProgressBar: true
-                    }).then(() => {
-                        window.location.reload();
+                        icon: 'error'
+                        , title: 'Error'
+                        , text: 'Terjadi kesalahan saat mengunggah foto. Silakan coba lagi.'
+                        , confirmButtonColor: '#435ebe'
                     });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        text: data.message || 'Gagal mengunggah foto profil.',
-                        confirmButtonColor: '#435ebe'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Upload error:', error);
-                if (loadingEl) loadingEl.style.display = 'none';
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Terjadi kesalahan saat mengunggah foto. Silakan coba lagi.',
-                    confirmButtonColor: '#435ebe'
                 });
-            });
         };
 
         // Handle modal close
@@ -1051,14 +941,14 @@
                 const formElement = this;
 
                 Swal.fire({
-                    title: 'Konfirmasi',
-                    text: 'Apakah Anda yakin ingin menyimpan perubahan?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#435ebe',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Simpan!',
-                    cancelButtonText: 'Batal'
+                    title: 'Konfirmasi'
+                    , text: 'Apakah Anda yakin ingin menyimpan perubahan?'
+                    , icon: 'question'
+                    , showCancelButton: true
+                    , confirmButtonColor: '#435ebe'
+                    , cancelButtonColor: '#6c757d'
+                    , confirmButtonText: 'Ya, Simpan!'
+                    , cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         formElement.removeEventListener('submit', arguments.callee);
@@ -1078,35 +968,39 @@
 
         // Session success messages
         @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                confirmButtonColor: '#435ebe',
-                timer: 3000,
-                timerProgressBar: true
-            });
+        Swal.fire({
+            icon: 'success'
+            , title: 'Berhasil!'
+            , text: '{{ session('
+            success ') }}'
+            , confirmButtonColor: '#435ebe'
+            , timer: 3000
+            , timerProgressBar: true
+        });
         @endif
 
         @if(session('UpdateBerhasil'))
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('UpdateBerhasil') }}',
-                confirmButtonColor: '#435ebe',
-                timer: 3000,
-                timerProgressBar: true
-            });
+        Swal.fire({
+            icon: 'success'
+            , title: 'Berhasil!'
+            , text: '{{ session('
+            UpdateBerhasil ') }}'
+            , confirmButtonColor: '#435ebe'
+            , timer: 3000
+            , timerProgressBar: true
+        });
         @endif
 
         @if(session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#435ebe'
-            });
+        Swal.fire({
+            icon: 'error'
+            , title: 'Gagal!'
+            , text: '{{ session('
+            error ') }}'
+            , confirmButtonColor: '#435ebe'
+        });
         @endif
     });
+
 </script>
 @endpush

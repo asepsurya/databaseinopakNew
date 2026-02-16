@@ -48,8 +48,10 @@ Route::resource('/profile', ProfileController::class)->middleware('auth');
 Route::post('/profile/photo/cropped', [ProfileController::class, 'updatePhotoCropped'])->name('profile.photo.cropped')->middleware('auth');
 Route::post('/profile/photo', [ProfileController::class, 'updatePhoto'])->name('profile.photo.update')->middleware('auth');
 Route::delete('/profile/photo', [ProfileController::class, 'destroy'])->name('profile.photo.remove')->middleware('auth');
-Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update')->middleware('auth');
+// Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password')->middleware('auth');
 //backEnd
+// Route::get('/profile/password',[MyController::class,'updatePassword'])->name('profile.password')->middleware('auth');
+Route::put('/password',[MyController::class,'updatePassword'])->name('profile.password')->middleware('auth');
 Route::get('/brainstorming',[MyController::class,'brainstorming'])->middleware('auth');
 
 Route::get('/brainstorming',[MyController::class,'brainstorming'])->middleware('auth');
