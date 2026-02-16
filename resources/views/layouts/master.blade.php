@@ -15,7 +15,7 @@
     @if($faviconLogo && $faviconLogo->is_active && $faviconLogo->image_url)
         <link rel="shortcut icon" href="{{ asset($faviconLogo->image_url) }}" />
     @else
-        <link rel="shortcut icon" href="{{ asset('assets/images/inopak/Fav.png') }}" />
+        <link rel="shortcut icon" href="{{ asset('assets/images/inopak/logo.png') }}" />
     @endif
 
     <!-- Theme Config Js -->
@@ -487,7 +487,7 @@
                                          alt="{{ $faviconLogo->name ?? 'Favicon' }}"
                                          style="width: 30px; height: 30px;" />
                                 @else
-                                    <img src="{{ asset('assets/images/inopak/fav.png') }}"
+                                    <img src="{{ asset('assets/images/inopak/logo.png') }}"
                                          alt="Logo"
                                          style="width: 30px; height: 30px;" />
                                 @endif
@@ -1030,7 +1030,7 @@
                                          alt="{{ $faviconLogo->name ?? 'Favicon' }}"
                                          style="width: 30px; height: 30px;" />
                                 @else
-                                    <img src="{{ asset('assets/images/inopak/fav.png') }}"
+                                    <img src="{{ asset('assets/images/inopak/logo.png') }}"
                                          alt="Logo"
                                          style="width: 30px; height: 30px;" />
                                 @endif
@@ -1042,7 +1042,7 @@
                              style="height: 40px;" />
                     </span>
                     <span class="logo-sm">
-                        <img src="{{ asset('assets/images/inopak/fav.png') }}"
+                        <img src="{{ asset('assets/images/inopak/logo.png') }}"
                              alt="Logo"
                              style="width: 30px; height: 30px;" />
                     </span>
@@ -1054,7 +1054,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <a href="#!" class="link-reset">
-                            <img src="{{ asset('assets/images/inopak/Fav.png') }}" alt="user-image" class="rounded-circle mb-2 avatar-md" />
+                            <img src="{{ asset('assets/images/inopak/logo.png') }}" alt="user-image" class="rounded-circle mb-2 avatar-md" />
                             <span class="sidenav-user-name fw-bold">{{ Auth::user()->nama ?? 'User' }}</span>
                             <span class="fs-12 fw-semibold">Admin INOPAK</span>
                         </a>

@@ -10,12 +10,6 @@
 
 @section('content')
 <style>
-  /* Global remove padding */
-.content-page,
-.container-fluid,
-.dashboard-container {
-    padding: 0 !important;
-}
 
 /* Footer tetap normal */
 .footer {
