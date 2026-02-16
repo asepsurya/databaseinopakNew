@@ -496,10 +496,10 @@
                     </div>
 
                     <!-- Sidebar Toggle Button -->
-                    {{-- <button class="sidenav-toggle-button btn btn-primary btn-icon" id="sidebarToggleBtn">
+                    <button class="sidenav-toggle-button btn btn-primary btn-icon" id="sidebarToggleBtn">
                         <i class="ti ti-menu-4"></i>
-                    </button> --}}
-                    <span id="sidebarToggleBtn"></span>
+                    </button>
+               
                     {{-- <span id="sidebarToggleBtn"></span> --}}
                     <!-- Search Box -->
                     <div id="search-box" class="app-search d-none d-xl-flex position-relative">
