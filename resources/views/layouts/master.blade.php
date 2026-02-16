@@ -1247,7 +1247,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('profile.password') }}" method="POST">
+                <form action="{{ route('profile.password') }}" method="POST" novalidate>
                     @csrf
                     @method('PUT')
                     <div class="modal-body">

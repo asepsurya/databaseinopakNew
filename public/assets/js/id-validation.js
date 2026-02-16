@@ -150,13 +150,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const skipForms = ['registerForm', 'loginForm', 'password-form'];
 
         // Select all inputs with validation attributes - be more specific
+        // Exclude password type inputs as they often cause validation issues
         const inputs = document.querySelectorAll(
-            'input[required]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
-            'input[min]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
-            'input[max]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
-            'input[minlength]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
-            'input[maxlength]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
-            'input[pattern]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
+            'input[required]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
+            'input[min]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
+            'input[max]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
+            'input[minlength]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
+            'input[maxlength]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
+            'input[pattern]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="password"]), ' +
             'input[type="email"][required]:not([type="hidden"]), ' +
             'input[type="url"][required]:not([type="hidden"]), ' +
             'select[required], ' +
