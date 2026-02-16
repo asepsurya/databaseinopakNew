@@ -558,7 +558,8 @@
 
                                     <form action="{{ route('profile.password.update') }}"
                                           method="POST"
-                                          class="password-form">
+                                          class="password-form"
+                                          novalidate>
                                         @csrf
                                         @method('PUT')
 
@@ -588,9 +589,7 @@
                                             <label for="new_password" class="form-label form-label-custom">Kata Sandi Baru <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="password"
-                                                     @error('new_password')
-                                                         <div class="invalid-feedback">{{ $message }}</div>
-                                                     @enderror
+                                                       class="form-control form-control-custom @error('new_password') is-invalid @enderror"
                                                        id="new_password"
                                                        name="new_password"
                                                        required

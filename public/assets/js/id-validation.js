@@ -91,8 +91,52 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Skip password fields for type-specific validation
+        const type = input.type || '';
+
         if (!input.validity.valid) {
-            input.setCustomValidity(getValidationMessage(input, input.validity));
+            // For missing value, use the appropriate message
+            if (input.validity.valueMissing) {
+                input.setCustomValidity(validationMessages.valueMissing);
+            } else if (input.validity.typeMismatch) {
+                if (type === 'email') {
+                    input.setCustomValidity(validationMessages.typeMismatch.email);
+                } else if (type === 'url') {
+                    input.setCustomValidity(validationMessages.typeMismatch.url);
+                } else {
+                    input.setCustomValidity('Format tidak valid');
+                }
+            } else if (input.validity.patternMismatch) {
+                input.setCustomValidity(validationMessages.patternMismatch);
+            } else if (input.validity.tooLong) {
+                input.setCustomValidity(validationMessages.tooLong);
+            } else if (input.validity.tooShort) {
+                const minLength = input.getAttribute('minlength');
+                if (minLength) {
+                    input.setCustomValidity(`Minimal ${minLength} karakter`);
+                } else {
+                    input.setCustomValidity(validationMessages.tooShort.default);
+                }
+            } else if (input.validity.rangeUnderflow) {
+                const min = input.getAttribute('min');
+                if (min) {
+                    input.setCustomValidity(`Nilai minimal adalah ${min}`);
+                } else {
+                    input.setCustomValidity(validationMessages.rangeUnderflow);
+                }
+            } else if (input.validity.rangeOverflow) {
+                const max = input.getAttribute('max');
+                if (max) {
+                    input.setCustomValidity(`Nilai maksimal adalah ${max}`);
+                } else {
+                    input.setCustomValidity(validationMessages.rangeOverflow);
+                }
+            } else if (input.validity.stepMismatch) {
+                input.setCustomValidity(validationMessages.stepMismatch);
+            } else {
+                // For other types (password, text, etc.), if not valid but no specific error, clear message
+                input.setCustomValidity('');
+            }
         } else {
             input.setCustomValidity('');
         }
@@ -102,34 +146,39 @@ document.addEventListener('DOMContentLoaded', function() {
      * Initialize validation for all forms
      */
     function initFormValidation() {
-        // Select all inputs with validation attributes
-        const selectors = [
-            'input[required]',
-            'input[min]',
-            'input[max]',
-            'input[minlength]',
-            'input[maxlength]',
-            'input[pattern]',
-            'input[type="email"]',
-            'input[type="url"]',
-            'select[required]',
-            'textarea[required]',
-            'textarea[minlength]',
+        // Select all inputs with validation attributes - be more specific
+        const inputs = document.querySelectorAll(
+            'input[required]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
+            'input[min]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
+            'input[max]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
+            'input[minlength]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
+            'input[maxlength]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
+            'input[pattern]:not([type="hidden"]):not([type="submit"]):not([type="button"]):not([type="reset"]), ' +
+            'input[type="email"][required]:not([type="hidden"]), ' +
+            'input[type="url"][required]:not([type="hidden"]), ' +
+            'select[required], ' +
+            'textarea[required], ' +
+            'textarea[minlength], ' +
             'textarea[maxlength]'
-        ];
-
-        const inputs = document.querySelectorAll(selectors.join(', '));
+        );
 
         inputs.forEach(input => {
-            // Add event listeners for validation
-            input.addEventListener('input', function() {
-                setValidationMessage(this);
-            });
+            // Track if input has been touched
+            let touched = false;
 
+            // Mark as touched on blur
             input.addEventListener('blur', function() {
-                setValidationMessage(this);
+                touched = true;
             });
 
+            // Only validate on input if already touched
+            input.addEventListener('input', function() {
+                if (touched) {
+                    setValidationMessage(this);
+                }
+            });
+
+            // Handle invalid event - this is when browser detects an error
             input.addEventListener('invalid', function(e) {
                 // Prevent default browser message
                 e.preventDefault();
@@ -146,8 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    // Find first invalid input
-                    const firstInvalid = this.querySelector(':invalid');
+                    // Find first invalid input in THIS form only
+                    const firstInvalid = this.querySelector('input:invalid, select:invalid, textarea:invalid');
                     if (firstInvalid) {
                         firstInvalid.focus();
                         setValidationMessage(firstInvalid);
