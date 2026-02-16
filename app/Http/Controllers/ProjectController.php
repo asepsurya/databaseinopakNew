@@ -130,7 +130,7 @@ class ProjectController extends Controller
 
             foreach ($projects as $project) {
                 // Encrypt the project ID for secure routing
-                $encryptedProject = Crypt::encryptString($project->id);
+                $encryptedProject = $project->id;
 
                 $results[] = [
                     'id' => $project->id,

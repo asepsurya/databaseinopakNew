@@ -185,9 +185,9 @@ document.addEventListener('DOMContentLoaded', function() {
             input.addEventListener('invalid', function(e) {
                 // Prevent default browser message
                 e.preventDefault();
+                // Set the custom validation message
+                // Note: We don't call reportValidity() here as it can cause infinite recursion
                 setValidationMessage(this);
-                // Show the custom message
-                this.reportValidity();
             });
         });
 

@@ -1247,55 +1247,47 @@ document.addEventListener('DOMContentLoaded', function () {
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="changePasswordForm" action="{{ route('profile.password') }}" method="POST">
+                <form action="{{ route('profile.password') }}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="modal-body">
-                        <!-- Error Alert Container -->
-                        <div id="passwordErrorAlert" class="alert alert-danger alert-dismissible fade show d-none" role="alert">
+                        @if ($errors->any() && $errors->has('current_password'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            <ul class="mb-0" id="passwordErrorList"></ul>
+                            <ul class="mb-0">
+                                @foreach ($errors->get('current_password') as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
+                        @endif
 
                         <input type="text" name="id_user" value="{{ auth()->id() }}" hidden>
 
                         <div class="mb-3">
                             <label for="modal_current_password" class="form-label form-label-custom">Kata Sandi Saat Ini <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="password" class="form-control form-control-custom" id="modal_current_password" name="current_password" required placeholder="Masukkan kata sandi saat ini">
+                                <input type="password" class="form-control form-control-custom @error('current_password') is-invalid @enderror" id="modal_current_password" name="current_password" required placeholder="Masukkan kata sandi saat ini">
                                 <button class="btn btn-outline-secondary toggle-password" type="button" data-target="modal_current_password">
-                                    <span class="icon-eye">
-                                        <!-- default: eye -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                        <circle cx="12" cy="12" r="3"/>
-                                        </svg>
-                                    </span>
+                                    <i class="ti ti-eye"></i>
                                 </button>
-                                <div class="invalid-feedback" id="current_password_error"></div>
+                                @error('current_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="modal_new_password" class="form-label form-label-custom">Kata Sandi Baru <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="password" class="form-control form-control-custom" id="modal_new_password" name="new_password" required minlength="8" placeholder="Masukkan kata sandi baru (min. 8 karakter)">
+                                <input type="password" class="form-control form-control-custom @error('new_password') is-invalid @enderror" id="modal_new_password" name="new_password" required minlength="8" placeholder="Masukkan kata sandi baru (min. 8 karakter)">
                                 <button class="btn btn-outline-secondary toggle-password" type="button" data-target="modal_new_password">
-                                    <span class="icon-eye">
-                                        <!-- default: eye -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                        <circle cx="12" cy="12" r="3"/>
-                                        </svg>
-                                    </span>
+                                    <i class="ti ti-eye"></i>
                                 </button>
-                                <div class="invalid-feedback" id="new_password_error"></div>
+                                @error('new_password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
-                            <div class="form-text text-muted">Minimal 8 karakter</div>
                         </div>
 
                         <div class="mb-3">
@@ -1303,283 +1295,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="input-group">
                                 <input type="password" class="form-control form-control-custom" id="modal_new_password_confirmation" name="new_password_confirmation" required placeholder="Konfirmasi kata sandi baru">
                                 <button class="btn btn-outline-secondary toggle-password" type="button" data-target="modal_new_password_confirmation">
-                                    <span class="icon-eye">
-                                        <!-- default: eye -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                        <circle cx="12" cy="12" r="3"/>
-                                        </svg>
-                                    </span>
+                                    <i class="ti ti-eye"></i>
                                 </button>
-                                <div class="invalid-feedback" id="new_password_confirmation_error"></div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary" id="changePasswordBtn">
-                            <i class="ti ti-lock me-1"></i> <span>Ubah Kata Sandi</span>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-lock me-1"></i> Ubah Kata Sandi
                         </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <script>
-document.addEventListener('click', function (e) {
-
-    const btn = e.target.closest('.toggle-password');
-    if (!btn) return;
-
-    const input = document.getElementById(btn.dataset.target);
-    if (!input) return;
-
-    const icon = btn.querySelector('.icon-eye');
-
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M1 1l22 22"/>
-          <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20
-                   c-7 0-11-8-11-8"/>
-        </svg>`;
-    } else {
-        input.type = 'password';
-        icon.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-          <circle cx="12" cy="12" r="3"/>
-        </svg>`;
-    }
-});
-</script>
-    <script>
-    // Password Change Modal AJAX Handler
-    document.addEventListener('DOMContentLoaded', function() {
-        const changePasswordModal = document.getElementById('changePasswordModal');
-        const changePasswordForm = document.getElementById('changePasswordForm');
-        const changePasswordBtn = document.getElementById('changePasswordBtn');
-        const passwordErrorAlert = document.getElementById('passwordErrorAlert');
-        const passwordErrorList = document.getElementById('passwordErrorList');
-
-        // Get CSRF token
-        function getCsrfToken() {
-            return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-        }
-
-        // Clear all error states
-        function clearErrors() {
-            // Hide error alert
-            passwordErrorAlert.classList.add('d-none');
-            passwordErrorList.innerHTML = '';
-
-            // Remove is-invalid class from all inputs
-            const inputs = changePasswordForm.querySelectorAll('.is-invalid');
-            inputs.forEach(input => input.classList.remove('is-invalid'));
-
-            // Clear individual error messages
-            const errorElements = changePasswordForm.querySelectorAll('.invalid-feedback');
-            errorElements.forEach(el => el.textContent = '');
-        }
-
-        // Show error message
-        function showError(message) {
-            passwordErrorList.innerHTML = '<li>' + message + '</li>';
-            passwordErrorAlert.classList.remove('d-none');
-        }
-
-        // Show field-specific error
-        function showFieldError(fieldName, message) {
-            const input = changePasswordForm.querySelector('[name="' + fieldName + '"]');
-            const errorDiv = document.getElementById(fieldName + '_error');
-
-            if (input) {
-                input.classList.add('is-invalid');
-            }
-            if (errorDiv) {
-                errorDiv.textContent = message;
-            }
-        }
-
-        // Show validation errors from server
-        function showValidationErrors(errors) {
-            let hasErrors = false;
-
-            for (const [field, messages] of Object.entries(errors)) {
-                if (Array.isArray(messages)) {
-                    messages.forEach(message => {
-                        showFieldError(field, message);
-                        hasErrors = true;
-                    });
-                }
-            }
-
-            if (hasErrors) {
-                showError('Mohon periksa kembali data yang dimasukkan.');
-            }
-        }
-
-        // Client-side validation
-        function validateForm() {
-            clearErrors();
-
-            const currentPassword = document.getElementById('modal_current_password').value;
-            const newPassword = document.getElementById('modal_new_password').value;
-            const confirmPassword = document.getElementById('modal_new_password_confirmation').value;
-            let isValid = true;
-
-            // Check empty fields
-            if (!currentPassword.trim()) {
-                showFieldError('current_password', 'Kata sandi saat ini wajib diisi.');
-                isValid = false;
-            }
-
-            if (!newPassword.trim()) {
-                showFieldError('new_password', 'Kata sandi baru wajib diisi.');
-                isValid = false;
-            }
-
-            if (!confirmPassword.trim()) {
-                showFieldError('new_password_confirmation', 'Konfirmasi kata sandi wajib diisi.');
-                isValid = false;
-            }
-
-            // Check minimum length
-            if (newPassword && newPassword.length < 8) {
-                showFieldError('new_password', 'Kata sandi baru minimal 8 karakter.');
-                isValid = false;
-            }
-
-            // Check password confirmation match
-            if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-                showFieldError('new_password_confirmation', 'Konfirmasi kata sandi tidak cocok.');
-                isValid = false;
-            }
-
-            // Check if new password is same as current
-            if (currentPassword && newPassword && currentPassword === newPassword) {
-                showFieldError('new_password', 'Kata sandi baru tidak boleh sama dengan kata sandi saat ini.');
-                isValid = false;
-            }
-
-            return isValid;
-        }
-
-        // Set button loading state
-        function setButtonLoading(isLoading) {
-            if (isLoading) {
-                changePasswordBtn.disabled = true;
-                changePasswordBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Memproses...';
-            } else {
-                changePasswordBtn.disabled = false;
-                changePasswordBtn.innerHTML = '<i class="ti ti-lock me-1"></i> <span>Ubah Kata Sandi</span>';
-            }
-        }
-
-        // Reopen modal with error
-        function reopenModalWithError() {
-            // Create a new modal instance to reopen
-            const modalInstance = bootstrap.Modal.getOrCreateInstance(changePasswordModal);
-            modalInstance.show();
-
-            // Scroll to top of modal
-            changePasswordModal.querySelector('.modal-body').scrollTop = 0;
-        }
-
-        // Handle form submission
-        if (changePasswordForm) {
-            changePasswordForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                // Run client-side validation
-                if (!validateForm()) {
-                    return;
-                }
-
-                // Clear previous errors
-                clearErrors();
-
-                // Set loading state
-                setButtonLoading(true);
-
-                // Get form data
-                const formData = new FormData(changePasswordForm);
-
-                // Send AJAX request
-                fetch(changePasswordForm.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': getCsrfToken(),
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    setButtonLoading(false);
-
-                    if (data.success) {
-                        // Show success message
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil',
-                            text: data.message || 'Kata sandi berhasil diperbarui.',
-                            confirmButtonColor: '#435ebe'
-                        }).then(() => {
-                            // Close modal
-                            const modalInstance = bootstrap.Modal.getOrCreateInstance(changePasswordModal);
-                            modalInstance.hide();
-
-                            // Reset form
-                            changePasswordForm.reset();
-                            clearErrors();
-                        });
-                    } else {
-                        // Show error message
-                        if (data.errors) {
-                            showValidationErrors(data.errors);
-                        } else {
-                            showError(data.message || 'Terjadi kesalahan. Silakan coba lagi.');
-                        }
-
-                        // Reopen modal on error
-                        reopenModalWithError();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    setButtonLoading(false);
-
-                    // Show error message
-                    showError('Terjadi kesalahan jaringan. Silakan coba lagi.');
-
-                    // Reopen modal on error
-                    reopenModalWithError();
-                });
-            });
-        }
-
-        // Reset form when modal is closed
-        if (changePasswordModal) {
-            changePasswordModal.addEventListener('hidden.bs.modal', function() {
-                changePasswordForm.reset();
-                clearErrors();
-            });
-
-            // Also clear errors when modal is shown (in case of reopening)
-            changePasswordModal.addEventListener('show.bs.modal', function() {
-                clearErrors();
-            });
-        }
-    });
-    </script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

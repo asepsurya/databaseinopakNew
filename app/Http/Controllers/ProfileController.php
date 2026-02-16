@@ -332,6 +332,7 @@ class ProfileController extends Controller
      */
     public function updatePassword(Request $request)
     {
+        dd('updatePassword called'); // Debugging line to confirm method is hit
         $user = auth()->user();
         $id_user = $request->input('id_user');
         $validator = Validator::make($request->all(), [
