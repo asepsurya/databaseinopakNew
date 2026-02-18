@@ -39,7 +39,7 @@
 
        <div class="row mb-3">
     <div class="col-12">
-        <form class="bg-light-subtle rounded border p-3" action="/project" method="GET">
+        <form class="bg-light-subtle rounded border p-3" id="filterForm" action="/project" method="GET">
 
             <div class="row g-3 align-items-end">
 
@@ -50,13 +50,15 @@
                            class="form-control"
                            placeholder="Search project name..."
                            value="{{ request('search') }}"
-                           name="search">
+                           name="search"
+                           id="filterSearch"
+                           autocomplete="off">
                 </div>
 
                 <!-- Year -->
                 <div class="col-6 col-lg-2">
                     <label class="form-label fw-semibold">Tahun</label>
-                    <select class="form-select" name="year">
+                    <select class="form-select" name="year" id="filterYear">
                         <option value="">Pilih Tahun</option>
                         @php
                             $currentYear = date('Y');
@@ -72,7 +74,7 @@
                 <!-- UKM Count -->
                 <div class="col-6 col-lg-3">
                     <label class="form-label fw-semibold">Jumlah Ikm</label>
-                    <select class="form-select" name="ukm_count">
+                    <select class="form-select" name="ukm_count" id="filterUkmCount">
                         <option value="">Semua</option>
                         <option value="0" {{ request('ukm_count') == '0' ? 'selected' : '' }}>0 Peserta</option>
                         <option value="1" {{ request('ukm_count') == '1' ? 'selected' : '' }}>1+ Peserta</option>
@@ -81,11 +83,11 @@
                     </select>
                 </div>
 
-                <!-- Apply Button -->
+                <!-- Reset Button -->
                 <div class="col-6 col-lg-1 d-grid">
-                    <button type="submit" class="btn btn-secondary">
-                        Apply
-                    </button>
+                    <a href="/project" class="btn btn-outline-secondary" title="Reset Filter">
+                        <i class="ti ti-refresh me-1"></i> Reset
+                    </a>
                 </div>
 
                 <!-- Add New -->
@@ -205,10 +207,10 @@
                         </div>
                         <div class="col-6">
                         <div class="d-flex align-items-center gap-2">
-                            <i class="ti ti-message text-muted fs-lg"></i>
+                            <i class="ti ti-user text-muted fs-lg"></i>
                             <div>
-                            <div class="fw-medium">--</div>
-                            <small class="text-muted fs-xs">Comments</small>
+                            <div class="fw-medium">{{ $project->user->name ?? 'INOPAK INSTITUTE' }}</div>
+                            <small class="text-muted fs-xs">Dibuat oleh</small>
                             </div>
                         </div>
                         </div>
@@ -491,16 +493,20 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const searchInput = document.querySelector('input[name="search"]');
-        const yearFilter = document.querySelector('select[name="year"]');
-        const ukmCountFilter = document.querySelector('select[name="ukm_count"]');
+        const filterForm = document.getElementById('filterForm');
+        const searchInput = document.getElementById('filterSearch');
+        const yearFilter = document.getElementById('filterYear');
+        const ukmCountFilter = document.getElementById('filterUkmCount');
         const projectCards = document.querySelectorAll('.project-card');
         const noResults = document.getElementById('noResults');
         const totalUkmEl = document.getElementById('total-ukm');
         const totalFilesEl = document.getElementById('total-files');
 
+        // Check if there's a search value in URL params to maintain focus on search
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasSearch = urlParams.has('search') && urlParams.get('search') !== '';
+
         // Debounce function for performance optimization
-        // Prevents excessive filtering while user is typing
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
@@ -513,73 +519,34 @@
             };
         }
 
-        // Function to filter cards based on all criteria
-        function filterCards() {
-            const keyword = searchInput ? searchInput.value.toLowerCase() : '';
-            const selectedYear = yearFilter ? yearFilter.value : '';
-            const selectedUkmCount = ukmCountFilter ? parseInt(ukmCountFilter.value) : 0;
-
-            let visibleCount = 0;
-
-            projectCards.forEach(card => {
-                const projectName = card.dataset.projectName || '';
-                const projectYear = card.dataset.projectYear || '';
-                const IkmsCount = parseInt(card.dataset.IkmsCount || 0);
-
-                // Check all filter conditions
-                const matchesSearch = projectName.includes(keyword);
-                const matchesYear = !selectedYear || projectYear === selectedYear;
-                const matchesUkmCount = !selectedUkmCount || IkmsCount >= selectedUkmCount;
-
-                const isVisible = matchesSearch && matchesYear && matchesUkmCount;
-
-                card.style.display = isVisible ? '' : 'none';
-
-                if (isVisible) visibleCount++;
-            });
-
-            // Update totals based on filtered results
-            updateTotals();
-
-            // Show/hide no results message
-            if (noResults) {
-                noResults.style.display = visibleCount === 0 ? 'block' : 'none';
-            }
+        // Function to submit the form
+        function submitForm() {
+            filterForm.submit();
         }
 
-        // Function to update totals based on visible cards
-        function updateTotals() {
-            let totalUkm = 0;
-            let totalFiles = 0;
+        // Create debounced version of submit function for search input
+        const debouncedSubmit = debounce(submitForm, 500);
 
-            projectCards.forEach(card => {
-                if (card.style.display !== 'none') {
-                    totalUkm += parseInt(card.dataset.IkmsCount || 0);
-                    totalFiles += parseInt(card.dataset.filesCount || 0);
-                }
-            });
-
-            if (totalUkmEl) totalUkmEl.textContent = totalUkm;
-            if (totalFilesEl) totalFilesEl.textContent = totalFiles;
-        }
-
-        // Initialize totals on page load
-        updateTotals();
-
-        // Create debounced version of filter function (300ms delay for optimal performance)
-        const debouncedFilter = debounce(filterCards, 300);
-
-        // Add event listeners with debounced filtering for search input
+        // Add event listeners for real-time filtering
         if (searchInput) {
-            searchInput.addEventListener('input', debouncedFilter);
+            searchInput.addEventListener('input', debouncedSubmit);
         }
 
         if (yearFilter) {
-            yearFilter.addEventListener('change', filterCards);
+            yearFilter.addEventListener('change', submitForm);
         }
 
         if (ukmCountFilter) {
-            ukmCountFilter.addEventListener('change', filterCards);
+            ukmCountFilter.addEventListener('change', submitForm);
+        }
+
+        // Keep focus on search input after form submission
+        // Check if there was a search and restore focus
+        if (hasSearch && searchInput) {
+            searchInput.focus();
+            // Move cursor to end of input
+            const len = searchInput.value.length;
+            searchInput.setSelectionRange(len, len);
         }
     });
 

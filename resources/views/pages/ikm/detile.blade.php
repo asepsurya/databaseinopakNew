@@ -330,8 +330,8 @@ Swal.fire({
                         </div>
                         <div>
                             <h3 class="mb-1 d-flex fs-xl align-items-center">{{ $Ikm->first()->nama }} - {{ $project->NamaProjek }} </h3>
-                            <p class="text-muted mb-2 fs-xxs">Updated {{ $Ikm->first()->updated_at->diffForHumans() }}</p>
-                            <span class="badge badge-soft-success fs-xxs badge-label">In Progress</span>
+                            <p class="badge badge-soft-success fs-xxs badge-label fs-xxs">Updated {{ $Ikm->first()->updated_at->diffForHumans() }}</p>
+
                         </div>
                         <div class="ms-auto d-flex gap-2">
                             <a href="/project/dataIkm/{{ $project->id }}" class="btn btn-light">

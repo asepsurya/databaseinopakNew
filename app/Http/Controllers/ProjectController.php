@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 class ProjectController extends Controller
 {
      public function index(){
-         $query = Project::withCount(['ikms', 'produkDesigns']);
+         $query = Project::withCount(['ikms', 'produkDesigns'])->with('user');
 
          // Filter by search (project name)
          if(request('search')){
@@ -54,6 +54,7 @@ class ProjectController extends Controller
                 'NamaProjek'=>'required',
                 'keterangan'=>'',
             ]);
+            $validasi['user_id'] = auth()->id();
             Project::create($validasi);
             $request->session()->flash('Berhasil', 'Data Berhasil ditambahkan');
             return redirect('/project');
@@ -198,7 +199,7 @@ class ProjectController extends Controller
             $year = $request->get('year', '');
             $ukm_count = $request->get('ukm_count', '');
 
-            $query = Project::withCount(['ikms', 'produkDesigns']);
+            $query = Project::withCount(['ikms', 'produkDesigns'])->with('user');
 
             // Filter by search (project name)
             if (!empty($search)) {

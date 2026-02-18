@@ -99,10 +99,10 @@
                     </div>
                     <div class="col-6">
                         <div class="d-flex align-items-center gap-2">
-                            <i class="ti ti-message text-muted fs-lg"></i>
+                            <i class="ti ti-user text-muted fs-lg"></i>
                             <div>
-                                <div class="fw-medium">--</div>
-                                <small class="text-muted fs-xs">Comments</small>
+                                <div class="fw-medium">{{ $project->user->name ?? '--' }}</div>
+                                <small class="text-muted fs-xs">Dibuat oleh</small>
                             </div>
                         </div>
                     </div>

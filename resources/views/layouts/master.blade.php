@@ -450,7 +450,7 @@
                 margin-left: 0 !important;
                 padding-left: 0 !important;
             }
-                    
+
         }
     </style>
 
@@ -506,7 +506,7 @@
                     {{-- <button class="sidenav-toggle-button btn btn-primary btn-icon" id="sidebarToggleBtn">
                         <i class="ti ti-menu-4"></i>
                     </button> --}}
-               
+
                     {{-- <span id="sidebarToggleBtn"></span> --}}
                     <!-- Search Box -->
                     <div id="search-box" class="app-search d-none d-xl-flex position-relative">
@@ -558,7 +558,7 @@
                     <!-- UMKM Counter Badge -->
                     <div class="topbar-item Ikm-counter">
                         <div class="d-flex align-items-center gap-2 px-2 py-1 rounded bg-primary bg-opacity-10 border border-primary border-opacity-25">
-                            <i class="ti ti-building-skyscraper text-primary fs-lg"></i>
+                            <i class="ti ti-users text-primary fs-lg"></i>
                             <span class="fw-semibold text-primary">{{ $totalUmkm ?? 0 }}</span>
                             <span class="text-muted fs-xs d-none d-lg-inline">Ikm</span>
                         </div>
@@ -657,7 +657,7 @@
                                     <span class="align-middle">Profile</span>
                                 </a>
 
-                             
+
 
                                 <!-- Change Password -->
                                 <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
@@ -1397,17 +1397,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
                             errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
                             errorHtml += '<ul class="mb-0">';
-                            
+
                             // Collect all errors
                             for (const [field, messages] of Object.entries(data.errors)) {
                                 messages.forEach(message => {
                                     errorHtml += '<li>' + message + '</li>';
-                                    
+
                                     // Add invalid class to input
                                     const input = form.querySelector('[name="' + field + '"]');
                                     if (input) {
                                         input.classList.add('is-invalid');
-                                        
+
                                         // Add error message below input
                                         let feedbackDiv = input.parentElement.querySelector('.invalid-feedback');
                                         if (!feedbackDiv) {
@@ -1420,7 +1420,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 });
                             }
                             errorHtml += '</ul></div>';
-                            
+
                             // Insert error at top of modal body
                             modalBody.insertAdjacentHTML('afterbegin', errorHtml);
                         } else if (data.message) {

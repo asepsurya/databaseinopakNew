@@ -154,6 +154,10 @@
         color: #adb5bd;
     }
 
+    [data-bs-theme="dark"] .table tbody td, .table thead th{
+        border-bottom: none;
+    }
+
     [data-bs-theme="dark"] .dataTables_wrapper .dataTables_filter input,
     [data-bs-theme="dark"] .dataTables_wrapper .dataTables_length select {
         background-color: #212529;
