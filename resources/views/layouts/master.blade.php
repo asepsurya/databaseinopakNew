@@ -1111,7 +1111,7 @@
                     </li>
 
                     <li class="side-nav-item">
-                        <a href="https://gemini.google.com/share/fcd4d3fc254a" class="side-nav-link" target="_Blank">
+                        <a href="https://gemini.google.com/share/519e090abd0a" class="side-nav-link" target="_Blank">
                             <span class="menu-icon"><i class="ti ti-sparkles"></i></span>
                             <span class="menu-text">AI Generator</span>
                         </a>
@@ -1215,7 +1215,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
 
                         <div class="col py-2">
-                            <a href="https://gemini.google.com/share/fcd4d3fc254a"
+                            <a href="https://gemini.google.com/share/519e090abd0a"
                             target="_blank"
                             class="text-decoration-none small text-muted">
                                 <div><i class="ti ti-sparkles fs-5"></i></div>
