@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
 use App\Models\Ikm;
 use App\Traits\CreatesNotifications;
 use App\Services\NotificationService;
@@ -20,11 +21,8 @@ class LoginController extends Controller
         $this->initializeNotificationService();
     }
 
-    public function login(Request $request){
-        $cek = $request->validate([
-            'email'=>'required|email',
-            'password'=>'required|min:6'
-        ]);
+    public function login(LoginRequest $request){
+        $cek = $request->validated();
 
         if(Auth::attempt($cek)){
             $request->session()->regenerate();

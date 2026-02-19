@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\AppSetting;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Http\Request;
 use App\Models\Province;
 use App\Models\Regency;
@@ -54,7 +55,7 @@ class RegisterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RegisterRequest $request)
     {
         // Double-check if registration is enabled
         $registrationEnabled = AppSetting::get('registration_enabled', true);
@@ -66,22 +67,7 @@ class RegisterController extends Controller
             );
         }
 
-        $validatedData = $request->validate([
-            'nik'=>'required|min:16',
-            'name'=>'required|max:255',
-            'telp'=>'required|unique:users',
-            'komunitas'=>'',
-            'gender'=>'required',
-            'alamat'=>'required',
-            'id_provinsi'=>'required',
-            'id_kota'=>'required',
-            'id_kecamatan'=>'required',
-            'id_desa'=>'required',
-            'rt'=>'required',
-            'rw'=>'required',
-            'email'=>'required|email|unique:users',
-            'password'=>'required|same:confirmPassword',
-        ]);
+        $validatedData = $request->validated();
 
         // enkripsi password using bcrypt
         $validatedData['password'] = Hash::make($validatedData['password']);
@@ -90,7 +76,6 @@ class RegisterController extends Controller
 
         $request->session()->flash('Berhasil', 'Pendaftaran Berhasil, Silahkan Login pada Form yang tersedia');
         return redirect('/login');
-
     }
 
     /**

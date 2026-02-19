@@ -1110,6 +1110,13 @@
                         </a>
                     </li>
 
+                    <li class="side-nav-item">
+                        <a href="https://gemini.google.com/share/fcd4d3fc254a" class="side-nav-link" target="_Blank">
+                            <span class="menu-icon"><i class="ti ti-sparkles"></i></span>
+                            <span class="menu-text">AI Generator</span>
+                        </a>
+                    </li>
+
                     {{-- <li class="side-nav-item">
                         <a href="/project/dataIkm/1" class="side-nav-link">
                             <span class="menu-icon"><i class="ti ti-users"></i></span>
@@ -1204,6 +1211,15 @@ document.addEventListener('DOMContentLoaded', function () {
                             class="text-decoration-none small text-muted">
                                 <div><i class="ti ti-folders fs-5"></i></div>
                                 TIDESSA
+                            </a>
+                        </div>
+
+                        <div class="col py-2">
+                            <a href="https://gemini.google.com/share/fcd4d3fc254a"
+                            target="_blank"
+                            class="text-decoration-none small text-muted">
+                                <div><i class="ti ti-sparkles fs-5"></i></div>
+                                AI
                             </a>
                         </div>
 

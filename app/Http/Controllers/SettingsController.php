@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AppSetting;
 use App\Models\LogoSetting;
+use App\Http\Requests\UpdateLogoRequest;
 use Illuminate\Http\Request;
 use App\Services\BrandingService;
 use App\Services\SettingsService;
@@ -97,28 +98,13 @@ class SettingsController extends Controller
     /**
      * Update logo settings.
      */
-    public function updateLogo(Request $request, string $logoType)
+    public function updateLogo(UpdateLogoRequest $request, string $logoType)
     {
-        $validated = $request->validate([
-            'logo' => [
-                'nullable',
-                'file',
-                'image',
-                'mimes:png,jpg,jpeg,svg,ico,gif,webp',
-                'max:2048', // 2MB
-            ],
-            'name' => ['nullable', 'string', 'max:255'],
-            'width' => ['nullable', 'integer', 'min:16', 'max:500'],
-            'height' => ['nullable', 'integer', 'min:16', 'max:500'],
-            'alignment' => ['nullable', 'in:left,center,right'],
-            'position' => ['nullable', 'string', 'max:50'],
-            'is_active' => ['nullable', 'boolean'],
-            'custom_css' => ['nullable', 'string'],
-        ]);
+        $validated = $request->validated();
 
         $logo = $this->settingsService->updateLogo($request, $logoType);
 
-        return redirect()->back()->with('success', ucfirst($logoType) . ' logo updated successfully.');
+        return redirect()->back()->with('success', 'Pengaturan logo berhasil diperbarui.');
     }
 
     /**

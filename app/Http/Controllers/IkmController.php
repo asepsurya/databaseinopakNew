@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreIkmRequest;
+use App\Http\Requests\UpdateIkmRequest;
 use App\Models\District;
 use App\Models\Ikm;
 use App\Models\Project;
@@ -31,12 +33,8 @@ class IkmController extends Controller
             'searchIkm'=>Ikm::all()
         ]);
     }
-       public function tambahIkm(Request $request){
-        $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'jenisProduk' => 'required|string',
-            'id_Project' => 'required|string',
-        ]);
+       public function tambahIkm(StoreIkmRequest $request){
+        $validated = $request->validated();
 
         Ikm::create([
             'nama' => $validated['nama'],
@@ -47,102 +45,26 @@ class IkmController extends Controller
         $request->session()->flash('Berhasil', 'Data IKM Berhasil Disimpan');
         return redirect('/project/dataIkm/'.$validated['id_Project']);
     }
-    public function createIkm(Request $request){
-        $validatedData = $request->validate([
-            'nama' => 'required|string|max:255',
-            'gender' => 'required|string',
-            'alamat' => 'required|string',
-            'id_provinsi' => 'required|string',
-            'id_kota' => 'required|string',
-            'id_kecamatan' => 'required|string',
-            'id_desa' => 'required|string',
-            'rt' => 'required|string',
-            'rw' => 'required|string',
-            'telp' => 'required|string',
-            // produk
-            'jenisProduk' => 'required|string',
-            'merk' => 'required|string',
-            'tagline' => 'nullable|string',
-            'kelebihan' => 'required|string',
-            'gramasi' => 'required|string',
-            'jenisKemasan' => 'nullable|string',
-            'segmentasi' => 'required|string',
-            'harga' => 'required|string',
-            'varian' => 'required|string',
-            'komposisi' => 'required|string',
-            'redaksi' => 'nullable|string',
-            'other' => 'nullable|string',
-            // perizinan
-            'namaUsaha' => 'required|string',
-            'noNIB' => 'nullable|string',
-            'noISO' => 'nullable|string',
-            'noPIRT' => 'nullable|string',
-            'noHAKI' => 'nullable|string',
-            'noLayakSehat' => 'nullable|string',
-            'noHalal' => 'nullable|string',
-            'CPPOB' => 'nullable|string',
-            'HACCP' => 'nullable|string',
-            'legalitasLain' => 'nullable|string',
-            'id_Project' => 'required|string',
-            'gambar' => 'nullable|string',
-        ]);
+    public function createIkm(StoreIkmRequest $request){
+        $validatedData = $request->validated();
 
         Ikm::create($validatedData);
         $request->session()->flash('Berhasil', 'Data IKM Berhasil Disimpan');
         return redirect('/project/dataIkm/'.$validatedData['id_Project']);
     }
 
-    public function UpdateIkm(request $request){
-        // $idikm = encrypt($request->id_Ikm);
-        // dd('project/ikms/'.$idikm.'/'.$request->id_Project);
-        $validasiData = $request->validate([
-            'nama'=>'',
-            'gender'=>'',
-            'alamat'=>'',
-            'id_provinsi'=>'',
-            'id_kota'=>'',
-            'id_kecamatan'=>'',
-            'id_desa'=>'',
-            'rt'=>'',
-            'rw'=>'',
-            'telp'=>'',
-            // produk
-            'jenisProduk'=>'',
-            'merk'=>'',
-            'tagline'=>'',
-            'kelebihan'=>'',
-            'gramasi'=>'',
-            'jenisKemasan'=>'',
-            'segmentasi'=>'',
-            'harga'=>'',
-            'varian'=>'',
-            'komposisi'=>'',
-            'redaksi'=>'',
-            'other'=>'',
-            // perizinan
-            'namaUsaha'=>'',
-            // 'noNIB'=>'',
-            // 'noISO'=>'',
-            'noPIRT'=>'',
-            // 'noHAKI'=>'',
-            // 'noLayakSehat'=>'',
-            'noHalal'=>'',
-            // 'CPPOB'=>'',
-            // 'HACCP'=>'',
-            'legalitasLain'=>'',
-            'id_Project'=>'',
-
-           ]);
-            Ikm::where('id',$request->id_Ikm)->update($validasiData);
-            $request->session()->flash('UpdateBerhasil', 'Data Berhasil Diubah');
-            $idikm = encrypt($request->id_Ikm);
-           return redirect()->route('detail', [
-                'id_Ikm'     => $idikm,
-                'id_project' => $request->id_Project
-            ]);
+    public function UpdateIkm(UpdateIkmRequest $request){
+        $validasiData = $request->validated();
+        Ikm::where('id',$request->id_Ikm)->update($validasiData);
+        $request->session()->flash('UpdateBerhasil', 'Data Berhasil Diubah');
+        $idikm = encrypt($request->id_Ikm);
+        return redirect()->route('detail', [
+            'id_Ikm'     => $idikm,
+            'id_project' => $request->id_Project
+        ]);
     }
 
-        public function edit(Ikm $ikm)
+    public function edit(Ikm $ikm)
         {
             return view('pages.ikm.update',[
                 'title'=>'Update IKM',

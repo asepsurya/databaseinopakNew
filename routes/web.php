@@ -43,6 +43,11 @@ Route::get('/login',[LoginController::class,'index'])->name('login')->middleware
 Route::post('/logout',[LoginController::class,'logout']);
 Route::post('/login',[LoginController::class,'login'])->middleware('guest')->name('login.process');
 Route::get('/dashboard',[DashboardController::class,'index'])->middleware('auth')->name('dashboard');
+
+// AI Generator
+Route::get('/ai-generator', function () {
+    return view('pages.ai-generator');
+})->middleware('auth')->name('ai-generator');
 //Profile
 Route::resource('/profile', ProfileController::class)->middleware('auth');
 Route::post('/profile/photo/cropped', [ProfileController::class, 'updatePhotoCropped'])->name('profile.photo.cropped')->middleware('auth');

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Ikm;
 use GuzzleHttp\Client;
 use App\Models\Project;
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use ImageSearch\Models\ImageSearch;
@@ -49,21 +51,15 @@ class ProjectController extends Controller
              'searchIkm'=>Ikm::all()
          ]);
        }
-    public function store(request $request){
-            $validasi = $request->validate([
-                'NamaProjek'=>'required',
-                'keterangan'=>'',
-            ]);
-            $validasi['user_id'] = auth()->id();
-            Project::create($validasi);
-            $request->session()->flash('Berhasil', 'Data Berhasil ditambahkan');
-            return redirect('/project');
+    public function store(StoreProjectRequest $request){
+        $validasi = $request->validated();
+        $validasi['user_id'] = auth()->id();
+        Project::create($validasi);
+        $request->session()->flash('Berhasil', 'Data Berhasil ditambahkan');
+        return redirect('/project');
     }
-    public function update(request $request){
-        $validasi = $request->validate([
-            'NamaProjek'=>'required',
-            'keterangan'=>'',
-        ]);
+    public function update(UpdateProjectRequest $request){
+        $validasi = $request->validated();
         Project::where('id',$request->id)->update($validasi);
         $request->session()->flash('UpdateBerhasil', 'Data Berhasil diubah');
         return redirect('/project');

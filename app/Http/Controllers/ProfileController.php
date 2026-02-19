@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Traits\CreatesNotifications;
 use App\Services\NotificationService;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\UpdatePasswordRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -42,36 +44,18 @@ class ProfileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(UpdateProfileRequest $request)
     {
         $user = auth()->user();
 
-        $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
-            'bio' => 'nullable|string|max:1000',
-            'address' => 'nullable|string|max:500',
-        ], [
-            'nama.required' => 'Nama wajib diisi.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah digunakan.',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', 'Gagal memperbarui profil. Periksa kembali data yang dimasukkan.');
-        }
+        $validated = $request->validated();
 
         $user->update([
-            'name' => $request->nama,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'bio' => $request->bio,
-            'address' => $request->address,
+            'name' => $validated['nama'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'bio' => $validated['bio'] ?? null,
+            'address' => $validated['address'] ?? null,
         ]);
 
         // Create notification for profile update
@@ -330,37 +314,21 @@ class ProfileController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function updatePassword(Request $request)
+    public function updatePassword(UpdatePasswordRequest $request)
     {
-        dd('updatePassword called'); // Debugging line to confirm method is hit
         $user = auth()->user();
         $id_user = $request->input('id_user');
-        $validator = Validator::make($request->all(), [
-            'current_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed',
-        ], [
-            'current_password.required' => 'Kata sandi saat ini wajib diisi.',
-            'new_password.required' => 'Kata sandi baru wajib diisi.',
-            'new_password.min' => 'Kata sandi baru minimal 8 karakter.',
-            'new_password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput()
-                ->with('error', 'Gagal memperbarui kata sandi.');
-        }
+        $validated = $request->validated();
 
         // Check current password
-        if (!Hash::check($request->current_password, $user->password)) {
+        if (!Hash::check($validated['current_password'], $user->password)) {
             return redirect()->back()
                 ->with('error', 'Kata sandi saat ini tidak cocok.')
                 ->withInput();
         }
 
         User::where('id', $id_user)->update([
-            'password' => Hash::make($request->new_password),
+            'password' => Hash::make($validated['new_password']),
         ]);
 
         // Create notification for password change
