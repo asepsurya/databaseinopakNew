@@ -1111,7 +1111,7 @@
                     </li>
 
                     <li class="side-nav-item">
-                        <a href="https://gemini.google.com/share/519e090abd0a" class="side-nav-link" target="_Blank">
+                        <a href="https://gemini.google.com/share/542d098081de" class="side-nav-link" target="_Blank">
                             <span class="menu-icon"><i class="ti ti-sparkles"></i></span>
                             <span class="menu-text">AI Generator</span>
                         </a>
