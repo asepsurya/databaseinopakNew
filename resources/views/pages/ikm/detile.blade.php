@@ -1470,17 +1470,16 @@ document.addEventListener("DOMContentLoaded", function () {
 Kriteria:
 1. Nama merek harus **mudah diingat, catchy, dan terdengar profesional**.
 2. Nama boleh terinspirasi dari **bahasa asing (Inggris, Latin, Jepang, dsb)**, bahasa Indonesia, atau gabungan keduanya menjadi satu kata atau frasa yang unik.
-3. Nama terdengar **modern, elegan, dan relevan** dengan tipe produk dan target audiens (misal: anak muda, profesional, keluarga).
+3. Nama terdengar **modern, elegan, dan relevan** dengan tipe produk dan target audiens.
 4. Panjangnya **tidak lebih dari 2 kata atau 1 kata gabungan**.
-5. Sertakan **tagline singkat (opsional)** yang menggambarkan nilai atau keunggulan produk secara jelas.
-6. Hindari nama yang terlalu generik, sulit dieja, atau terdengar murahan.
-7. Pastikan nama tersebut **belum umum digunakan** untuk produk sejenis di pasar Indonesia.
-8.Nama harus cocok untuk branding jangka panjang dan mudah dipakai sebagai domain atau media sosial.
-9.Nama harus mencerminkan karakter produk, seperti rasa, fungsi, atau keunikan produk.
-10.Nama Boleh terinspirasi dari **Nama Ikm atau lokasi**
-11. Format output harus:
-<p><strong>Nama Merek</strong><br><em>Tagline singkat (opsional)</em></p>
-12. Tambahkan **alasan singkat** kenapa nama tersebut cocok untuk produk.  `
+5. Hindari nama yang terlalu generik, sulit dieja, atau terdengar murahan.
+6. Pastikan nama tersebut **belum umum digunakan** untuk produk sejenis di pasar Indonesia.
+7. Nama harus cocok untuk branding jangka panjang dan mudah dipakai sebagai domain atau media sosial.
+8. Nama harus mencerminkan karakter produk.
+9. Format output WAJIB menggunakan <li>:
+<ul>
+<li><p><strong>Nama Merek</strong> - <em>Alasan singkat mengapa nama ini cocok</em></p></li>
+</ul>`
         },
 
         jenisProduk: {
@@ -1517,14 +1516,12 @@ Gunakan <ul><li>.`
 
  kelebihan: {
     title: 'Kelebihan Produk',
-    instruction: `
-Buatkan 5 poin kelebihan produk dengan format PERSIS seperti berikut:
+    instruction: `Buatkan 3 variasi 4 poin kelebihan produk dengan format PERSIS seperti berikut:
 
 1. Poin pertama
 2. Poin kedua
 3. Poin ketiga
 4. Poin keempat
-5. Poin kelima
 
 Aturan wajib:
 - Gunakan angka 1 sampai 5 diikuti titik dan spasi.
@@ -1533,6 +1530,7 @@ Aturan wajib:
 - Tidak boleh menggunakan tanda bullet (- atau •).
 - Tidak boleh menambahkan teks pembuka atau penutup.
 - Fokus pada manfaat singkat dan jelas.
+- Langsung tampilkan hasil akhir tanpa penjelasan apa pun.
 `
 },
 
@@ -1716,7 +1714,7 @@ dan
             }
         }
 
-        const options = parseOptions(result);
+        const options = parseOptions(result, targetField);
         displayOptions(options.length > 0 ? options : [result]);
 
         const generateModalEl = document.getElementById('aiGenerateModal');
@@ -1738,8 +1736,16 @@ dan
 }
 
 // Parse Options from AI Response
-function parseOptions(result) {
+function parseOptions(result, targetField = null) {
     result = result.trim();
+
+    // Clean up list formatting for merk and kelebihan fields
+    if (targetField === 'merk' || targetField === 'kelebihan') {
+        // Remove numbered list patterns (1., 2., etc.)
+        result = result.replace(/^\d+[\.\)]\s*/gm, '');
+        // Remove bullet points
+        result = result.replace(/^[\-\*•]\s*/gm, '');
+    }
 
     const optionStartMarker = '===OPTION_START===';
     const optionEndMarker = '===OPTION_END===';
@@ -1754,6 +1760,11 @@ function parseOptions(result) {
                 option = option.split(optionEndMarker)[0];
             }
             option = option.trim();
+            // Additional cleanup for merk and kelebihan
+            if (targetField === 'merk' || targetField === 'kelebihan') {
+                option = option.replace(/^\d+[\.\)]\s*/gm, '');
+                option = option.replace(/^[\-\*•]\s*/gm, '');
+            }
             if (option) options.push(formatHTML(option));
         }
         return options;
@@ -1802,9 +1813,39 @@ function displayOptions(options) {
         card.className = 'ai-option-card position-relative';
         card.setAttribute('data-index', index);
         card.onclick = function() { selectOption(this, targetField); };
+
+        // Extract brand name for HAKI check (only for merk and tagline fields)
+        let hakiButton = '';
+        if (targetField === 'merk' || targetField === 'tagline') {
+            // Try to extract brand name from option content - get only the text inside <strong> tag
+            let brandName = '';
+            const strongMatch = option.match(/<strong[^>]*>([^<]*)<\/strong>/i);
+            if (strongMatch && strongMatch[1]) {
+                brandName = strongMatch[1].trim();
+            } else {
+                // Fallback: remove all HTML tags and clean up
+                brandName = option.replace(/<[^>]*>/g, '').trim();
+                brandName = brandName.replace(/^\d+[\.\)]\s*/, '').split('-')[0].trim();
+            }
+
+            if (brandName && brandName.length > 0) {
+                const encodedKeyword = encodeURIComponent(brandName);
+                hakiButton = `
+                    <a href="https://haki.id/detail?keyword=${encodedKeyword}"
+                       target="_blank"
+                       class="btn btn-sm btn-outline-primary btn-haki-check"
+                       title="Cek Status Merek di HAKI Indonesia"
+                       onclick="event.stopPropagation();">
+                        <i class="ti ti-shield-check me-1"></i> Cek HAKI
+                    </a>
+                `;
+            }
+        }
+
         card.innerHTML = `
             <span class="option-number">${index + 1}</span>
             <div class="option-content">${option}</div>
+            ${hakiButton}
         `;
         container.appendChild(card);
     });
@@ -1818,10 +1859,20 @@ function selectOption(card, targetField) {
 
         const optionIndex = card.getAttribute('data-index');
         const options = document.querySelectorAll('.ai-option-card');
-        const selectedOption = options[optionIndex].querySelector('.option-content').innerHTML;
+        let selectedOption = options[optionIndex].querySelector('.option-content').innerHTML;
 
         console.log('Selecting option for field:', targetField);
         console.log('Selected option:', selectedOption);
+
+        // For 'merk' field, only extract the brand name (inside <strong> tag)
+        if (targetField === 'merk') {
+            const strongMatch = selectedOption.match(/<strong[^>]*>([^<]*)<\/strong>/i);
+            if (strongMatch && strongMatch[1]) {
+                selectedOption = '<p><strong>' + strongMatch[1].trim() + '</strong></p>';
+            }
+        }
+
+        console.log('Processed option:', selectedOption);
 
         // Check if TinyMCE editor exists
         const editor = typeof tinymce !== 'undefined' ? tinymce.get(targetField) : null;
@@ -1962,7 +2013,7 @@ dan
             }
         }
 
-        const options = parseOptions(result);
+        const options = parseOptions(result, targetField);
         displayOptions(options.length > 0 ? options : ['<p>Opsi tidak tersedia. Silakan coba lagi.</p>']);
 
     } catch (error) {
@@ -2250,6 +2301,26 @@ document.addEventListener('DOMContentLoaded', function() {
 .ai-loading-overlay::after .spinner-border {
     width: 3rem;
     height: 3rem;
+}
+/* HAKI Check Button Styles */
+.btn-haki-check {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    z-index: 5;
+}
+.btn-haki-check i {
+    font-size: 12px;
+}
+.btn-haki-check:hover {
+    background: #0d6efd;
+    color: white;
+}
+.ai-option-card {
+    min-height: 80px;
 }
 </style>
 

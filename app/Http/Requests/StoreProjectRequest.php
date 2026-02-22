@@ -22,7 +22,7 @@ class StoreProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'NamaProjek' => 'required|string|max:255|trim',
+            'NamaProjek' => 'required|string|max:255',
             'keterangan' => 'nullable|string|max:1000',
         ];
     }
@@ -38,7 +38,6 @@ class StoreProjectRequest extends FormRequest
             'NamaProjek.required' => 'Nama Proyek wajib diisi.',
             'NamaProjek.string' => 'Nama Proyek harus berupa teks.',
             'NamaProjek.max' => 'Nama Proyek tidak boleh lebih dari :max karakter.',
-            'NamaProjek.trim' => 'Nama Proyek tidak boleh memiliki spasi ekstra di awal atau akhir.',
             'keterangan.string' => 'Keterangan harus berupa teks.',
             'keterangan.max' => 'Keterangan tidak boleh lebih dari :max karakter.',
         ];

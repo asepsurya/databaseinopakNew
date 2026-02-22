@@ -23,8 +23,8 @@ class UpdateIkmRequest extends FormRequest
     {
         return [
             // Data Pemilik IKM
-            'nama' => 'nullable|string|max:255|trim',
-            'gender' => 'nullable|string|in:laki-laki,perempuan,Laki-laki,Perempuan',
+            'nama' => 'nullable|string|max:255',
+            'gender' => 'nullable|string|in:1,2,laki-laki,perempuan,Laki-laki,Perempuan',
             'alamat' => 'nullable|string|max:500',
             'id_provinsi' => 'nullable|integer|exists:provinces,id',
             'id_kota' => 'nullable|integer|exists:regencies,id',
@@ -49,7 +49,7 @@ class UpdateIkmRequest extends FormRequest
             'other' => 'nullable|string|max:1000',
 
             // Data Perizinan
-            'namaUsaha' => 'nullable|string|max:255|trim',
+            'namaUsaha' => 'nullable|string|max:255',
             'noNIB' => 'nullable|string|max:50',
             'noISO' => 'nullable|string|max:50',
             'noPIRT' => 'nullable|string|max:50',
@@ -77,7 +77,6 @@ class UpdateIkmRequest extends FormRequest
             // Data Pemilik IKM
             'nama.string' => 'Nama harus berupa teks.',
             'nama.max' => 'Nama tidak boleh lebih dari :max karakter.',
-            'nama.trim' => 'Nama tidak boleh memiliki spasi ekstra di awal atau akhir.',
 
             'gender.string' => 'Jenis Kelamin harus berupa teks.',
             'gender.in' => 'Jenis Kelamin tidak valid.',
@@ -147,7 +146,6 @@ class UpdateIkmRequest extends FormRequest
             // Data Perizinan
             'namaUsaha.string' => 'Nama Usaha harus berupa teks.',
             'namaUsaha.max' => 'Nama Usaha tidak boleh lebih dari :max karakter.',
-            'namaUsaha.trim' => 'Nama Usaha tidak boleh memiliki spasi ekstra di awal atau akhir.',
 
             'noNIB.string' => 'Nomor NIB harus berupa teks.',
             'noNIB.max' => 'Nomor NIB tidak boleh lebih dari :max karakter.',

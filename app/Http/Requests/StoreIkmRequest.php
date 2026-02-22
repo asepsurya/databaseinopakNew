@@ -23,33 +23,33 @@ class StoreIkmRequest extends FormRequest
     {
         return [
             // Data Pemilik IKM
-            'nama' => 'required|string|max:255|trim',
-            'gender' => 'required|string|in:laki-laki,perempuan,Laki-laki,Perempuan',
-            'alamat' => 'required|string|max:500',
-            'id_provinsi' => 'required|integer|exists:provinces,id',
-            'id_kota' => 'required|integer|exists:regencies,id',
-            'id_kecamatan' => 'required|integer|exists:districts,id',
-            'id_desa' => 'required|integer|exists:villages,id',
-            'rt' => 'required|string|max:10',
-            'rw' => 'required|string|max:10',
-            'telp' => 'required|string|max:20|regex:/^[0-9+\-\s()]*$/',
+            'nama' => 'required|string|max:255',
+            'gender' => 'nullable|string|in:1,2,laki-laki,perempuan,Laki-laki,Perempuan',
+            'alamat' => 'nullable|string|max:500',
+            'id_provinsi' => 'nullable|integer|exists:provinces,id',
+            'id_kota' => 'nullable|integer|exists:regencies,id',
+            'id_kecamatan' => 'nullable|integer|exists:districts,id',
+            'id_desa' => 'nullable|integer|exists:villages,id',
+            'rt' => 'nullable|string|max:10',
+            'rw' => 'nullable|string|max:10',
+            'telp' => 'nullable|string|max:20|regex:/^[0-9+\-\s()]*$/',
 
             // Data Produk
-            'jenisProduk' => 'required|string|max:255',
-            'merk' => 'required|string|max:255',
+            'jenisProduk' => 'nullable|string|max:255',
+            'merk' => 'nullable|string|max:255',
             'tagline' => 'nullable|string|max:500',
-            'kelebihan' => 'required|string|max:1000',
-            'gramasi' => 'required|string|max:100',
+            'kelebihan' => 'nullable|string|max:1000',
+            'gramasi' => 'nullable|string|max:100',
             'jenisKemasan' => 'nullable|string|max:255',
-            'segmentasi' => 'required|string|max:255',
-            'harga' => 'required|string|max:50',
-            'varian' => 'required|string|max:500',
-            'komposisi' => 'required|string|max:2000',
+            'segmentasi' => 'nullable|string|max:255',
+            'harga' => 'nullable|string|max:50',
+            'varian' => 'nullable|string|max:500',
+            'komposisi' => 'nullable|string|max:2000',
             'redaksi' => 'nullable|string|max:2000',
             'other' => 'nullable|string|max:1000',
 
             // Data Perizinan
-            'namaUsaha' => 'required|string|max:255|trim',
+            'namaUsaha' => 'nullable|string|max:255',
             'noNIB' => 'nullable|string|max:50',
             'noISO' => 'nullable|string|max:50',
             'noPIRT' => 'nullable|string|max:50',
@@ -61,7 +61,7 @@ class StoreIkmRequest extends FormRequest
             'legalitasLain' => 'nullable|string|max:500',
 
             // Relasi
-            'id_Project' => 'required|integer|exists:projects,id',
+            'id_Project' => 'nullable|integer|exists:projects,id',
             'gambar' => 'nullable|string|max:500',
         ];
     }
@@ -78,7 +78,6 @@ class StoreIkmRequest extends FormRequest
             'nama.required' => 'Nama wajib diisi.',
             'nama.string' => 'Nama harus berupa teks.',
             'nama.max' => 'Nama tidak boleh lebih dari :max karakter.',
-            'nama.trim' => 'Nama tidak boleh memiliki spasi ekstra di awal atau akhir.',
 
             'gender.required' => 'Jenis Kelamin wajib dipilih.',
             'gender.in' => 'Jenis Kelamin tidak valid.',
@@ -165,7 +164,6 @@ class StoreIkmRequest extends FormRequest
             'namaUsaha.required' => 'Nama Usaha wajib diisi.',
             'namaUsaha.string' => 'Nama Usaha harus berupa teks.',
             'namaUsaha.max' => 'Nama Usaha tidak boleh lebih dari :max karakter.',
-            'namaUsaha.trim' => 'Nama Usaha tidak boleh memiliki spasi ekstra di awal atau akhir.',
 
             'noNIB.string' => 'Nomor NIB harus berupa teks.',
             'noNIB.max' => 'Nomor NIB tidak boleh lebih dari :max karakter.',
