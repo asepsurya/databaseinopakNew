@@ -440,6 +440,25 @@
         .dark .search-autocomplete-dropdown .no-results {
             color: #adb5bd;
         }
+
+        /* Make sidebar sticky/fixed on scroll */
+        .sidenav-menu {
+            position: fixed !important;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1040;
+        }
+
+        /* Active Sidebar Icon & Text Color */
+        .side-nav-link.active,
+        .side-nav-link.active .menu-icon,
+        .side-nav-item.menuitem-active > .side-nav-link,
+        .side-nav-item.menuitem-active > .side-nav-link .menu-icon {
+            color: var(--bs-primary) !important;
+        }
+
+
          @media (max-width: 768px) {
             #sidebarToggleBtn,.sidenav-menu{
                 display: none !important;
@@ -1078,16 +1097,16 @@
                     <li class="side-nav-title mt-2">Main</li>
 
                     <li class="side-nav-item">
-                        <a href="/dashboard" class="side-nav-link">
+                        <a href="/dashboard" class="side-nav-link {{ Request::is('dashboard*') ? 'active' : '' }}">
                             <span class="menu-icon"><i class="ti ti-dashboard"></i></span>
                             <span class="menu-text">Dashboard</span>
                         </a>
                     </li>
 
                     <li class="side-nav-title mt-2">Menu</li>
-
+<!-- project* agar semua route project ke detect -->
                     <li class="side-nav-item">
-                        <a href="/project" class="side-nav-link">
+                        <a href="/project" class="side-nav-link {{ Request::is('project*') ? 'active' : '' }}">
                             <span class="menu-icon"><i class="ti ti-folder"></i></span>
                             <span class="menu-text">Project</span>
                         </a>
@@ -1095,7 +1114,13 @@
 
                     @if(Auth::check() && Auth::user()->isAdmin())
                     <li class="side-nav-item">
-                        <a href="/backup" class="side-nav-link">
+                        <a href="/users" class="side-nav-link {{ Request::is('users*') ? 'active' : '' }}">
+                            <span class="menu-icon"><i class="ti ti-users"></i></span>
+                            <span class="menu-text">Kelola User</span>
+                        </a>
+                    </li>
+                    <li class="side-nav-item">
+                        <a href="/backup" class="side-nav-link {{ Request::is('backup*') ? 'active' : '' }}">
                             <span class="menu-icon"><i class="ti ti-database"></i></span>
                             <span class="menu-text">Backup Database</span>
                         </a>

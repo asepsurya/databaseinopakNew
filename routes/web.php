@@ -16,6 +16,7 @@ use App\Http\Controllers\DetileIkmController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\BackupController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -185,6 +186,14 @@ Route::prefix('notifications')->middleware('auth')->group(function () {
     Route::put('/{notification}/unread', [NotificationController::class, 'markAsUnread']);
     Route::delete('/{notification}', [NotificationController::class, 'destroy']);
     Route::delete('/', [NotificationController::class, 'destroyAll']);
+});
+
+// User Management Routes (Admin Only)
+Route::prefix('users')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('users.index');
+    Route::get('/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/', [UserController::class, 'store'])->name('users.store');
+    Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
 // Dashboard API Routes
