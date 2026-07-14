@@ -479,7 +479,7 @@
                 @endif
             </div>
         </div>
-    </div>
+    </div> 
 </div>
 
 <!-- Modal Tambah Ikm -->
@@ -519,7 +519,7 @@
 </div>
 
 
-</div>
+
 
 <!-- Modal Tambah Folder -->
 <div class="modal fade" id="tambahFolder" tabindex="-1" role="dialog" aria-labelledby="tambahFolderLabel" aria-hidden="true">

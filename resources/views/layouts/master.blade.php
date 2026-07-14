@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" data-skin="neo" data-bs-theme="light" data-menu-color="gray" data-topbar-color="light" data-layout-width="fluid" dir="ltr" data-sidenav-size="condensed" data-layout-position="fixed" data-theme="light">
+<html lang="en" data-skin="neo" data-bs-theme="light" data-menu-color="gray" data-topbar-color="light"
+    data-layout-width="fluid" dir="ltr" data-sidenav-size="condensed" data-layout-position="fixed" data-theme="light">
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -41,6 +43,7 @@
         .mobile-menu {
             background-color: rgba(255, 255, 255, 0.95);
         }
+
         [data-theme="dark"] .mobile-menu {
             background-color: #1e1f27;
         }
@@ -48,14 +51,17 @@
         .card-header {
             background-color: transparent !important;
         }
-        .dataTable  .thead-sm th {
+
+        .dataTable .thead-sm th {
             background-color: transparent !important;
         }
+
         @media (max-width: 576px) {
             .Ikm-counter {
-               display: none !important;
+                display: none !important;
             }
         }
+
         /* Toastr notification styles */
         .toast-simple {
             font-family: inherit;
@@ -64,26 +70,31 @@
             border-radius: 0.375rem;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }
+
         .toast-success {
             background-color: #d1e7dd;
             border-left: 4px solid #198754;
             color: #0f5132;
         }
+
         .toast-error {
             background-color: #f8d7da;
             border-left: 4px solid #dc3545;
             color: #842029;
         }
+
         .toast-info {
             background-color: #cff4fc;
             border-left: 4px solid #0dcaf0;
             color: #055160;
         }
+
         .toast-warning {
             background-color: #fff3cd;
             border-left: 4px solid #ffc107;
             color: #664d03;
         }
+
         .toast-top-right {
             top: 20px;
             right: 20px;
@@ -95,11 +106,13 @@
             background-color: #344050;
             color: #f8f9fa;
         }
+
         [data-theme="dark"] .toast-success,
         .dark .toast-success {
             background-color: #1e3a2f;
             color: #75b798;
         }
+
         [data-theme="dark"] .toast-error,
         .dark .toast-error {
             background-color: #3d1e21;
@@ -112,13 +125,16 @@
             max-width: 320px !important;
             padding: 10px 14px !important;
         }
+
         .swal2-toast-small .swal2-title {
             font-size: 13px !important;
             margin-bottom: 2px !important;
         }
+
         .swal2-toast-small .swal2-content {
             font-size: 12px !important;
         }
+
         .swal2-toast-small .swal2-icon {
             width: 22px !important;
             height: 22px !important;
@@ -130,9 +146,11 @@
             background: #fff !important;
             color: #333 !important;
         }
+
         :root .swal2-title {
             color: #495057 !important;
         }
+
         :root .swal2-content {
             color: #6c757d !important;
         }
@@ -145,22 +163,26 @@
             color: #f8f9fa !important;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
         }
+
         [data-theme="dark"] .swal2-title,
         .dark .swal2-title,
         body.dark .swal2-title {
             color: #f8f9fa !important;
         }
+
         [data-theme="dark"] .swal2-content,
         .dark .swal2-content,
         body.dark .swal2-content {
             color: #c8cdd4 !important;
         }
+
         [data-theme="dark"] .swal2-icon.swal2-success,
         .dark .swal2-icon.swal2-success,
         body.dark .swal2-icon.swal2-success {
             border-color: #3fc3ee !important;
             color: #3fc3ee !important;
         }
+
         [data-theme="dark"] .swal2-icon.swal2-error,
         .dark .swal2-icon.swal2-error,
         body.dark .swal2-icon.swal2-error {
@@ -175,16 +197,19 @@
             font-family: inherit !important;
             border: 1px solid #e5e7eb !important;
         }
+
         .swal2-tailwind-title {
             font-weight: 600 !important;
             font-size: 16px !important;
             color: #111827 !important;
         }
+
         .swal2-tailwind-content {
             font-size: 14px !important;
             color: #4b5563 !important;
             line-height: 1.5 !important;
         }
+
         .swal2-tailwind-confirm {
             border-radius: 8px !important;
             font-weight: 500 !important;
@@ -192,10 +217,12 @@
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
             transition: all 0.2s ease !important;
         }
+
         .swal2-tailwind-confirm:hover {
             transform: translateY(-1px) !important;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
         }
+
         .swal2-tailwind-cancel {
             border-radius: 8px !important;
             font-weight: 500 !important;
@@ -206,18 +233,22 @@
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
             transition: all 0.2s ease !important;
         }
+
         .swal2-tailwind-cancel:hover {
             background: #f9fafb !important;
             transform: translateY(-1px) !important;
         }
+
         .swal2-tailwind-warning-icon {
             border-color: #fbbf24 !important;
             color: #f59e0b !important;
         }
+
         .swal2-tailwind-danger-icon {
             border-color: #fca5a5 !important;
             color: #ef4444 !important;
         }
+
         .swal2-tailwind-info-icon {
             border-color: #93c5fd !important;
             color: #3b82f6 !important;
@@ -232,16 +263,19 @@
             border-color: #374151 !important;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3) !important;
         }
+
         [data-bs-theme="dark"] .swal2-tailwind-title,
         .dark .swal2-tailwind-title,
         body.dark .swal2-tailwind-title {
             color: #f9fafb !important;
         }
+
         [data-bs-theme="dark"] .swal2-tailwind-content,
         .dark .swal2-tailwind-content,
         body.dark .swal2-tailwind-content {
             color: #d1d5db !important;
         }
+
         [data-bs-theme="dark"] .swal2-tailwind-cancel,
         .dark .swal2-tailwind-cancel,
         body.dark .swal2-tailwind-cancel {
@@ -249,6 +283,7 @@
             border-color: #4b5563 !important;
             color: #f3f4f6 !important;
         }
+
         [data-bs-theme="dark"] .swal2-tailwind-cancel:hover,
         .dark .swal2-tailwind-cancel:hover,
         body.dark .swal2-tailwind-cancel:hover {
@@ -481,7 +516,9 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .search-autocomplete-dropdown .error-message {
@@ -528,6 +565,177 @@
             color: #adb5bd;
         }
 
+        /* Folder item type styles (reuse lowercase classes used by JS) */
+        .search-autocomplete-item .item-icon.ikm {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .search-autocomplete-item .item-icon.folder {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .search-autocomplete-item .item-type.ikm {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .search-autocomplete-item .item-type.folder {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        /* Fullscreen Search Overlay */
+        body.search-open {
+            overflow: hidden;
+        }
+
+        .search-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .search-overlay.show {
+            display: flex;
+        }
+
+        .search-overlay-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .search-overlay-content {
+            position: relative;
+            width: 100%;
+            max-width: 680px;
+            margin-top: 12vh;
+            padding: 0 16px;
+            z-index: 1;
+            animation: searchOverlayIn 0.18s ease-out;
+        }
+
+        @keyframes searchOverlayIn {
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-overlay-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            padding: 0 14px;
+            border: 2px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-overlay-input-wrap:focus-within {
+            border-color: var(--bs-primary, #435ebe);
+        }
+
+        [data-bs-theme="dark"] .search-overlay-input-wrap {
+            background: #2c3036;
+        }
+
+        .search-overlay-icon {
+            font-size: 22px;
+            color: #6c757d;
+            flex-shrink: 0;
+        }
+
+        .search-overlay-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 20px;
+            padding: 18px 12px;
+            color: #343a40;
+            min-width: 0;
+        }
+
+        [data-bs-theme="dark"] .search-overlay-input {
+            color: #f8f9fa;
+        }
+
+        .search-overlay-input::placeholder {
+            color: #adb5bd;
+        }
+
+        .search-overlay-close {
+            border: none;
+            background: #f1f3f5;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #495057;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .search-overlay-close:hover {
+            background: #e2e6ea;
+        }
+
+        .search-overlay .search-autocomplete-dropdown {
+            position: relative;
+            top: auto;
+            left: auto;
+            right: auto;
+            margin-top: 12px;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            max-height: 55vh;
+        }
+
+        [data-bs-theme="dark"] .search-overlay .search-autocomplete-dropdown {
+            background: #2c3036;
+        }
+
+        .search-overlay-hint {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 16px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 13px;
+        }
+
+        .search-overlay-hint kbd {
+            display: inline-block;
+            padding: 2px 7px;
+            margin: 0 2px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
         /* Make sidebar sticky/fixed on scroll */
         .sidenav-menu {
             position: fixed !important;
@@ -540,19 +748,23 @@
         /* Active Sidebar Icon & Text Color */
         .side-nav-link.active,
         .side-nav-link.active .menu-icon,
-        .side-nav-item.menuitem-active > .side-nav-link,
-        .side-nav-item.menuitem-active > .side-nav-link .menu-icon {
+        .side-nav-item.menuitem-active>.side-nav-link,
+        .side-nav-item.menuitem-active>.side-nav-link .menu-icon {
             color: var(--bs-primary) !important;
         }
 
 
-         @media (max-width: 768px) {
-            #sidebarToggleBtn,.sidenav-menu{
+        @media (max-width: 768px) {
+
+            #sidebarToggleBtn,
+            .sidenav-menu {
                 display: none !important;
             }
+
             .page-wrapper,
             .page-body,
-            .content-page,.app-topbar {
+            .content-page,
+            .app-topbar {
                 margin-left: 0 !important;
                 padding-left: 0 !important;
             }
@@ -573,36 +785,32 @@
                     <!-- Topbar Brand Logo -->
                     <div class="logo-topbar">
                         @php
-                        $headerLogo = $logos['header'] ?? null;
-                        $faviconLogo = $logos['favicon'] ?? null;
+                            $headerLogo = $logos['header'] ?? null;
+                            $faviconLogo = $logos['favicon'] ?? null;
                         @endphp
 
                         <!-- Single logo element that handles light/dark mode via CSS/data attributes -->
                         <a href="/dashboard" class="logo">
                             <span class="logo-lg">
                                 @if($headerLogo && $headerLogo->is_active && $headerLogo->image_url)
-                                    <img src="{{ asset($headerLogo->image_url) }}"
-                                         alt="{{ $headerLogo->name ?? 'Logo' }}"
-                                         data-light="{{ asset($headerLogo->image_url) }}"
-                                         data-dark="{{ asset($headerLogo->image_url) }}"
-                                         style="{{ $headerLogo->width ? 'width:'.$headerLogo->width.'px;' : '' }}{{ $headerLogo->height ? 'height:'.$headerLogo->height.'px;' : '' }}" />
+                                    <img src="{{ asset($headerLogo->image_url) }}" alt="{{ $headerLogo->name ?? 'Logo' }}"
+                                        data-light="{{ asset($headerLogo->image_url) }}"
+                                        data-dark="{{ asset($headerLogo->image_url) }}"
+                                        style="{{ $headerLogo->width ? 'width:' . $headerLogo->width . 'px;' : '' }}{{ $headerLogo->height ? 'height:' . $headerLogo->height . 'px;' : '' }}" />
                                 @else
-                                    <img src="{{ asset('assets/images/inopak/logo_light.png') }}"
-                                         alt="Logo"
-                                         data-light="{{ asset('assets/images/inopak/logo_light.png') }}"
-                                         data-dark="{{ asset('assets/images/inopak/logo_dark.png') }}"
-                                         style="height: 40px;" />
+                                    <img src="{{ asset('assets/images/inopak/logo_light.png') }}" alt="Logo"
+                                        data-light="{{ asset('assets/images/inopak/logo_light.png') }}"
+                                        data-dark="{{ asset('assets/images/inopak/logo_dark.png') }}"
+                                        style="height: 40px;" />
                                 @endif
                             </span>
                             <span class="logo-sm">
                                 @if($faviconLogo && $faviconLogo->is_active && $faviconLogo->image_url)
                                     <img src="{{ asset($faviconLogo->image_url) }}"
-                                         alt="{{ $faviconLogo->name ?? 'Favicon' }}"
-                                         style="width: 30px; height: 30px;" />
+                                        alt="{{ $faviconLogo->name ?? 'Favicon' }}" style="width: 30px; height: 30px;" />
                                 @else
-                                    <img src="{{ asset('assets/images/inopak/logo.png') }}"
-                                         alt="Logo"
-                                         style="width: 30px; height: 30px;" />
+                                    <img src="{{ asset('assets/images/inopak/logo.png') }}" alt="Logo"
+                                        style="width: 30px; height: 30px;" />
                                 @endif
                             </span>
                         </a>
@@ -614,12 +822,14 @@
                     </button> --}}
 
                     {{-- <span id="sidebarToggleBtn"></span> --}}
-                    <!-- Search Box -->
-                    <div id="search-box" class="app-search d-none d-xl-flex position-relative">
-                        <input type="search" class="form-control rounded-pill topbar-search" name="search" placeholder="Search..." id="topSearch" autocomplete="off" />
-                        <i class="ti ti-search app-search-icon text-muted"></i>
-                        <!-- Autocomplete Dropdown -->
-                        <div id="search-autocomplete-dropdown" class="search-autocomplete-dropdown"></div>
+                    <!-- Search Box (trigger for fullscreen overlay) -->
+                    <div id="search-box" class="app-search d-flex position-relative">
+                        <button type="button" id="openSearchBtn"
+                            class="form-control rounded-pill topbar-search d-flex align-items-center gap-2 text-start"
+                            aria-label="Buka pencarian">
+                            <span class="text-muted fw-normal text-truncate">Cari IKM, Folder, Project...</span>
+                            <i class="ti ti-search ms-auto text-muted"></i>
+                        </button>
                     </div>
 
 
@@ -629,24 +839,28 @@
                     <!-- Theme Toggle -->
                     <div id="theme-dropdown" class="topbar-item d-none d-sm-flex">
                         <div class="dropdown">
-                            <button class="topbar-link" data-bs-toggle="dropdown" type="button" aria-haspopup="false" aria-expanded="false">
+                            <button class="topbar-link" data-bs-toggle="dropdown" type="button" aria-haspopup="false"
+                                aria-expanded="false">
                                 <i class="ti ti-sun topbar-link-icon" id="theme-icon-light"></i>
                                 <i class="ti ti-moon topbar-link-icon d-none" id="theme-icon-dark"></i>
                                 <i class="ti ti-sun-moon topbar-link-icon d-none" id="theme-icon-system"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" data-thememode="dropdown">
                                 <label class="dropdown-item cursor-pointer">
-                                    <input class="form-check-input" type="radio" name="data-bs-theme" value="light" style="display: none" checked />
+                                    <input class="form-check-input" type="radio" name="data-bs-theme" value="light"
+                                        style="display: none" checked />
                                     <i class="ti ti-sun align-middle me-1 fs-16"></i>
                                     <span class="align-middle">Light</span>
                                 </label>
                                 <label class="dropdown-item cursor-pointer">
-                                    <input class="form-check-input" type="radio" name="data-bs-theme" value="dark" style="display: none" />
+                                    <input class="form-check-input" type="radio" name="data-bs-theme" value="dark"
+                                        style="display: none" />
                                     <i class="ti ti-moon align-middle me-1 fs-16"></i>
                                     <span class="align-middle">Dark</span>
                                 </label>
                                 <label class="dropdown-item cursor-pointer">
-                                    <input class="form-check-input" type="radio" name="data-bs-theme" value="system" style="display: none" />
+                                    <input class="form-check-input" type="radio" name="data-bs-theme" value="system"
+                                        style="display: none" />
                                     <i class="ti ti-sun-moon align-middle me-1 fs-16"></i>
                                     <span class="align-middle">System</span>
                                 </label>
@@ -663,7 +877,8 @@
 
                     <!-- UMKM Counter Badge -->
                     <div class="topbar-item Ikm-counter">
-                        <div class="d-flex align-items-center gap-2 px-2 py-1 rounded bg-primary bg-opacity-10 border border-primary border-opacity-25">
+                        <div
+                            class="d-flex align-items-center gap-2 px-2 py-1 rounded bg-primary bg-opacity-10 border border-primary border-opacity-25">
                             <i class="ti ti-users text-primary fs-lg"></i>
                             <span class="fw-semibold text-primary">{{ $totalUmkm ?? 0 }}</span>
                             <span class="text-muted fs-xs d-none d-lg-inline">Ikm</span>
@@ -674,38 +889,40 @@
                     @auth
                         @include('layouts.partials.notifications')
                     @else
-                    <div class="topbar-item">
-                        <div class="dropdown">
-                            <button class="topbar-link dropdown-toggle drop-arrow-none" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-haspopup="false" aria-expanded="false">
-                                <i class="ti ti-bell topbar-link-icon"></i>
-                            </button>
-                            <div class="dropdown-menu p-0 dropdown-menu-end dropdown-menu-lg">
-                                <div class="px-3 py-2 border-bottom">
-                                    <div class="row align-items-center">
-                                        <div class="col">
-                                            <h6 class="m-0 fs-md fw-semibold">Notifications</h6>
+                        <div class="topbar-item">
+                            <div class="dropdown">
+                                <button class="topbar-link dropdown-toggle drop-arrow-none" data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside" aria-haspopup="false" aria-expanded="false">
+                                    <i class="ti ti-bell topbar-link-icon"></i>
+                                </button>
+                                <div class="dropdown-menu p-0 dropdown-menu-end dropdown-menu-lg">
+                                    <div class="px-3 py-2 border-bottom">
+                                        <div class="row align-items-center">
+                                            <div class="col">
+                                                <h6 class="m-0 fs-md fw-semibold">Notifications</h6>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div style="max-height: 300px" data-simplebar>
-                                    <div class="dropdown-item notification-item">
-                                        <span class="d-flex align-items-center gap-3">
-                                            <span class="flex-shrink-0 position-relative">
-                                                <span class="avatar-md rounded-circle bg-primary d-flex align-items-center justify-content-center">
-                                                    <i class="ti ti-info text-white"></i>
+                                    <div style="max-height: 300px" data-simplebar>
+                                        <div class="dropdown-item notification-item">
+                                            <span class="d-flex align-items-center gap-3">
+                                                <span class="flex-shrink-0 position-relative">
+                                                    <span
+                                                        class="avatar-md rounded-circle bg-primary d-flex align-items-center justify-content-center">
+                                                        <i class="ti ti-info text-white"></i>
+                                                    </span>
+                                                </span>
+                                                <span class="flex-grow-1 text-muted">
+                                                    <span class="fw-medium text-body">Info</span>
+                                                    <br />
+                                                    <span class="fs-xs">Silakan login untuk melihat notifikasi</span>
                                                 </span>
                                             </span>
-                                            <span class="flex-grow-1 text-muted">
-                                                <span class="fw-medium text-body">Info</span>
-                                                <br />
-                                                <span class="fs-xs">Silakan login untuk melihat notifikasi</span>
-                                            </span>
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                     @endauth
 
                     <!-- Fullscreen Toggle -->
@@ -717,11 +934,12 @@
 
                     <!-- Settings Toggle -->
                     {{-- <div class="topbar-item d-none d-sm-flex">
-                        <button class="topbar-link btn-theme-setting" data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" type="button">
+                        <button class="topbar-link btn-theme-setting" data-bs-toggle="offcanvas"
+                            data-bs-target="#theme-settings-offcanvas" type="button">
                             <i class="ti ti-settings topbar-link-icon"></i>
                         </button>
                     </div> --}}
-                     @if(Auth::check() && Auth::user()->isAdmin())
+                    @if(Auth::check() && Auth::user()->isAdmin())
                         <div class="topbar-item d-none d-sm-flex">
                             <a class="topbar-link " type="button" href="/settings">
                                 <i class="ti ti-settings topbar-link-icon"></i>
@@ -732,8 +950,9 @@
                     <!-- User Profile -->
                     <div class="topbar-item nav-user">
                         <div class="dropdown">
-                            <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown" href="#!" aria-haspopup="false" aria-expanded="false">
-                               @if(auth()->user()->profile_photo && Storage::disk('public')->exists(auth()->user()->profile_photo))
+                            <a class="topbar-link dropdown-toggle drop-arrow-none px-2" data-bs-toggle="dropdown"
+                                href="#!" aria-haspopup="false" aria-expanded="false">
+                                @if(auth()->user()->profile_photo && Storage::disk('public')->exists(auth()->user()->profile_photo))
                                     <img src="/storage/{{ auth()->user()->profile_photo }}" width="32"
                                         class="rounded-circle me-lg-2 d-flex" alt="user-image" />
                                 @else
@@ -766,7 +985,8 @@
 
 
                                 <!-- Change Password -->
-                                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                <a href="#" class="dropdown-item" data-bs-toggle="modal"
+                                    data-bs-target="#changePasswordModal">
                                     <i class="ti ti-key me-1 fs-lg align-middle"></i>
                                     <span class="align-middle">Ubah Password</span>
                                 </a>
@@ -792,13 +1012,17 @@
 
         <!-- Theme Settings Offcanvas -->
         <div class="offcanvas offcanvas-end overflow-hidden" tabindex="-1" id="theme-settings-offcanvas">
-            <div class="d-flex justify-content-between text-bg-primary gap-2 p-3" style="background-image: url({{ asset('assets/images/settings-bg.png') }})">
+            <div class="d-flex justify-content-between text-bg-primary gap-2 p-3"
+                style="background-image: url({{ asset('assets/images/settings-bg.png') }})">
                 <div>
                     <h5 class="mb-1 fw-bold text-white text-uppercase">Admin Customizer</h5>
-                    <p class="text-white text-opacity-75 fst-italic fw-medium mb-0">Easily configure layout, styles, and preferences for your admin interface.</p>
+                    <p class="text-white text-opacity-75 fst-italic fw-medium mb-0">Easily configure layout, styles, and
+                        preferences for your admin interface.</p>
                 </div>
                 <div class="flex-grow-0">
-                    <button type="button" class="d-block btn btn-sm bg-white bg-opacity-25 text-white rounded-circle btn-icon" data-bs-dismiss="offcanvas">
+                    <button type="button"
+                        class="d-block btn btn-sm bg-white bg-opacity-25 text-white rounded-circle btn-icon"
+                        data-bs-dismiss="offcanvas">
                         <i class="ti ti-x fs-lg"></i>
                     </button>
                 </div>
@@ -810,54 +1034,66 @@
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-default" value="default" />
+                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-default"
+                                    value="default" />
                                 <label class="form-check-label p-0 w-100" for="demo-skin-default">
-                                    <img src="{{ asset('assets/images/layouts/skin-default.png') }}" alt="skin-default" class="img-fluid" />
+                                    <img src="{{ asset('assets/images/layouts/skin-default.png') }}" alt="skin-default"
+                                        class="img-fluid" />
                                 </label>
                             </div>
                             <h5 class="text-center text-muted mt-2 mb-0 fs-12">Default</h5>
                         </div>
                         <div class="col-6">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-neo" value="neo" checked />
+                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-neo"
+                                    value="neo" checked />
                                 <label class="form-check-label p-0 w-100" for="demo-skin-neo">
-                                    <img src="{{ asset('assets/images/layouts/skin-neo.png') }}" alt="skin-neo" class="img-fluid" />
+                                    <img src="{{ asset('assets/images/layouts/skin-neo.png') }}" alt="skin-neo"
+                                        class="img-fluid" />
                                 </label>
                             </div>
                             <h5 class="text-center text-muted mt-2 mb-0 fs-12">Neo</h5>
                         </div>
                         <div class="col-6">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-minimal" value="minimal" />
+                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-minimal"
+                                    value="minimal" />
                                 <label class="form-check-label p-0 w-100" for="demo-skin-minimal">
-                                    <img src="{{ asset('assets/images/layouts/skin-minimal.png') }}" alt="skin-minimal" class="img-fluid" />
+                                    <img src="{{ asset('assets/images/layouts/skin-minimal.png') }}" alt="skin-minimal"
+                                        class="img-fluid" />
                                 </label>
                             </div>
                             <h5 class="text-center text-muted mt-2 mb-0 fs-12">Minimal</h5>
                         </div>
                         <div class="col-6">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-modern" value="modern" />
+                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-modern"
+                                    value="modern" />
                                 <label class="form-check-label p-0 w-100" for="demo-skin-modern">
-                                    <img src="{{ asset('assets/images/layouts/skin-modern.png') }}" alt="skin-modern" class="img-fluid" />
+                                    <img src="{{ asset('assets/images/layouts/skin-modern.png') }}" alt="skin-modern"
+                                        class="img-fluid" />
                                 </label>
                             </div>
                             <h5 class="text-center text-muted mt-2 mb-0 fs-12">Modern</h5>
                         </div>
                         <div class="col-6">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-material" value="material" />
+                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-material"
+                                    value="material" />
                                 <label class="form-check-label p-0 w-100" for="demo-skin-material">
-                                    <img src="{{ asset('assets/images/layouts/skin-material.png') }}" alt="skin-material" class="img-fluid" />
+                                    <img src="{{ asset('assets/images/layouts/skin-material.png') }}"
+                                        alt="skin-material" class="img-fluid" />
                                 </label>
                             </div>
                             <h5 class="text-center text-muted mt-2 mb-0 fs-12">Material</h5>
                         </div>
                         <div class="col-6">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-flat" value="flat" />
+                                <input class="form-check-input" type="radio" name="data-skin" id="demo-skin-flat"
+                                    value="flat" />
                                 <label class="form-check-label p-0 w-100" for="demo-skin-flat">
-                                    <img src="{{ asset('assets/images/layouts/skin-flat.png') }}" alt="skin-flat" class="img-fluid" />
+                                    <img src="{{ asset('assets/images/layouts/skin-flat.png') }}" alt="skin-flat"
+                                        class="img-fluid" />
                                 </label>
                             </div>
                             <h5 class="text-center text-muted mt-2 mb-0 fs-12">Flat</h5>
@@ -871,27 +1107,33 @@
                     <div class="row g-3">
                         <div class="col-4">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-bs-theme" id="layout-color-light" value="light" checked />
+                                <input class="form-check-input" type="radio" name="data-bs-theme"
+                                    id="layout-color-light" value="light" checked />
                                 <label class="form-check-label p-0 w-100" for="layout-color-light">
-                                    <img src="{{ asset('assets/images/layouts/theme-light.png') }}" alt="theme-light" class="img-fluid" />
+                                    <img src="{{ asset('assets/images/layouts/theme-light.png') }}" alt="theme-light"
+                                        class="img-fluid" />
                                 </label>
                             </div>
                             <h5 class="text-center text-muted mt-2 mb-0 fs-12">Light</h5>
                         </div>
                         <div class="col-4">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-bs-theme" id="layout-color-dark" value="dark" />
+                                <input class="form-check-input" type="radio" name="data-bs-theme" id="layout-color-dark"
+                                    value="dark" />
                                 <label class="form-check-label p-0 w-100" for="layout-color-dark">
-                                    <img src="{{ asset('assets/images/layouts/theme-dark.png') }}" alt="theme-dark" class="img-fluid" />
+                                    <img src="{{ asset('assets/images/layouts/theme-dark.png') }}" alt="theme-dark"
+                                        class="img-fluid" />
                                 </label>
                             </div>
                             <h5 class="text-center text-muted mt-2 mb-0 fs-12">Dark</h5>
                         </div>
                         <div class="col-4">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-bs-theme" id="layout-color-system" value="system" />
+                                <input class="form-check-input" type="radio" name="data-bs-theme"
+                                    id="layout-color-system" value="system" />
                                 <label class="form-check-label p-0 w-100" for="layout-color-system">
-                                    <img src="{{ asset('assets/images/layouts/theme-system.png') }}" alt="theme-system" class="img-fluid" />
+                                    <img src="{{ asset('assets/images/layouts/theme-system.png') }}" alt="theme-system"
+                                        class="img-fluid" />
                                 </label>
                             </div>
                             <h5 class="text-center text-muted mt-2 mb-0 fs-12">System</h5>
@@ -905,7 +1147,8 @@
                     <div class="row g-2">
                         <div class="col-3">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-menu-color" id="layout-sidenav-color-light" value="light" />
+                                <input class="form-check-input" type="radio" name="data-menu-color"
+                                    id="layout-sidenav-color-light" value="light" />
                                 <label class="form-check-label p-0 w-100" for="layout-sidenav-color-light">
                                     <div class="bg-light rounded p-2" style="height: 40px;"></div>
                                 </label>
@@ -913,7 +1156,8 @@
                         </div>
                         <div class="col-3">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-menu-color" id="layout-sidenav-color-dark" value="dark" />
+                                <input class="form-check-input" type="radio" name="data-menu-color"
+                                    id="layout-sidenav-color-dark" value="dark" />
                                 <label class="form-check-label p-0 w-100" for="layout-sidenav-color-dark">
                                     <div class="bg-dark rounded p-2" style="height: 40px;"></div>
                                 </label>
@@ -921,7 +1165,8 @@
                         </div>
                         <div class="col-3">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-menu-color" id="layout-sidenav-color-gray" value="gray" checked />
+                                <input class="form-check-input" type="radio" name="data-menu-color"
+                                    id="layout-sidenav-color-gray" value="gray" checked />
                                 <label class="form-check-label p-0 w-100" for="layout-sidenav-color-gray">
                                     <div class="bg-secondary rounded p-2" style="height: 40px;"></div>
                                 </label>
@@ -929,7 +1174,8 @@
                         </div>
                         <div class="col-3">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-menu-color" id="layout-sidenav-color-gradient" value="gradient" />
+                                <input class="form-check-input" type="radio" name="data-menu-color"
+                                    id="layout-sidenav-color-gradient" value="gradient" />
                                 <label class="form-check-label p-0 w-100" for="layout-sidenav-color-gradient">
                                     <div class="bg-gradient rounded p-2" style="height: 40px;"></div>
                                 </label>
@@ -944,7 +1190,8 @@
                     <div class="row g-2">
                         <div class="col-3">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-topbar-color" id="layout-topbar-color-light" value="light" checked />
+                                <input class="form-check-input" type="radio" name="data-topbar-color"
+                                    id="layout-topbar-color-light" value="light" checked />
                                 <label class="form-check-label p-0 w-100" for="layout-topbar-color-light">
                                     <div class="bg-light rounded p-2" style="height: 40px;"></div>
                                 </label>
@@ -952,7 +1199,8 @@
                         </div>
                         <div class="col-3">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-topbar-color" id="layout-topbar-color-dark" value="dark" />
+                                <input class="form-check-input" type="radio" name="data-topbar-color"
+                                    id="layout-topbar-color-dark" value="dark" />
                                 <label class="form-check-label p-0 w-100" for="layout-topbar-color-dark">
                                     <div class="bg-dark rounded p-2" style="height: 40px;"></div>
                                 </label>
@@ -960,7 +1208,8 @@
                         </div>
                         <div class="col-3">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-topbar-color" id="layout-topbar-color-gray" value="gray" />
+                                <input class="form-check-input" type="radio" name="data-topbar-color"
+                                    id="layout-topbar-color-gray" value="gray" />
                                 <label class="form-check-label p-0 w-100" for="layout-topbar-color-gray">
                                     <div class="bg-secondary rounded p-2" style="height: 40px;"></div>
                                 </label>
@@ -968,7 +1217,8 @@
                         </div>
                         <div class="col-3">
                             <div class="form-check card-radio">
-                                <input class="form-check-input" type="radio" name="data-topbar-color" id="layout-topbar-color-gradient" value="gradient" />
+                                <input class="form-check-input" type="radio" name="data-topbar-color"
+                                    id="layout-topbar-color-gradient" value="gradient" />
                                 <label class="form-check-label p-0 w-100" for="layout-topbar-color-gradient">
                                     <div class="bg-gradient rounded p-2" style="height: 40px;"></div>
                                 </label>
@@ -983,7 +1233,8 @@
                     <div class="row g-2">
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-sidenav-size" id="layout-sidenav-size-default" value="default" />
+                                <input class="form-check-input" type="radio" name="data-sidenav-size"
+                                    id="layout-sidenav-size-default" value="default" />
                                 <label class="form-check-label p-0 w-100" for="layout-sidenav-size-default">
                                     <span class="d-flex align-items-center gap-2">
                                         <span class="bg-primary rounded" style="width: 30px; height: 30px;"></span>
@@ -995,7 +1246,8 @@
                         </div>
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-sidenav-size" id="layout-sidenav-size-compact" value="compact" />
+                                <input class="form-check-input" type="radio" name="data-sidenav-size"
+                                    id="layout-sidenav-size-compact" value="compact" />
                                 <label class="form-check-label p-0 w-100" for="layout-sidenav-size-compact">
                                     <span class="d-flex align-items-center gap-2">
                                         <span class="bg-primary rounded" style="width: 20px; height: 20px;"></span>
@@ -1007,7 +1259,8 @@
                         </div>
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-sidenav-size" id="layout-sidenav-size-condensed" value="condensed" checked />
+                                <input class="form-check-input" type="radio" name="data-sidenav-size"
+                                    id="layout-sidenav-size-condensed" value="condensed" checked />
                                 <label class="form-check-label p-0 w-100" for="layout-sidenav-size-condensed">
                                     <span class="d-flex align-items-center gap-2">
                                         <span class="bg-primary rounded" style="width: 15px; height: 15px;"></span>
@@ -1019,7 +1272,8 @@
                         </div>
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-sidenav-size" id="layout-sidenav-size-on-hover" value="on-hover" />
+                                <input class="form-check-input" type="radio" name="data-sidenav-size"
+                                    id="layout-sidenav-size-on-hover" value="on-hover" />
                                 <label class="form-check-label p-0 w-100" for="layout-sidenav-size-on-hover">
                                     <span class="d-flex align-items-center gap-2">
                                         <span class="bg-primary rounded" style="width: 15px; height: 15px;"></span>
@@ -1031,7 +1285,8 @@
                         </div>
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-sidenav-size" id="layout-sidenav-size-offcanvas" value="offcanvas" />
+                                <input class="form-check-input" type="radio" name="data-sidenav-size"
+                                    id="layout-sidenav-size-offcanvas" value="offcanvas" />
                                 <label class="form-check-label p-0 w-100" for="layout-sidenav-size-offcanvas">
                                     <span class="d-flex align-items-center gap-2">
                                         <span class="bg-primary rounded" style="width: 15px; height: 15px;"></span>
@@ -1050,9 +1305,12 @@
                     <div class="row g-2">
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-layout-width" id="layout-width-fluid" value="fluid" checked />
+                                <input class="form-check-input" type="radio" name="data-layout-width"
+                                    id="layout-width-fluid" value="fluid" checked />
                                 <label class="form-check-label p-0 w-100" for="layout-width-fluid">
-                                    <span class="d-flex align-items-center justify-content-center bg-light border rounded p-2" style="width: 100%;">
+                                    <span
+                                        class="d-flex align-items-center justify-content-center bg-light border rounded p-2"
+                                        style="width: 100%;">
                                         <span class="bg-primary rounded" style="width: 80%; height: 20px;"></span>
                                     </span>
                                 </label>
@@ -1061,9 +1319,12 @@
                         </div>
                         <div class="col-4">
                             <div class="form-check sidebar-setting card-radio">
-                                <input class="form-check-input" type="radio" name="data-layout-width" id="layout-width-boxed" value="boxed" />
+                                <input class="form-check-input" type="radio" name="data-layout-width"
+                                    id="layout-width-boxed" value="boxed" />
                                 <label class="form-check-label p-0 w-100" for="layout-width-boxed">
-                                    <span class="d-flex align-items-center justify-content-center bg-light border rounded p-2" style="width: 100%;">
+                                    <span
+                                        class="d-flex align-items-center justify-content-center bg-light border rounded p-2"
+                                        style="width: 100%;">
                                         <span class="bg-primary rounded" style="width: 60%; height: 20px;"></span>
                                     </span>
                                 </label>
@@ -1078,10 +1339,13 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0 fw-bold">Layout Position</h5>
                         <div class="d-flex gap-1">
-                            <input type="radio" class="btn-check" name="data-layout-position" id="layout-position-fixed" value="fixed" checked />
+                            <input type="radio" class="btn-check" name="data-layout-position" id="layout-position-fixed"
+                                value="fixed" checked />
                             <label class="btn btn-sm btn-soft-warning w-sm" for="layout-position-fixed">Fixed</label>
-                            <input type="radio" class="btn-check" name="data-layout-position" id="layout-position-scrollable" value="scrollable" />
-                            <label class="btn btn-sm btn-soft-warning w-sm ms-0" for="layout-position-scrollable">Scrollable</label>
+                            <input type="radio" class="btn-check" name="data-layout-position"
+                                id="layout-position-scrollable" value="scrollable" />
+                            <label class="btn btn-sm btn-soft-warning w-sm ms-0"
+                                for="layout-position-scrollable">Scrollable</label>
                         </div>
                     </div>
                 </div>
@@ -1093,7 +1357,8 @@
                             <label class="fw-bold m-0" for="sidebaruser-check">Sidebar User Info</label>
                         </h5>
                         <div class="form-check form-switch fs-lg">
-                            <input type="checkbox" class="form-check-input" name="sidebar-user" id="sidebaruser-check" checked />
+                            <input type="checkbox" class="form-check-input" name="sidebar-user" id="sidebaruser-check"
+                                checked />
                         </div>
                     </div>
                 </div>
@@ -1135,42 +1400,38 @@
                 <!-- Sidebar logo using favicon/logo_dark.png as primary -->
                 @if($sidebarLogo && $sidebarLogo->is_active && $sidebarLogo->image_url)
                     <span class="logo-lg">
-                        <img src="{{ asset($sidebarLogo->image_url) }}"
-                             alt="{{ $sidebarLogo->name ?? 'Logo' }}"
-                            style="height: 50px;"/>
+                        <img src="{{ asset($sidebarLogo->image_url) }}" alt="{{ $sidebarLogo->name ?? 'Logo' }}"
+                            style="height: 50px;" />
 
                     </span>
                     <span class="logo-sm">
-                         @if($faviconLogo && $faviconLogo->is_active && $faviconLogo->image_url)
-                                    <img src="{{ asset($faviconLogo->image_url) }}"
-                                         alt="{{ $faviconLogo->name ?? 'Favicon' }}"
-                                         style="width: 30px; height: 30px;" />
-                                @else
-                                    <img src="{{ asset('assets/images/inopak/logo.png') }}"
-                                         alt="Logo"
-                                         style="width: 30px; height: 30px;" />
-                                @endif
+                        @if($faviconLogo && $faviconLogo->is_active && $faviconLogo->image_url)
+                            <img src="{{ asset($faviconLogo->image_url) }}" alt="{{ $faviconLogo->name ?? 'Favicon' }}"
+                                style="width: 30px; height: 30px;" />
+                        @else
+                            <img src="{{ asset('assets/images/inopak/logo.png') }}" alt="Logo"
+                                style="width: 30px; height: 30px;" />
+                        @endif
                     </span>
                 @else
                     <span class="logo-lg">
-                        <img src="{{ asset('assets/images/inopak/logo_dark.png') }}"
-                             alt="Logo"
-                             style="height: 40px;" />
+                        <img src="{{ asset('assets/images/inopak/logo_dark.png') }}" alt="Logo" style="height: 40px;" />
                     </span>
                     <span class="logo-sm">
-                        <img src="{{ asset('assets/images/inopak/logo.png') }}"
-                             alt="Logo"
-                             style="width: 30px; height: 30px;" />
+                        <img src="{{ asset('assets/images/inopak/logo.png') }}" alt="Logo"
+                            style="width: 30px; height: 30px;" />
                     </span>
                 @endif
             </a>
 
             <!-- Sidebar User -->
-            <div id="user-profile-settings" class="sidenav-user" style="background: url({{ asset('assets/images/user-bg-pattern.svg') }})">
+            <div id="user-profile-settings" class="sidenav-user"
+                style="background: url({{ asset('assets/images/user-bg-pattern.svg') }})">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <a href="#!" class="link-reset">
-                            <img src="{{ asset('assets/images/inopak/logo.png') }}" alt="user-image" class="rounded-circle mb-2 avatar-md" />
+                            <img src="{{ asset('assets/images/inopak/logo.png') }}" alt="user-image"
+                                class="rounded-circle mb-2 avatar-md" />
                             <span class="sidenav-user-name fw-bold">{{ Auth::user()->nama ?? 'User' }}</span>
                             <span class="fs-12 fw-semibold">Admin INOPAK</span>
                         </a>
@@ -1191,7 +1452,7 @@
                     </li>
 
                     <li class="side-nav-title mt-2">Menu</li>
-<!-- project* agar semua route project ke detect -->
+                    <!-- project* agar semua route project ke detect -->
                     <li class="side-nav-item">
                         <a href="/project" class="side-nav-link {{ Request::is('project*') ? 'active' : '' }}">
                             <span class="menu-icon"><i class="ti ti-folder"></i></span>
@@ -1200,18 +1461,18 @@
                     </li>
 
                     @if(Auth::check() && Auth::user()->isAdmin())
-                    <li class="side-nav-item">
-                        <a href="/users" class="side-nav-link {{ Request::is('users*') ? 'active' : '' }}">
-                            <span class="menu-icon"><i class="ti ti-users"></i></span>
-                            <span class="menu-text">Kelola User</span>
-                        </a>
-                    </li>
-                    <li class="side-nav-item">
-                        <a href="/backup" class="side-nav-link {{ Request::is('backup*') ? 'active' : '' }}">
-                            <span class="menu-icon"><i class="ti ti-database"></i></span>
-                            <span class="menu-text">Backup Database</span>
-                        </a>
-                    </li>
+                        <li class="side-nav-item">
+                            <a href="/users" class="side-nav-link {{ Request::is('users*') ? 'active' : '' }}">
+                                <span class="menu-icon"><i class="ti ti-users"></i></span>
+                                <span class="menu-text">Kelola User</span>
+                            </a>
+                        </li>
+                        <li class="side-nav-item">
+                            <a href="/backup" class="side-nav-link {{ Request::is('backup*') ? 'active' : '' }}">
+                                <span class="menu-icon"><i class="ti ti-database"></i></span>
+                                <span class="menu-text">Backup Database</span>
+                            </a>
+                        </li>
                     @endif
 
 
@@ -1253,7 +1514,8 @@
                     <li class="side-nav-item">
                         <form action="/logout" method="POST">
                             @csrf
-                            <button type="submit" class="side-nav-link w-100 text-start" style="background: none; border: none; cursor: pointer;">
+                            <button type="submit" class="side-nav-link w-100 text-start"
+                                style="background: none; border: none; cursor: pointer;">
                                 <span class="menu-icon"><i class="ti ti-logout"></i></span>
                                 <span class="menu-text">Logout</span>
                             </button>
@@ -1264,13 +1526,13 @@
 
         </div>
         <!-- Sidenav Menu End -->
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('sidebarToggleBtn')?.addEventListener('click', function () {
-        document.body.classList.toggle('sidebar-collapsed');
-    });
-});
-</script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.getElementById('sidebarToggleBtn')?.addEventListener('click', function () {
+                    document.body.classList.toggle('sidebar-collapsed');
+                });
+            });
+        </script>
         <!-- ============================================================== -->
         <!-- Start Main Content -->
         <!-- ============================================================== -->
@@ -1306,32 +1568,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="row text-center">
 
                         <div class="col py-2">
-                            <a href="/dashboard" class="text-decoration-none small {{ Request::is('dashboard') ? 'text-primary' : 'text-muted' }}">
+                            <a href="/dashboard"
+                                class="text-decoration-none small {{ Request::is('dashboard') ? 'text-primary' : 'text-muted' }}">
                                 <div><i class="ti ti-dashboard fs-5"></i></div>
                                 Dashboard
                             </a>
                         </div>
 
                         <div class="col py-2">
-                            <a href="/project" class="text-decoration-none small {{ Request::is('project*') ? 'text-primary' : 'text-muted' }}">
+                            <a href="/project"
+                                class="text-decoration-none small {{ Request::is('project*') ? 'text-primary' : 'text-muted' }}">
                                 <div><i class="ti ti-folder fs-5"></i></div>
                                 Project
                             </a>
                         </div>
 
                         <div class="col py-2">
-                            <a href="https://tidessa.inopakinstitute.or.id/login"
-                            target="_blank"
-                            class="text-decoration-none small text-muted">
+                            <a href="https://tidessa.inopakinstitute.or.id/login" target="_blank"
+                                class="text-decoration-none small text-muted">
                                 <div><i class="ti ti-folders fs-5"></i></div>
                                 TIDESSA
                             </a>
                         </div>
 
                         <div class="col py-2">
-                            <a href="https://gemini.google.com/share/519e090abd0a"
-                            target="_blank"
-                            class="text-decoration-none small text-muted">
+                            <a href="https://gemini.google.com/share/519e090abd0a" target="_blank"
+                                class="text-decoration-none small text-muted">
                                 <div><i class="ti ti-sparkles fs-5"></i></div>
                                 AI
                             </a>
@@ -1339,8 +1601,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <div class="col py-2">
                             <a href="#"
-                            onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"
-                            class="text-decoration-none small text-muted">
+                                onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"
+                                class="text-decoration-none small text-muted">
                                 <div><i class="ti ti-logout fs-5"></i></div>
                                 Logout
                             </a>
@@ -1368,7 +1630,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <!-- Customizer Settings -->
     <!-- Password Change Modal -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1382,49 +1645,63 @@ document.addEventListener('DOMContentLoaded', function () {
                     @method('PUT')
                     <div class="modal-body">
                         @if ($errors->any() && $errors->has('current_password'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            <ul class="mb-0">
-                                @foreach ($errors->get('current_password') as $error)
-                                <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <ul class="mb-0">
+                                    @foreach ($errors->get('current_password') as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         @endif
 
                         <input type="text" name="id_user" value="{{ auth()->id() }}" hidden>
 
                         <div class="mb-3">
-                            <label for="modal_current_password" class="form-label form-label-custom">Kata Sandi Saat Ini <span class="text-danger">*</span></label>
+                            <label for="modal_current_password" class="form-label form-label-custom">Kata Sandi Saat Ini
+                                <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="password" class="form-control form-control-custom @error('current_password') is-invalid @enderror" id="modal_current_password" name="current_password" required placeholder="Masukkan kata sandi saat ini">
-                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="modal_current_password">
+                                <input type="password"
+                                    class="form-control form-control-custom @error('current_password') is-invalid @enderror"
+                                    id="modal_current_password" name="current_password" required
+                                    placeholder="Masukkan kata sandi saat ini">
+                                <button class="btn btn-outline-secondary toggle-password" type="button"
+                                    data-target="modal_current_password">
                                     <i class="ti ti-eye"></i>
                                 </button>
                                 @error('current_password')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="modal_new_password" class="form-label form-label-custom">Kata Sandi Baru <span class="text-danger">*</span></label>
+                            <label for="modal_new_password" class="form-label form-label-custom">Kata Sandi Baru <span
+                                    class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="password" class="form-control form-control-custom @error('new_password') is-invalid @enderror" id="modal_new_password" name="new_password" required minlength="8" placeholder="Masukkan kata sandi baru (min. 8 karakter)">
-                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="modal_new_password">
+                                <input type="password"
+                                    class="form-control form-control-custom @error('new_password') is-invalid @enderror"
+                                    id="modal_new_password" name="new_password" required minlength="8"
+                                    placeholder="Masukkan kata sandi baru (min. 8 karakter)">
+                                <button class="btn btn-outline-secondary toggle-password" type="button"
+                                    data-target="modal_new_password">
                                     <i class="ti ti-eye"></i>
                                 </button>
                                 @error('new_password')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label for="modal_new_password_confirmation" class="form-label form-label-custom">Konfirmasi Kata Sandi Baru <span class="text-danger">*</span></label>
+                            <label for="modal_new_password_confirmation" class="form-label form-label-custom">Konfirmasi
+                                Kata Sandi Baru <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <input type="password" class="form-control form-control-custom" id="modal_new_password_confirmation" name="new_password_confirmation" required placeholder="Konfirmasi kata sandi baru">
-                                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="modal_new_password_confirmation">
+                                <input type="password" class="form-control form-control-custom"
+                                    id="modal_new_password_confirmation" name="new_password_confirmation" required
+                                    placeholder="Konfirmasi kata sandi baru">
+                                <button class="btn btn-outline-secondary toggle-password" type="button"
+                                    data-target="modal_new_password_confirmation">
                                     <i class="ti ti-eye"></i>
                                 </button>
                             </div>
@@ -1443,538 +1720,327 @@ document.addEventListener('DOMContentLoaded', function () {
 
     <!-- Password Toggle & AJAX Handler Script -->
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Toggle password visibility
-        document.querySelectorAll('.toggle-password').forEach(button => {
-            button.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
-                if (!input) return;
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(button => {
+                button.addEventListener('click', function () {
+                    const targetId = this.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    if (!input) return;
 
-                const icon = this.querySelector('i');
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('ti-eye');
-                    icon.classList.add('ti-eye-off');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('ti-eye-off');
-                    icon.classList.add('ti-eye');
-                }
-            });
-        });
-
-        // Handle password change form submission via AJAX
-        const changePasswordForm = document.querySelector('form[action="{{ route("profile.password") }}"]');
-        if (changePasswordForm) {
-            changePasswordForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const form = this;
-                const submitBtn = form.querySelector('button[type="submit"]');
-                const originalBtnText = submitBtn.innerHTML;
-                const modal = document.getElementById('changePasswordModal');
-                const modalBody = modal.querySelector('.modal-body');
-
-                // Clear previous error messages
-                form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
-                form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-                form.querySelectorAll('.alert-danger').forEach(el => el.remove());
-
-                // Disable button during submission
-                submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Menyimpan...';
-
-                const formData = new FormData(form);
-                const url = form.getAttribute('action');
-
-                fetch(url, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Hide modal
-                        const bsModal = bootstrap.Modal.getInstance(modal);
-                        if (bsModal) {
-                            bsModal.hide();
-                        }
-
-                        // Reset form
-                        form.reset();
-
-                        // Show success message
-                        if (typeof Swal !== 'undefined') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil',
-                                text: data.message || 'Kata sandi berhasil diperbarui.',
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
-                        } else {
-                            alert(data.message || 'Kata sandi berhasil diperbarui.');
-                        }
+                    const icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.remove('ti-eye');
+                        icon.classList.add('ti-eye-off');
                     } else {
-                        // Show validation errors
-                        if (data.errors) {
-                            // Show errors in modal
-                            let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
-                            errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                            errorHtml += '<ul class="mb-0">';
-
-                            // Collect all errors
-                            for (const [field, messages] of Object.entries(data.errors)) {
-                                messages.forEach(message => {
-                                    errorHtml += '<li>' + message + '</li>';
-
-                                    // Add invalid class to input
-                                    const input = form.querySelector('[name="' + field + '"]');
-                                    if (input) {
-                                        input.classList.add('is-invalid');
-
-                                        // Add error message below input
-                                        let feedbackDiv = input.parentElement.querySelector('.invalid-feedback');
-                                        if (!feedbackDiv) {
-                                            feedbackDiv = document.createElement('div');
-                                            feedbackDiv.className = 'invalid-feedback';
-                                            input.parentElement.appendChild(feedbackDiv);
-                                        }
-                                        feedbackDiv.textContent = message;
-                                    }
-                                });
-                            }
-                            errorHtml += '</ul></div>';
-
-                            // Insert error at top of modal body
-                            modalBody.insertAdjacentHTML('afterbegin', errorHtml);
-                        } else if (data.message) {
-                            // General error message
-                            let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
-                            errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                            errorHtml += data.message;
-                            errorHtml += '</div>';
-                            modalBody.insertAdjacentHTML('afterbegin', errorHtml);
-                        }
+                        input.type = 'password';
+                        icon.classList.remove('ti-eye-off');
+                        icon.classList.add('ti-eye');
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
-                    errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                    errorHtml += 'Terjadi kesalahan. Silakan coba lagi.';
-                    errorHtml += '</div>';
-                    modalBody.insertAdjacentHTML('afterbegin', errorHtml);
-                })
-                .finally(() => {
-                    // Re-enable button
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalBtnText;
                 });
             });
 
-            // Reset form when modal is closed
-            const modal = document.getElementById('changePasswordModal');
-            if (modal) {
-                modal.addEventListener('hidden.bs.modal', function() {
-                    const form = changePasswordForm;
-                    form.reset();
+            // Handle password change form submission via AJAX
+            const changePasswordForm = document.querySelector('form[action="{{ route("profile.password") }}"]');
+            if (changePasswordForm) {
+                changePasswordForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const form = this;
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    const modal = document.getElementById('changePasswordModal');
+                    const modalBody = modal.querySelector('.modal-body');
+
+                    // Clear previous error messages
                     form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
                     form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
                     form.querySelectorAll('.alert-danger').forEach(el => el.remove());
+
+                    // Disable button during submission
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Menyimpan...';
+
+                    const formData = new FormData(form);
+                    const url = form.getAttribute('action');
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Hide modal
+                                const bsModal = bootstrap.Modal.getInstance(modal);
+                                if (bsModal) {
+                                    bsModal.hide();
+                                }
+
+                                // Reset form
+                                form.reset();
+
+                                // Show success message
+                                if (typeof Swal !== 'undefined') {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Berhasil',
+                                        text: data.message || 'Kata sandi berhasil diperbarui.',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                } else {
+                                    alert(data.message || 'Kata sandi berhasil diperbarui.');
+                                }
+                            } else {
+                                // Show validation errors
+                                if (data.errors) {
+                                    // Show errors in modal
+                                    let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+                                    errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                                    errorHtml += '<ul class="mb-0">';
+
+                                    // Collect all errors
+                                    for (const [field, messages] of Object.entries(data.errors)) {
+                                        messages.forEach(message => {
+                                            errorHtml += '<li>' + message + '</li>';
+
+                                            // Add invalid class to input
+                                            const input = form.querySelector('[name="' + field + '"]');
+                                            if (input) {
+                                                input.classList.add('is-invalid');
+
+                                                // Add error message below input
+                                                let feedbackDiv = input.parentElement.querySelector('.invalid-feedback');
+                                                if (!feedbackDiv) {
+                                                    feedbackDiv = document.createElement('div');
+                                                    feedbackDiv.className = 'invalid-feedback';
+                                                    input.parentElement.appendChild(feedbackDiv);
+                                                }
+                                                feedbackDiv.textContent = message;
+                                            }
+                                        });
+                                    }
+                                    errorHtml += '</ul></div>';
+
+                                    // Insert error at top of modal body
+                                    modalBody.insertAdjacentHTML('afterbegin', errorHtml);
+                                } else if (data.message) {
+                                    // General error message
+                                    let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+                                    errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                                    errorHtml += data.message;
+                                    errorHtml += '</div>';
+                                    modalBody.insertAdjacentHTML('afterbegin', errorHtml);
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            let errorHtml = '<div class="alert alert-danger alert-dismissible fade show" role="alert">';
+                            errorHtml += '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                            errorHtml += 'Terjadi kesalahan. Silakan coba lagi.';
+                            errorHtml += '</div>';
+                            modalBody.insertAdjacentHTML('afterbegin', errorHtml);
+                        })
+                        .finally(() => {
+                            // Re-enable button
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalBtnText;
+                        });
                 });
+
+                // Reset form when modal is closed
+                const modal = document.getElementById('changePasswordModal');
+                if (modal) {
+                    modal.addEventListener('hidden.bs.modal', function () {
+                        const form = changePasswordForm;
+                        form.reset();
+                        form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+                        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                        form.querySelectorAll('.alert-danger').forEach(el => el.remove());
+                    });
+                }
             }
-        }
-    });
+        });
     </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
 
-    const sidenavMenu = document.getElementById('sidenavMenu');
-    const sidebarShowHideBtn = document.getElementById('sidebarShowHideBtn');
-    const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
-    const sidebarShowHideCheckbox = document.getElementById('sidebarShowHide');
+            const sidenavMenu = document.getElementById('sidenavMenu');
+            const sidebarShowHideBtn = document.getElementById('sidebarShowHideBtn');
+            const sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+            const sidebarShowHideCheckbox = document.getElementById('sidebarShowHide');
 
-    if (!sidenavMenu) return;
+            if (!sidenavMenu) return;
 
-    /* ===============================
-       Helper Functions
-    =============================== */
-    function hideSidebar() {
+            /* ===============================
+               Helper Functions
+            =============================== */
+            function hideSidebar() {
 
-        localStorage.setItem('sidebarHidden', 'true');
-        if (sidebarShowHideCheckbox) sidebarShowHideCheckbox.checked = false;
-    }
+                localStorage.setItem('sidebarHidden', 'true');
+                if (sidebarShowHideCheckbox) sidebarShowHideCheckbox.checked = false;
+            }
 
-    function showSidebar() {
-        sidenavMenu.classList.remove('d-none');
-        localStorage.setItem('sidebarHidden', 'false');
-        if (sidebarShowHideCheckbox) sidebarShowHideCheckbox.checked = true;
-    }
+            function showSidebar() {
+                sidenavMenu.classList.remove('d-none');
+                localStorage.setItem('sidebarHidden', 'false');
+                if (sidebarShowHideCheckbox) sidebarShowHideCheckbox.checked = true;
+            }
 
-    function toggleSidebar() {
-        const isHidden = sidenavMenu.classList.contains('d-none');
-        isHidden ? showSidebar() : hideSidebar();
-    }
+            function toggleSidebar() {
+                const isHidden = sidenavMenu.classList.contains('d-none');
+                isHidden ? showSidebar() : hideSidebar();
+            }
 
-    /* ===============================
-       Load Saved State (IMPORTANT)
-    =============================== */
-    const sidebarHidden = localStorage.getItem('sidebarHidden') === 'true';
-    sidebarHidden ? hideSidebar() : showSidebar();
+            /* ===============================
+               Load Saved State (IMPORTANT)
+            =============================== */
+            const sidebarHidden = localStorage.getItem('sidebarHidden') === 'true';
+            sidebarHidden ? hideSidebar() : showSidebar();
 
-    /* ===============================
-       Event Bindings
-    =============================== */
-    sidebarShowHideBtn?.addEventListener('click', toggleSidebar);
-    sidebarToggleBtn?.addEventListener('click', toggleSidebar);
+            /* ===============================
+               Event Bindings
+            =============================== */
+            sidebarShowHideBtn?.addEventListener('click', toggleSidebar);
+            sidebarToggleBtn?.addEventListener('click', toggleSidebar);
 
-    sidebarShowHideCheckbox?.addEventListener('change', function () {
-        this.checked ? showSidebar() : hideSidebar();
-    });
+            sidebarShowHideCheckbox?.addEventListener('change', function () {
+                this.checked ? showSidebar() : hideSidebar();
+            });
 
-});
-</script>
-<script>
-    // Theme toggle functionality
-    document.querySelectorAll('[data-thememode="dropdown"] label').forEach(function(label) {
-        label.addEventListener('click', function() {
-            const theme = this.querySelector('input').value;
-            document.documentElement.setAttribute('data-bs-theme', theme);
-            document.documentElement.setAttribute('data-theme', theme);
+        });
+    </script>
+    <script>
+        // Theme toggle functionality
+        document.querySelectorAll('[data-thememode="dropdown"] label').forEach(function (label) {
+            label.addEventListener('click', function () {
+                const theme = this.querySelector('input').value;
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                document.documentElement.setAttribute('data-theme', theme);
 
-            // Update icons
+                // Update icons
+                document.getElementById('theme-icon-light').classList.add('d-none');
+                document.getElementById('theme-icon-dark').classList.add('d-none');
+                document.getElementById('theme-icon-system').classList.add('d-none');
+
+                if (theme === 'light') {
+                    document.getElementById('theme-icon-light').classList.remove('d-none');
+                } else if (theme === 'dark') {
+                    document.getElementById('theme-icon-dark').classList.remove('d-none');
+                } else {
+                    document.getElementById('theme-icon-system').classList.remove('d-none');
+                }
+
+                // Save preference
+                localStorage.setItem('theme', theme);
+            });
+        });
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-bs-theme', savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        if (savedTheme === 'dark') {
             document.getElementById('theme-icon-light').classList.add('d-none');
-            document.getElementById('theme-icon-dark').classList.add('d-none');
-            document.getElementById('theme-icon-system').classList.add('d-none');
-
-            if (theme === 'light') {
-                document.getElementById('theme-icon-light').classList.remove('d-none');
-            } else if (theme === 'dark') {
-                document.getElementById('theme-icon-dark').classList.remove('d-none');
-            } else {
-                document.getElementById('theme-icon-system').classList.remove('d-none');
-            }
-
-            // Save preference
-            localStorage.setItem('theme', theme);
-        });
-    });
-
-    // Load saved theme
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-bs-theme', savedTheme);
-    document.documentElement.setAttribute('data-theme', savedTheme);
-
-    if (savedTheme === 'dark') {
-        document.getElementById('theme-icon-light').classList.add('d-none');
-        document.getElementById('theme-icon-dark').classList.remove('d-none');
-    }
-
-    // Skin selector
-    document.querySelectorAll('input[name="data-skin"]').forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            document.documentElement.setAttribute('data-skin', this.value);
-            localStorage.setItem('skin', this.value);
-        });
-    });
-
-    // Load saved skin
-    const savedSkin = localStorage.getItem('skin') || 'neo';
-    document.documentElement.setAttribute('data-skin', savedSkin);
-    const skinRadio = document.getElementById('demo-skin-' + savedSkin);
-    if (skinRadio) skinRadio.checked = true;
-
-    // Menu color
-    document.querySelectorAll('input[name="data-menu-color"]').forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            document.documentElement.setAttribute('data-menu-color', this.value);
-            localStorage.setItem('menuColor', this.value);
-        });
-    });
-
-    // Topbar color
-    document.querySelectorAll('input[name="data-topbar-color"]').forEach(function(radio) {
-        radio.addEventListener('change', function() {
-            document.documentElement.setAttribute('data-topbar-color', this.value);
-            localStorage.setItem('topbarColor', this.value);
-        });
-    });
-
-    // Reset button
-    document.getElementById('reset-layout').addEventListener('click', function() {
-        localStorage.clear();
-        location.reload();
-    });
-
-    // Search functionality with autocomplete
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('topSearch');
-        const dropdown = document.getElementById('search-autocomplete-dropdown');
-        let debounceTimer;
-        let currentHighlightIndex = -1;
-        let currentResults = [];
-
-        // Debounce function
-        function debounce(func, wait) {
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(debounceTimer);
-                    func(...args);
-                };
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(later, wait);
-            };
+            document.getElementById('theme-icon-dark').classList.remove('d-none');
         }
 
-        // Get CSRF token
-        function getCsrfToken() {
-            return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-        }
-
-        // Show loading state
-        function showLoading() {
-            dropdown.innerHTML = '<div class="loading"><span class="spinner"></span>Mencari...</div>';
-            dropdown.classList.add('show');
-        }
-
-        // Show no results
-        function showNoResults(query) {
-            dropdown.innerHTML = '<div class="no-results">Tidak ditemukan hasil untuk "' + escapeHtml(query) + '"</div>';
-            dropdown.classList.add('show');
-        }
-
-        // Show error
-        function showError(message) {
-            dropdown.innerHTML = '<div class="error-message">' + escapeHtml(message) + '</div>';
-            dropdown.classList.add('show');
-        }
-
-        // Escape HTML to prevent XSS
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Render results
-        function renderResults(results, query) {
-            if (!results || results.length === 0) {
-                showNoResults(query);
-                return;
-            }
-
-            let html = '';
-            results.forEach((item, index) => {
-                // Debug: Log the actual data structure
-                console.log('Item data:', JSON.stringify(item, null, 2));
-
-                // Normalize type to lowercase for consistent comparison
-                const normalizedType = (item.type || '').toLowerCase();
-                const iconClass = normalizedType === 'project' ? 'ti ti-folder' : 'ti ti-building-skyscraper';
-                const iconType = normalizedType || 'unknown';
-                const typeLabel = normalizedType === 'project' ? 'Project' : (normalizedType === 'ikm' ? 'IKM' : 'Unknown');
-
-                let title = '';
-                let subtitle = '';
-
-                if (normalizedType === 'ikm') {
-                    title = item.nama_ikm || item.nama_Ikm || item.nama || 'N/A';
-                    subtitle = item.nama_project || item.project_name || '';
-                } else if (normalizedType === 'project') {
-                    title = item.nama_project || item.project_name || 'N/A';
-                } else {
-                    title = item.name || item.title || item.nama || 'N/A';
-                }
-
-                html += `
-                    <div class="search-autocomplete-item" data-index="${index}" data-route="${escapeHtml(item.route || '')}">
-                        <div class="item-icon ${iconType}">
-                            <i class="${iconClass}"></i>
-                        </div>
-                        <div class="item-content">
-                            <div class="item-title">${escapeHtml(title)}</div>
-                            ${subtitle ? '<div class="item-subtitle">' + escapeHtml(subtitle) + '</div>' : ''}
-                        </div>
-                        <span class="item-type ${iconType}">${typeLabel}</span>
-                    </div>
-                `;
+        // Skin selector
+        document.querySelectorAll('input[name="data-skin"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                document.documentElement.setAttribute('data-skin', this.value);
+                localStorage.setItem('skin', this.value);
             });
+        });
 
-            dropdown.innerHTML = html;
-            dropdown.classList.add('show');
-            currentResults = results;
-            currentHighlightIndex = -1;
+        // Load saved skin
+        const savedSkin = localStorage.getItem('skin') || 'neo';
+        document.documentElement.setAttribute('data-skin', savedSkin);
+        const skinRadio = document.getElementById('demo-skin-' + savedSkin);
+        if (skinRadio) skinRadio.checked = true;
 
-            // Add click event listeners
-            dropdown.querySelectorAll('.search-autocomplete-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const route = this.getAttribute('data-route');
-                    if (route) {
-                        window.location.href = route;
-                    }
-                });
+        // Menu color
+        document.querySelectorAll('input[name="data-menu-color"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                document.documentElement.setAttribute('data-menu-color', this.value);
+                localStorage.setItem('menuColor', this.value);
             });
-        }
-
-        // Close dropdown
-        function closeDropdown() {
-            dropdown.classList.remove('show');
-            currentHighlightIndex = -1;
-            currentResults = [];
-        }
-
-        // Perform search
-        async function performSearch(query) {
-            if (!query || query.length < 1) {
-                closeDropdown();
-                return;
-            }
-
-            showLoading();
-
-            try {
-                const response = await fetch(`/api/project/search?q=${encodeURIComponent(query)}`, {
-                    method: 'GET',
-                    headers: {
-                        'X-CSRF-TOKEN': getCsrfToken(),
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                const data = await response.json();
-
-                if (data.error) {
-                    showError(data.error);
-                } else {
-                    renderResults(data, query);
-                }
-            } catch (error) {
-                console.error('Search error:', error);
-                showError('Terjadi kesalahan saat melakukan pencarian');
-            }
-        }
-
-        // Debounced search function
-        const debouncedSearch = debounce(performSearch, 300);
-
-        // Input event handler
-        searchInput.addEventListener('input', function(e) {
-            const query = this.value.trim();
-            debouncedSearch(query);
         });
 
-        // Keyboard navigation
-        searchInput.addEventListener('keydown', function(e) {
-            const items = dropdown.querySelectorAll('.search-autocomplete-item');
-
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                if (currentHighlightIndex < items.length - 1) {
-                    if (currentHighlightIndex >= 0) {
-                        items[currentHighlightIndex].classList.remove('highlighted');
-                    }
-                    currentHighlightIndex++;
-                    items[currentHighlightIndex].classList.add('highlighted');
-                }
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                if (currentHighlightIndex > 0) {
-                    items[currentHighlightIndex].classList.remove('highlighted');
-                    currentHighlightIndex--;
-                    items[currentHighlightIndex].classList.add('highlighted');
-                }
-            } else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (currentHighlightIndex >= 0 && items[currentHighlightIndex]) {
-                    const route = items[currentHighlightIndex].getAttribute('data-route');
-                    if (route) {
-                        window.location.href = route;
-                    }
-                }
-            } else if (e.key === 'Escape') {
-                closeDropdown();
-                searchInput.blur();
-            }
+        // Topbar color
+        document.querySelectorAll('input[name="data-topbar-color"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                document.documentElement.setAttribute('data-topbar-color', this.value);
+                localStorage.setItem('topbarColor', this.value);
+            });
         });
 
-        // Focus handler
-        searchInput.addEventListener('focus', function() {
-            const query = this.value.trim();
-            if (query && currentResults.length > 0) {
-                dropdown.classList.add('show');
-            }
+        // Reset button
+        document.getElementById('reset-layout').addEventListener('click', function () {
+            localStorage.clear();
+            location.reload();
         });
 
-        // Click outside to close
-        document.addEventListener('click', function(e) {
-            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-                closeDropdown();
-            }
-        });
-    });
-
-    // Search functionality with autocomplete - standalone version
-    (function() {
-        'use strict';
-
-        function initSearch() {
+        // Search functionality with autocomplete
+        document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('topSearch');
             const dropdown = document.getElementById('search-autocomplete-dropdown');
-
-            if (!searchInput || !dropdown) {
-                console.warn('Search elements not found');
-                return;
-            }
-
             let debounceTimer;
             let currentHighlightIndex = -1;
             let currentResults = [];
 
+            // Debounce function
             function debounce(func, wait) {
-                return function(...args) {
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(debounceTimer);
+                        func(...args);
+                    };
                     clearTimeout(debounceTimer);
-                    debounceTimer = setTimeout(() => func.apply(this, args), wait);
+                    debounceTimer = setTimeout(later, wait);
                 };
             }
 
+            // Get CSRF token
+            function getCsrfToken() {
+                return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            }
+
+            // Show loading state
+            function showLoading() {
+                dropdown.innerHTML = '<div class="loading"><span class="spinner"></span>Mencari...</div>';
+                dropdown.classList.add('show');
+            }
+
+            // Show no results
+            function showNoResults(query) {
+                dropdown.innerHTML = '<div class="no-results">Tidak ditemukan hasil untuk "' + escapeHtml(query) + '"</div>';
+                dropdown.classList.add('show');
+            }
+
+            // Show error
+            function showError(message) {
+                dropdown.innerHTML = '<div class="error-message">' + escapeHtml(message) + '</div>';
+                dropdown.classList.add('show');
+            }
+
+            // Escape HTML to prevent XSS
             function escapeHtml(text) {
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
             }
 
-            function showLoading() {
-                dropdown.innerHTML = '<div class="loading"><span class="spinner"></span>Mencari...</div>';
-                dropdown.classList.add('show');
-            }
-
-            function showNoResults(query) {
-                dropdown.innerHTML = '<div class="no-results">Tidak ditemukan hasil untuk "' + escapeHtml(query) + '"</div>';
-                dropdown.classList.add('show');
-            }
-
-            function showError(message) {
-                dropdown.innerHTML = '<div class="error-message">' + escapeHtml(message) + '</div>';
-                dropdown.classList.add('show');
-            }
-
-            function closeDropdown() {
-                dropdown.classList.remove('show');
-                currentHighlightIndex = -1;
-                currentResults = [];
-            }
-
+            // Render results
             function renderResults(results, query) {
                 if (!results || results.length === 0) {
                     showNoResults(query);
@@ -1988,9 +2054,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Normalize type to lowercase for consistent comparison
                     const normalizedType = (item.type || '').toLowerCase();
-                    const iconClass = normalizedType === 'project' ? 'ti ti-folder' : 'ti ti-building-skyscraper';
+                    const iconClass = normalizedType === 'project' ? 'ti ti-folder' : (normalizedType === 'ikm' ? 'ti ti-users' : (normalizedType === 'folder' ? 'ti ti-folder-plus' : 'ti ti-building-skyscraper'));
                     const iconType = normalizedType || 'unknown';
-                    const typeLabel = normalizedType === 'project' ? 'Project' : (normalizedType === 'ikm' ? 'IKM' : 'Unknown');
+                    const typeLabel = normalizedType === 'project' ? 'Project' : (normalizedType === 'ikm' ? 'IKM' : (normalizedType === 'folder' ? 'Folder' : 'Unknown'));
 
                     let title = '';
                     let subtitle = '';
@@ -2000,22 +2066,25 @@ document.addEventListener('DOMContentLoaded', function () {
                         subtitle = item.nama_project || item.project_name || '';
                     } else if (normalizedType === 'project') {
                         title = item.nama_project || item.project_name || 'N/A';
+                    } else if (normalizedType === 'folder') {
+                        title = item.name || 'N/A';
+                        subtitle = item.nama_project || '';
                     } else {
                         title = item.name || item.title || item.nama || 'N/A';
                     }
 
                     html += `
-                        <div class="search-autocomplete-item" data-index="${index}" data-route="${escapeHtml(item.route || '')}">
-                            <div class="item-icon ${iconType}">
-                                <i class="${iconClass}"></i>
-                            </div>
-                            <div class="item-content">
-                                <div class="item-title">${escapeHtml(title)}</div>
-                                ${subtitle ? '<div class="item-subtitle">' + escapeHtml(subtitle) + '</div>' : ''}
-                            </div>
-                            <span class="item-type ${iconType}">${typeLabel}</span>
+                    <div class="search-autocomplete-item" data-index="${index}" data-route="${escapeHtml(item.route || '')}">
+                        <div class="item-icon ${iconType}">
+                            <i class="${iconClass}"></i>
                         </div>
-                    `;
+                        <div class="item-content">
+                            <div class="item-title">${escapeHtml(title)}</div>
+                            ${subtitle ? '<div class="item-subtitle">' + escapeHtml(subtitle) + '</div>' : ''}
+                        </div>
+                        <span class="item-type ${iconType}">${typeLabel}</span>
+                    </div>
+                `;
                 });
 
                 dropdown.innerHTML = html;
@@ -2023,9 +2092,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentResults = results;
                 currentHighlightIndex = -1;
 
+                // Add click event listeners
                 dropdown.querySelectorAll('.search-autocomplete-item').forEach(item => {
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
+                    item.addEventListener('click', function () {
                         const route = this.getAttribute('data-route');
                         if (route) {
                             window.location.href = route;
@@ -2034,6 +2103,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
 
+            // Close dropdown
+            function closeDropdown() {
+                dropdown.classList.remove('show');
+                currentHighlightIndex = -1;
+                currentResults = [];
+            }
+
+            // Perform search
             async function performSearch(query) {
                 if (!query || query.length < 1) {
                     closeDropdown();
@@ -2043,19 +2120,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 showLoading();
 
                 try {
-                    console.log('Fetching search results for:', query);
-                    const response = await fetch('/api/project/search?q=' + encodeURIComponent(query));
+                    const response = await fetch(`/api/project/search?q=${encodeURIComponent(query)}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': getCsrfToken(),
+                            'Accept': 'application/json'
+                        }
+                    });
 
                     if (!response.ok) {
-                        if (response.status === 401) {
-                            showError('Silakan login untuk melakukan pencarian');
-                            return;
-                        }
-                        throw new Error('Network response was not ok: ' + response.status);
+                        throw new Error('Network response was not ok');
                     }
 
                     const data = await response.json();
-                    console.log('Search results:', data);
 
                     if (data.error) {
                         showError(data.error);
@@ -2068,160 +2145,363 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
+            // Debounced search function
             const debouncedSearch = debounce(performSearch, 300);
 
-            searchInput.addEventListener('input', function() {
-                debouncedSearch(this.value.trim());
+            // Input event handler
+            searchInput.addEventListener('input', function (e) {
+                const query = this.value.trim();
+                debouncedSearch(query);
             });
 
-            searchInput.addEventListener('keydown', function(e) {
+            // Keyboard navigation
+            searchInput.addEventListener('keydown', function (e) {
                 const items = dropdown.querySelectorAll('.search-autocomplete-item');
 
-                if (e.key === 'ArrowDown' && items.length > 0) {
+                if (e.key === 'ArrowDown') {
                     e.preventDefault();
                     if (currentHighlightIndex < items.length - 1) {
-                        if (currentHighlightIndex >= 0) items[currentHighlightIndex].classList.remove('highlighted');
+                        if (currentHighlightIndex >= 0) {
+                            items[currentHighlightIndex].classList.remove('highlighted');
+                        }
                         currentHighlightIndex++;
                         items[currentHighlightIndex].classList.add('highlighted');
                     }
-                } else if (e.key === 'ArrowUp' && items.length > 0) {
+                } else if (e.key === 'ArrowUp') {
                     e.preventDefault();
                     if (currentHighlightIndex > 0) {
                         items[currentHighlightIndex].classList.remove('highlighted');
                         currentHighlightIndex--;
                         items[currentHighlightIndex].classList.add('highlighted');
                     }
-                } else if (e.key === 'Enter' && currentHighlightIndex >= 0 && items[currentHighlightIndex]) {
+                } else if (e.key === 'Enter') {
                     e.preventDefault();
-                    const route = items[currentHighlightIndex].getAttribute('data-route');
-                    if (route) window.location.href = route;
+                    if (currentHighlightIndex >= 0 && items[currentHighlightIndex]) {
+                        const route = items[currentHighlightIndex].getAttribute('data-route');
+                        if (route) {
+                            window.location.href = route;
+                        }
+                    }
                 } else if (e.key === 'Escape') {
                     closeDropdown();
                     searchInput.blur();
                 }
             });
 
-            searchInput.addEventListener('focus', function() {
-                if (this.value.trim() && currentResults.length > 0) {
+            // Focus handler
+            searchInput.addEventListener('focus', function () {
+                const query = this.value.trim();
+                if (query && currentResults.length > 0) {
                     dropdown.classList.add('show');
                 }
             });
 
-            document.addEventListener('click', function(e) {
+            // Click outside to close
+            document.addEventListener('click', function (e) {
                 if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
                     closeDropdown();
                 }
             });
-        }
+        });
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initSearch);
-        } else {
-            initSearch();
-        }
-    })();
+        // Search functionality with autocomplete - standalone version
+        (function () {
+            'use strict';
 
-    // Encrypted ID click handler - decrypts IDs before navigation
-    (function() {
-        'use strict';
+            function initSearch() {
+                const searchInput = document.getElementById('topSearch');
+                const dropdown = document.getElementById('search-autocomplete-dropdown');
 
-        function initEncryptedLinks() {
-            // Find all links with encrypted ID data attributes
-            const encryptedLinks = document.querySelectorAll('[data-encrypted-Ikm]');
+                if (!searchInput || !dropdown) {
+                    console.warn('Search elements not found');
+                    return;
+                }
 
-            if (encryptedLinks.length === 0) {
-                return;
+                let debounceTimer;
+                let currentHighlightIndex = -1;
+                let currentResults = [];
+
+                function debounce(func, wait) {
+                    return function (...args) {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(() => func.apply(this, args), wait);
+                    };
+                }
+
+                function escapeHtml(text) {
+                    const div = document.createElement('div');
+                    div.textContent = text;
+                    return div.innerHTML;
+                }
+
+                function showLoading() {
+                    dropdown.innerHTML = '<div class="loading"><span class="spinner"></span>Mencari...</div>';
+                    dropdown.classList.add('show');
+                }
+
+                function showNoResults(query) {
+                    dropdown.innerHTML = '<div class="no-results">Tidak ditemukan hasil untuk "' + escapeHtml(query) + '"</div>';
+                    dropdown.classList.add('show');
+                }
+
+                function showError(message) {
+                    dropdown.innerHTML = '<div class="error-message">' + escapeHtml(message) + '</div>';
+                    dropdown.classList.add('show');
+                }
+
+                function closeDropdown() {
+                    dropdown.classList.remove('show');
+                    currentHighlightIndex = -1;
+                    currentResults = [];
+                }
+
+                function renderResults(results, query) {
+                    if (!results || results.length === 0) {
+                        showNoResults(query);
+                        return;
+                    }
+
+                    let html = '';
+                    results.forEach((item, index) => {
+                        // Debug: Log the actual data structure
+                        console.log('Item data:', JSON.stringify(item, null, 2));
+
+                        // Normalize type to lowercase for consistent comparison
+                        const normalizedType = (item.type || '').toLowerCase();
+                        const iconClass = normalizedType === 'project' ? 'ti ti-folder' : (normalizedType === 'ikm' ? 'ti ti-users' : (normalizedType === 'folder' ? 'ti ti-folder-plus' : 'ti ti-building-skyscraper'));
+                        const iconType = normalizedType || 'unknown';
+                        const typeLabel = normalizedType === 'project' ? 'Project' : (normalizedType === 'ikm' ? 'IKM' : (normalizedType === 'folder' ? 'Folder' : 'Unknown'));
+
+                        let title = '';
+                        let subtitle = '';
+
+                        if (normalizedType === 'ikm') {
+                            title = item.nama_ikm || item.nama_Ikm || item.nama || 'N/A';
+                            subtitle = item.nama_project || item.project_name || '';
+                        } else if (normalizedType === 'project') {
+                            title = item.nama_project || item.project_name || 'N/A';
+                        } else {
+                            title = item.name || item.title || item.nama || 'N/A';
+                        }
+
+                        html += `
+                        <div class="search-autocomplete-item" data-index="${index}" data-route="${escapeHtml(item.route || '')}">
+                            <div class="item-icon ${iconType}">
+                                <i class="${iconClass}"></i>
+                            </div>
+                            <div class="item-content">
+                                <div class="item-title">${escapeHtml(title)}</div>
+                                ${subtitle ? '<div class="item-subtitle">' + escapeHtml(subtitle) + '</div>' : ''}
+                            </div>
+                            <span class="item-type ${iconType}">${typeLabel}</span>
+                        </div>
+                    `;
+                    });
+
+                    dropdown.innerHTML = html;
+                    dropdown.classList.add('show');
+                    currentResults = results;
+                    currentHighlightIndex = -1;
+
+                    dropdown.querySelectorAll('.search-autocomplete-item').forEach(item => {
+                        item.addEventListener('click', function (e) {
+                            e.preventDefault();
+                            const route = this.getAttribute('data-route');
+                            if (route) {
+                                window.location.href = route;
+                            }
+                        });
+                    });
+                }
+
+                async function performSearch(query) {
+                    if (!query || query.length < 1) {
+                        closeDropdown();
+                        return;
+                    }
+
+                    showLoading();
+
+                    try {
+                        console.log('Fetching search results for:', query);
+                        const response = await fetch('/api/project/search?q=' + encodeURIComponent(query));
+
+                        if (!response.ok) {
+                            if (response.status === 401) {
+                                showError('Silakan login untuk melakukan pencarian');
+                                return;
+                            }
+                            throw new Error('Network response was not ok: ' + response.status);
+                        }
+
+                        const data = await response.json();
+                        console.log('Search results:', data);
+
+                        if (data.error) {
+                            showError(data.error);
+                        } else {
+                            renderResults(data, query);
+                        }
+                    } catch (error) {
+                        console.error('Search error:', error);
+                        showError('Terjadi kesalahan saat melakukan pencarian');
+                    }
+                }
+
+                const debouncedSearch = debounce(performSearch, 300);
+
+                searchInput.addEventListener('input', function () {
+                    debouncedSearch(this.value.trim());
+                });
+
+                searchInput.addEventListener('keydown', function (e) {
+                    const items = dropdown.querySelectorAll('.search-autocomplete-item');
+
+                    if (e.key === 'ArrowDown' && items.length > 0) {
+                        e.preventDefault();
+                        if (currentHighlightIndex < items.length - 1) {
+                            if (currentHighlightIndex >= 0) items[currentHighlightIndex].classList.remove('highlighted');
+                            currentHighlightIndex++;
+                            items[currentHighlightIndex].classList.add('highlighted');
+                        }
+                    } else if (e.key === 'ArrowUp' && items.length > 0) {
+                        e.preventDefault();
+                        if (currentHighlightIndex > 0) {
+                            items[currentHighlightIndex].classList.remove('highlighted');
+                            currentHighlightIndex--;
+                            items[currentHighlightIndex].classList.add('highlighted');
+                        }
+                    } else if (e.key === 'Enter' && currentHighlightIndex >= 0 && items[currentHighlightIndex]) {
+                        e.preventDefault();
+                        const route = items[currentHighlightIndex].getAttribute('data-route');
+                        if (route) window.location.href = route;
+                    } else if (e.key === 'Escape') {
+                        closeDropdown();
+                        searchInput.blur();
+                    }
+                });
+
+                searchInput.addEventListener('focus', function () {
+                    if (this.value.trim() && currentResults.length > 0) {
+                        dropdown.classList.add('show');
+                    }
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                        closeDropdown();
+                    }
+                });
             }
 
-            console.log('Encrypted link handler initialized for ' + encryptedLinks.length + ' links');
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initSearch);
+            } else {
+                initSearch();
+            }
+        })();
 
-            encryptedLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
+        // Encrypted ID click handler - decrypts IDs before navigation
+        (function () {
+            'use strict';
 
-                    const encryptedIkm = this.getAttribute('data-encrypted-Ikm');
-                    const encryptedProject = this.getAttribute('data-encrypted-project');
+            function initEncryptedLinks() {
+                // Find all links with encrypted ID data attributes
+                const encryptedLinks = document.querySelectorAll('[data-encrypted-Ikm]');
 
-                    console.log('Click on encrypted link:', { encryptedIkm, encryptedProject });
+                if (encryptedLinks.length === 0) {
+                    return;
+                }
 
-                    // Create form for POST request to decrypt endpoint
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = '/decrypt-ids';
-                    form.style.display = 'none';
+                console.log('Encrypted link handler initialized for ' + encryptedLinks.length + ' links');
 
-                    // Add CSRF token
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                    if (csrfToken) {
-                        const csrfInput = document.createElement('input');
-                        csrfInput.type = 'hidden';
-                        csrfInput.name = '_token';
-                        csrfInput.value = csrfToken;
-                        form.appendChild(csrfInput);
-                    }
+                encryptedLinks.forEach(link => {
+                    link.addEventListener('click', function (e) {
+                        e.preventDefault();
 
-                    // Add encrypted IDs
-                    if (encryptedIkm) {
-                        const IkmInput = document.createElement('input');
-                        IkmInput.type = 'hidden';
-                        IkmInput.name = 'encrypted_Ikm';
-                        IkmInput.value = encryptedIkm;
-                        form.appendChild(IkmInput);
-                    }
+                        const encryptedIkm = this.getAttribute('data-encrypted-Ikm');
+                        const encryptedProject = this.getAttribute('data-encrypted-project');
 
-                    if (encryptedProject) {
-                        const projectInput = document.createElement('input');
-                        projectInput.type = 'hidden';
-                        projectInput.name = 'encrypted_project';
-                        projectInput.value = encryptedProject;
-                        form.appendChild(projectInput);
-                    }
+                        console.log('Click on encrypted link:', { encryptedIkm, encryptedProject });
 
-                    document.body.appendChild(form);
-                    form.submit();
+                        // Create form for POST request to decrypt endpoint
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/decrypt-ids';
+                        form.style.display = 'none';
+
+                        // Add CSRF token
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                        if (csrfToken) {
+                            const csrfInput = document.createElement('input');
+                            csrfInput.type = 'hidden';
+                            csrfInput.name = '_token';
+                            csrfInput.value = csrfToken;
+                            form.appendChild(csrfInput);
+                        }
+
+                        // Add encrypted IDs
+                        if (encryptedIkm) {
+                            const IkmInput = document.createElement('input');
+                            IkmInput.type = 'hidden';
+                            IkmInput.name = 'encrypted_Ikm';
+                            IkmInput.value = encryptedIkm;
+                            form.appendChild(IkmInput);
+                        }
+
+                        if (encryptedProject) {
+                            const projectInput = document.createElement('input');
+                            projectInput.type = 'hidden';
+                            projectInput.name = 'encrypted_project';
+                            projectInput.value = encryptedProject;
+                            form.appendChild(projectInput);
+                        }
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    });
                 });
-            });
-        }
+            }
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initEncryptedLinks);
-        } else {
-            initEncryptedLinks();
-        }
-    })();
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initEncryptedLinks);
+            } else {
+                initEncryptedLinks();
+            }
+        })();
 
-    // SweetAlert2 - Global notification handler for all pages
-    @php
-    $alertType = '';
-    $alertMessage = '';
-    $alertIcon = '';
+        // SweetAlert2 - Global notification handler for all pages
+        @php
+            $alertType = '';
+            $alertMessage = '';
+            $alertIcon = '';
 
-    if(session()->has('Berhasil')) {
-        $alertType = 'success';
-        $alertMessage = 'Data berhasil disimpan';
-    } elseif(session()->has('HapusBerhasil')) {
-        $alertType = 'success';
-        $alertMessage = 'Data berhasil dihapus';
-    } elseif(session()->has('UpdateBerhasil')) {
-        $alertType = 'success';
-        $alertMessage = 'Data berhasil diperbarui';
-    } elseif(session()->has('gagalSimpan')) {
-        $alertType = 'error';
-        $alertMessage = 'Gagal menyimpan data';
-    }
-    @endphp
+            if (session()->has('Berhasil')) {
+                $alertType = 'success';
+                $alertMessage = 'Data berhasil disimpan';
+            } elseif (session()->has('HapusBerhasil')) {
+                $alertType = 'success';
+                $alertMessage = 'Data berhasil dihapus';
+            } elseif (session()->has('UpdateBerhasil')) {
+                $alertType = 'success';
+                $alertMessage = 'Data berhasil diperbarui';
+            } elseif (session()->has('gagalSimpan')) {
+                $alertType = 'error';
+                $alertMessage = 'Gagal menyimpan data';
+            }
+        @endphp
 
-    @if(!empty($alertType))
-    document.addEventListener('DOMContentLoaded', function() {
-        toastr['{{ $alertType }}']('{{ $alertMessage }}', '{{ $alertType === "success" ? "Berhasil" : "Gagal" }}', {
-            timeOut: 3000,
-            closeButton: true,
-            progressBar: true,
-            positionClass: 'toast-top-right',
-            toastClass: 'toast-simple toast-' + '{{ $alertType }}'
-        });
-    });
-    @endif
+        @if(!empty($alertType))
+             document.addEventListener('DOMContentLoaded', function() {
+                toastr['{{ $alertType }}']('{{ $alertMessage }}', '{{ $alertType === "success" ? "Berhasil" : "Gagal" }}', {
+                    timeOut: 3000,
+                    closeButton: true,
+                    progressBar: true,
+                    positionClass: 'toast-top-right',
+                    toastClass: 'toast-simple toast-' + '{{ $alertType }}'
+                });
+                });
+        @endif
     </script>
 
     <!-- Sidebar Guide and Add Button JavaScript -->
@@ -2273,7 +2553,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Initialize guide modal on page load
-        document.addEventListener('DOMContentLoaded', function() {
+         document.addEventListener('DOMContentLoaded', function() {
             // Check if we should show the guide modal (first visit)
             const guideShown = localStorage.getItem('sidebarGuideShown');
             if (!guideShown) {
@@ -2289,52 +2569,53 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     </script>
-    <script>
-const texts = [
-    "Cari Nama Ikm...",
-    "Cari Nama Project...",
-    "Ayo mulai dari sekarang!",
-    "Jangan tunda kesuksesanmu!",
-    "Langkah kecil, hasil besar!",
-    "Ide hebat dimulai di sini!",
-    "Bersama menuju sukses!",
-    "Yuk wujudkan mimpimu!",
-    "Saatnya berkembang!",
-    "Gas terus pantang mundur!"
+            <script>
+cons        t texts = [
+            "Cari IKM...",
+            "Cari Folder...",
+            "Cari Project...",
+            "Ayo mulai dari sekarang!",
+            "Jangan tunda kesuksesanmu!",
+            "Langkah kecil, hasil besar!",
+            "Ide hebat dimulai di sini!",
+            "Bersama menuju sukses!",
+            "Yuk wujudkan mimpimu!",
+            "Saatnya berkembang!",
+            "Gas terus pantang mundur!"
 ];
-
-let index = 0;
-let charIndex = 0;
+        
+        let index = 0;
+        let charIndex = 0;
 let isDeleting = false;
-
+        
 const input = document.getElementById("topSearch");
-
-function typeEffect() {
+        
+func        tion typeEffect() {
     const currentText = texts[index];
 
-    if (isDeleting) {
-        charIndex--;
-    } else {
-        charIndex++;
+            if (        isDeleting) {
+                charIndex--;
+    } el        se {
+                charIndex++;
     }
 
-    input.placeholder = currentText.substring(0, charIndex);
+            input.placeholder = currentText.substring(0, charIndex);
 
-    if (!isDeleting && charIndex === currentText.length) {
-        isDeleting = true;
-        setTimeout(typeEffect, 1500); // pause setelah selesai ngetik
-        return;
+            if (        !isDeleting && charIndex === currentText.length) {
+                isDeleting = true;
+                setTimeout(typeEffect, 1500); // pause setelah selesai ngetik
+                return;
     }
 
-    if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        index = (index + 1) % texts.length;
+            if (        isDeleting && charIndex === 0) {
+                isDeleting = false;
+                index = (index + 1) % texts.length;
     }
 
-    setTimeout(typeEffect, isDeleting ? 50 : 80);
+                    setTimeout(typeEffect, isDeleting ? 50 : 80);
 }
-
-typeEffect();
+        
+    typeEffect();
 </script>
 
     <!-- Toastr CSS -->
@@ -2351,6 +2632,76 @@ typeEffect();
     <script src="https://cdn.jsdelivr.net/npm/fslightbox@3.4.2/index.min.js"></script>
     <script src="{{ asset('assets/js/fslightbox-zoom.js') }}"></script>
 
+    <!-- Fullscreen Search Overlay (search IKM, Folder, Project) -->
+    <div id="searchOverlay" class="search-overlay" aria-hidden="true">
+        <div class="search-overlay-backdrop" id="searchOverlayBackdrop"></div>
+        <div class="search-overlay-content" role="dialog" aria-modal="true" aria-label="Pencarian">
+            <div class="search-overlay-input-wrap">
+                <i class="ti ti-search search-overlay-icon"></i>
+
+                                    <input type="search" id="topSearch" class="search-overlay-input" placeholder="Cari IKM, Folder, atau Project..." autocomplete="off" />
+                <button type="button" class="search-overlay-close" id="closeSearchBtn" title="Tutup (Esc)">
+                    <i class="ti ti-x"></i>
+                </button>
+            </div>
+            <div id="search-autocomplete-dropdown" class="search-autocomplete-dropdown"></div>
+            <div class="search-overlay-hint">
+                <span><kbd>Esc</kbd> tutup</span>
+                <span><kbd>↑</kbd> <kbd>↓</kbd> navigasi</span>
+                <span><kbd>Enter</kbd> pilih</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Search Overlay controller -->
+    <script>
+         (function() {
+            'use strict';
+
+            const openBtn = document.getElementById('openSearchBtn');
+            const overlay = document.getElementById('searchOverlay');
+            const closeBtn = document.getElementById('closeSearchBtn');
+            const backdrop = document.getElementById('searchOverlayBackdrop');
+            const searchInput = document.getElementById('topSearch');
+
+            if (!overlay || !searchInput) return;
+
+            function openOverlay() {
+                overlay.classList.add('show');
+                overlay.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('search-open');
+                setTimeout(() => searchInput.focus(), 50);
+            }
+
+            function closeOverlay() {
+                overlay.classList.remove('show');
+                overlay.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('search-open');
+                searchInput.value = '';
+                searchInput.blur();
+            }
+
+            if (openBtn) {
+                openBtn.addEventListener('click', openOverla y);
+                openBtn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openOverlay();
+                    }
+                });
+            }
+
+            if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
+            if (backdrop) backdrop.addEventListener('click', closeOverlay);
+
+             document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && overlay.classList.contains('show')) {
+                    closeOverlay();
+                }
+            });
+        })();
+    </script>
+
     @stack('scripts')
-</body>
-</html>
+
+</body></html>

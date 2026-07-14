@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Ikm;
+use App\Models\IkmFolder;
 use GuzzleHttp\Client;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
@@ -133,7 +134,7 @@ class ProjectController extends Controller
                     'nama_project' => $project->nama_project,
                     'nama_ikm' => null,
                     'type' => 'project',
-                    'route' => route('project.ikm', ['id' => $encryptedProject]),
+                    'route' => route('Ikm.index', ['project' => $encryptedProject]),
                     'encrypted_project' => $encryptedProject
                 ];
             }
@@ -165,6 +166,27 @@ class ProjectController extends Controller
                     'route' => route('detail.encrypted', ['encrypted_id' => $encryptedIkm, 'encrypted_project' => $encryptedProject]),
                     'encrypted_ikm' => $encryptedIkm,
                     'encrypted_project' => $encryptedProject
+                ];
+            }
+
+            // Search folders by name
+            $folders = IkmFolder::with('project')
+                ->where('name', 'like', "%{$query}%")
+                ->limit(10)
+                ->get();
+
+            foreach ($folders as $folder) {
+                $projectId = $folder->id_Project;
+                $route = $projectId
+                    ? route('Ikm.folder', ['project' => $projectId, 'folder_id' => $folder->id])
+                    : '#';
+
+                $results[] = [
+                    'id' => $folder->id,
+                    'name' => $folder->name,
+                    'nama_project' => $folder->project ? $folder->project->NamaProjek : null,
+                    'type' => 'folder',
+                    'route' => $route
                 ];
             }
 
