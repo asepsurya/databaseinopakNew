@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
         return [
             // Data Pribadi
             'nik' => 'required|string|min:16|max:20|regex:/^[0-9]*$/',
-            'name' => 'required|string|max:255|trim',
+            'name' => 'required|string|max:255',
             'telp' => 'required|string|max:20|regex:/^[0-9+\-\s()]*$/|unique:users,telp',
             'gender' => 'required|string|in:laki-laki,perempuan,Laki-laki,Perempuan',
             'alamat' => 'required|string|max:500',
@@ -66,7 +66,6 @@ class RegisterRequest extends FormRequest
             'name.required' => 'Nama Lengkap wajib diisi.',
             'name.string' => 'Nama Lengkap harus berupa teks.',
             'name.max' => 'Nama Lengkap tidak boleh lebih dari :max karakter.',
-            'name.trim' => 'Nama Lengkap tidak boleh memiliki spasi ekstra di awal atau akhir.',
 
             'telp.required' => 'Nomor Telepon wajib diisi.',
             'telp.string' => 'Nomor Telepon harus berupa teks.',

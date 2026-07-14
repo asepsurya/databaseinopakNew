@@ -24,7 +24,7 @@ class UpdateProfileRequest extends FormRequest
         $userId = auth()->id();
 
         return [
-            'nama' => 'required|string|max:255|trim',
+            'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
             'phone' => 'nullable|string|max:20|regex:/^[0-9+\-\s()]*$/',
             'bio' => 'nullable|string|max:1000',
@@ -43,7 +43,6 @@ class UpdateProfileRequest extends FormRequest
             'nama.required' => 'Nama wajib diisi.',
             'nama.string' => 'Nama harus berupa teks.',
             'nama.max' => 'Nama tidak boleh lebih dari :max karakter.',
-            'nama.trim' => 'Nama tidak boleh memiliki spasi ekstra di awal atau akhir.',
 
             'email.required' => 'Alamat Email wajib diisi.',
             'email.string' => 'Alamat Email harus berupa teks.',

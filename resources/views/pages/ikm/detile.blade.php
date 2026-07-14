@@ -1450,8 +1450,18 @@ document.addEventListener("DOMContentLoaded", function () {
             // Set BOTH hidden fields to ensure consistency
             document.getElementById('aiTargetField').value = fieldId;
             document.getElementById('aiOptionsTargetField').value = fieldId;
-            const promptInput = document.getElementById('aiPrompt');
-            promptInput.value = `Tuliskan konten untuk field "${fieldLabel}" yang menarik dan profesional untuk produk Ikm ini.`;
+
+            const fieldRule = aiFieldRules[fieldId];
+            const defaultInstruction = fieldRule && fieldRule.instruction
+                ? fieldRule.instruction
+                : `Tuliskan konten untuk field "${fieldLabel}" yang menarik dan profesional untuk produk Ikm ini.`;
+
+            // Set content in TinyMCE if available, otherwise use textarea
+            if (typeof tinymce !== 'undefined' && tinymce.get('aiPrompt')) {
+                tinymce.get('aiPrompt').setContent(defaultInstruction);
+            } else {
+                document.getElementById('aiPrompt').value = defaultInstruction;
+            }
 
             const modal = new bootstrap.Modal(document.getElementById('aiGenerateModal'));
             modal.show();
@@ -1470,17 +1480,16 @@ document.addEventListener("DOMContentLoaded", function () {
 Kriteria:
 1. Nama merek harus **mudah diingat, catchy, dan terdengar profesional**.
 2. Nama boleh terinspirasi dari **bahasa asing (Inggris, Latin, Jepang, dsb)**, bahasa Indonesia, atau gabungan keduanya menjadi satu kata atau frasa yang unik.
-3. Nama terdengar **modern, elegan, dan relevan** dengan tipe produk dan target audiens (misal: anak muda, profesional, keluarga).
+3. Nama terdengar **modern, elegan, dan relevan** dengan tipe produk dan target audiens.
 4. Panjangnya **tidak lebih dari 2 kata atau 1 kata gabungan**.
-5. Sertakan **tagline singkat (opsional)** yang menggambarkan nilai atau keunggulan produk secara jelas.
-6. Hindari nama yang terlalu generik, sulit dieja, atau terdengar murahan.
-7. Pastikan nama tersebut **belum umum digunakan** untuk produk sejenis di pasar Indonesia.
-8.Nama harus cocok untuk branding jangka panjang dan mudah dipakai sebagai domain atau media sosial.
-9.Nama harus mencerminkan karakter produk, seperti rasa, fungsi, atau keunikan produk.
-10.Nama Boleh terinspirasi dari **Nama Ikm atau lokasi**
-11. Format output harus:
-<p><strong>Nama Merek</strong><br><em>Tagline singkat (opsional)</em></p>
-12. Tambahkan **alasan singkat** kenapa nama tersebut cocok untuk produk.  `
+5. Hindari nama yang terlalu generik, sulit dieja, atau terdengar murahan.
+6. Pastikan nama tersebut **belum umum digunakan** untuk produk sejenis di pasar Indonesia.
+7. Nama harus cocok untuk branding jangka panjang dan mudah dipakai sebagai domain atau media sosial.
+8. Nama harus mencerminkan karakter produk.
+9. Format output WAJIB menggunakan <li>:
+
+<p><strong>Nama Merek</strong> - <em>Alasan singkat mengapa nama ini cocok</em></p></li>
+`
         },
 
         jenisProduk: {
@@ -1517,14 +1526,12 @@ Gunakan <ul><li>.`
 
  kelebihan: {
     title: 'Kelebihan Produk',
-    instruction: `
-Buatkan 5 poin kelebihan produk dengan format PERSIS seperti berikut:
+    instruction: `Buatkan 3 variasi 4 poin kelebihan produk dengan format PERSIS seperti berikut:
 
 1. Poin pertama
 2. Poin kedua
 3. Poin ketiga
 4. Poin keempat
-5. Poin kelima
 
 Aturan wajib:
 - Gunakan angka 1 sampai 5 diikuti titik dan spasi.
@@ -1533,6 +1540,7 @@ Aturan wajib:
 - Tidak boleh menggunakan tanda bullet (- atau •).
 - Tidak boleh menambahkan teks pembuka atau penutup.
 - Fokus pada manfaat singkat dan jelas.
+- Langsung tampilkan hasil akhir tanpa penjelasan apa pun.
 `
 },
 
@@ -1622,8 +1630,8 @@ async function generateAIMultiple() {
     const loading = document.getElementById('aiLoading');
     const generateBtn = document.getElementById('generateAIBtn');
 
-    if (!targetField || !prompt) {
-        alert('Mohon masukkan prompt terlebih dahulu.');
+    if (!targetField) {
+        alert('Terjadi kesalahan. Silakan coba lagi.');
         return;
     }
 
@@ -1656,12 +1664,23 @@ async function generateAIMultiple() {
     });
 
     const fieldRule = aiFieldRules[targetField];
+    // Get user's custom prompt from textarea (TinyMCE if available, otherwise fallback to textarea)
+    let userPrompt = '';
+    if (typeof tinymce !== 'undefined' && tinymce.get('aiPrompt')) {
+        userPrompt = tinymce.get('aiPrompt').getContent({format: 'text'}).trim();
+    } else {
+        userPrompt = document.getElementById('aiPrompt').value;
+    }
+
+    // Use user's prompt if not empty, otherwise use default instruction
+    const finalPrompt = userPrompt || fieldRule?.instruction || `Tuliskan konten untuk field "${targetField}" yang menarik dan profesional.`;
+
     const enhancedPrompt = `
 ${contextText}
 
 Konteks kolom: ${fieldRule?.title || targetField}
 
-${fieldRule?.instruction || prompt}
+${finalPrompt}
 
 Gunakan format HTML:
 - <strong> untuk teks penting
@@ -1716,7 +1735,7 @@ dan
             }
         }
 
-        const options = parseOptions(result);
+        const options = parseOptions(result, targetField);
         displayOptions(options.length > 0 ? options : [result]);
 
         const generateModalEl = document.getElementById('aiGenerateModal');
@@ -1738,8 +1757,16 @@ dan
 }
 
 // Parse Options from AI Response
-function parseOptions(result) {
+function parseOptions(result, targetField = null) {
     result = result.trim();
+
+    // Clean up list formatting for merk and kelebihan fields
+    if (targetField === 'merk' || targetField === 'kelebihan') {
+        // Remove numbered list patterns (1., 2., etc.)
+        result = result.replace(/^\d+[\.\)]\s*/gm, '');
+        // Remove bullet points
+        result = result.replace(/^[\-\*•]\s*/gm, '');
+    }
 
     const optionStartMarker = '===OPTION_START===';
     const optionEndMarker = '===OPTION_END===';
@@ -1754,6 +1781,11 @@ function parseOptions(result) {
                 option = option.split(optionEndMarker)[0];
             }
             option = option.trim();
+            // Additional cleanup for merk and kelebihan
+            if (targetField === 'merk' || targetField === 'kelebihan') {
+                option = option.replace(/^\d+[\.\)]\s*/gm, '');
+                option = option.replace(/^[\-\*•]\s*/gm, '');
+            }
             if (option) options.push(formatHTML(option));
         }
         return options;
@@ -1802,9 +1834,39 @@ function displayOptions(options) {
         card.className = 'ai-option-card position-relative';
         card.setAttribute('data-index', index);
         card.onclick = function() { selectOption(this, targetField); };
+
+        // Extract brand name for HAKI check (only for merk and tagline fields)
+        let hakiButton = '';
+        if (targetField === 'merk' || targetField === 'tagline') {
+            // Try to extract brand name from option content - get only the text inside <strong> tag
+            let brandName = '';
+            const strongMatch = option.match(/<strong[^>]*>([^<]*)<\/strong>/i);
+            if (strongMatch && strongMatch[1]) {
+                brandName = strongMatch[1].trim();
+            } else {
+                // Fallback: remove all HTML tags and clean up
+                brandName = option.replace(/<[^>]*>/g, '').trim();
+                brandName = brandName.replace(/^\d+[\.\)]\s*/, '').split('-')[0].trim();
+            }
+
+            if (brandName && brandName.length > 0) {
+                const encodedKeyword = encodeURIComponent(brandName);
+                hakiButton = `
+                    <a href="https://haki.id/detail?keyword=${encodedKeyword}"
+                       target="_blank"
+                       class="btn btn-sm btn-outline-primary btn-haki-check"
+                       title="Cek Status Merek di HAKI Indonesia"
+                       onclick="event.stopPropagation();">
+                        <i class="ti ti-shield-check me-1"></i> Cek HAKI
+                    </a>
+                `;
+            }
+        }
+
         card.innerHTML = `
             <span class="option-number">${index + 1}</span>
             <div class="option-content">${option}</div>
+            ${hakiButton}
         `;
         container.appendChild(card);
     });
@@ -1818,10 +1880,20 @@ function selectOption(card, targetField) {
 
         const optionIndex = card.getAttribute('data-index');
         const options = document.querySelectorAll('.ai-option-card');
-        const selectedOption = options[optionIndex].querySelector('.option-content').innerHTML;
+        let selectedOption = options[optionIndex].querySelector('.option-content').innerHTML;
 
         console.log('Selecting option for field:', targetField);
         console.log('Selected option:', selectedOption);
+
+        // For 'merk' field, only extract the brand name (inside <strong> tag)
+        if (targetField === 'merk') {
+            const strongMatch = selectedOption.match(/<strong[^>]*>([^<]*)<\/strong>/i);
+            if (strongMatch && strongMatch[1]) {
+                selectedOption = '<p><strong>' + strongMatch[1].trim() + '</strong></p>';
+            }
+        }
+
+        console.log('Processed option:', selectedOption);
 
         // Check if TinyMCE editor exists
         const editor = typeof tinymce !== 'undefined' ? tinymce.get(targetField) : null;
@@ -1904,12 +1976,23 @@ async function regenerateOptions() {
     });
 
     const fieldRule = aiFieldRules[targetField];
+    // Get user's custom prompt from textarea (TinyMCE if available, otherwise fallback to textarea)
+    let userPrompt = '';
+    if (typeof tinymce !== 'undefined' && tinymce.get('aiPrompt')) {
+        userPrompt = tinymce.get('aiPrompt').getContent({format: 'text'}).trim();
+    } else {
+        userPrompt = document.getElementById('aiPrompt').value;
+    }
+
+    // Use user's prompt if not empty, otherwise use default instruction
+    const finalPrompt = userPrompt || fieldRule?.instruction || `Tuliskan konten untuk field "${targetField}" yang menarik dan profesional.`;
+
     const enhancedPrompt = `
 ${contextText}
 
 Konteks kolom: ${fieldRule?.title || targetField}
 
-${fieldRule?.instruction || prompt}
+${finalPrompt}
 
 Gunakan format HTML:
 - <strong> untuk teks penting
@@ -1962,7 +2045,7 @@ dan
             }
         }
 
-        const options = parseOptions(result);
+        const options = parseOptions(result, targetField);
         displayOptions(options.length > 0 ? options : ['<p>Opsi tidak tersedia. Silakan coba lagi.</p>']);
 
     } catch (error) {
@@ -2096,34 +2179,61 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- AI Generate Modal -->
 <div class="modal fade" id="aiGenerateModal" tabindex="-1" aria-labelledby="aiGenerateModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="aiGenerateModalLabel"><i class="ti ti-sparkles me-2"></i>Generate with AI</h5>
-                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
-                    <span class="ti ti-x"></span>
-                </button>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light-primary border-0 pb-4">
+                <div class="d-flex align-items-center flex-grow-1">
+                    <div class="avatar-sm bg-primary-subtle rounded-circle me-3 d-flex align-items-center justify-content-center">
+                        <i class="ti ti-sparkles text-primary fs-5"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="modal-title fw-bold text-dark" id="aiGenerateModalLabel">Generate with AI</h5>
+                        <p class="text-muted small mb-0">Kustomisasi prompt untuk menghasilkan konten yang lebih sesuai</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body pt-3">
                 <input type="hidden" id="aiTargetField" value="">
+
                 <div class="mb-3">
-                    <label for="aiPrompt" class="form-label">Prompt:</label>
-                    <textarea class="form-control" id="aiPrompt" rows="4" placeholder="Masukkan instruksi untuk AI... (contoh: Tuliskan tagline menarik untuk produk makanan sehat)"></textarea>
+                    <label for="aiPrompt" class="form-label fw-semibold text-dark mb-2">
+                        <i class="ti ti-pencil me-1"></i> Custom Prompt
+                    </label>
+                    <textarea
+                        class="form-control"
+                        id="aiPrompt"
+                        rows="8"
+                    ></textarea>
                 </div>
-                <div class="alert alert-soft-info" role="alert">
-                    <small><i class="ti ti-info-circle me-1"></i> AI akan menghasilkan beberapa opsi teks berdasarkan instruksi Anda. Pilih yang paling sesuai.</small>
+
+                <div class="alert alert-soft-primary bg-primary-soft border-0" role="alert">
+                    <div class="d-flex align-items-start">
+                        <i class="ti ti-lightbulb text-primary me-2 mt-1"></i>
+                        <div>
+                            <strong>Tips:</strong>
+                            <ul class="mb-0 mt-1 small">
+                                <li>Semakin spesifik instruksi, hasil yang lebih akurat</li>
+                                <li>Tambahkan konteks tentang produk atau target pasar</li>
+                                <li>Gunakan bahasa Indonesia atau campuran dengan bahasa Inggris</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-                <div id="aiLoading" style="display:none;">
-                    <div class="d-flex align-items-center">
-                        <div class="spinner-border spinner-border-sm me-2" role="status">
+
+                <div id="aiLoading" class="d-none">
+                    <div class="d-flex align-items-center justify-content-center py-3">
+                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                         <small class="text-muted">Sedang menghasilkan opsi...</small>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Batal</button>
+            <div class="modal-footer bg-light-secondary border-0">
+                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">
+                    <i class="ti ti-x me-1"></i> Batal
+                </button>
                 <button class="btn btn-primary" type="button" id="generateAIBtn" onclick="generateAIMultiple()">
                     <i class="ti ti-sparkles me-1"></i> Generate Opsi
                 </button>
@@ -2132,23 +2242,69 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
 </div>
 
+<script>
+// Initialize TinyMCE for AI Prompt textarea when modal opens
+document.getElementById('aiGenerateModal').addEventListener('shown.bs.modal', function () {
+    if (typeof tinymce !== 'undefined' && !tinymce.get('aiPrompt')) {
+        tinymce.init({
+            selector: '#aiPrompt',
+            height: 280,
+            menubar: false,
+            plugins: 'lists link anchor charmap',
+            toolbar: 'bold italic underline strikethrough | bullist numlist | link | undo redo',
+            branding: false,
+            resize: true,
+            placeholder: 'Masukkan instruksi khusus untuk AI...\n\nContoh: Buatkan 5 nama merek yang berbeda untuk produk cemilan sehat ini dengan tema alam',
+            content_style: 'body {  font-size: 14px; line-height: 1.6; }',
+            setup: function(editor) {
+                editor.on('init', function() {
+                    // Set initial content if there's a value
+                    const existingValue = document.getElementById('aiPrompt').value;
+                    if (existingValue) {
+                        editor.setContent(existingValue);
+                    }
+                });
+            }
+        });
+    }
+});
+
+// Destroy TinyMCE when modal closes
+document.getElementById('aiGenerateModal').addEventListener('hidden.bs.modal', function () {
+    if (typeof tinymce !== 'undefined' && tinymce.get('aiPrompt')) {
+        tinymce.get('aiPrompt').destroy();
+    }
+});
+</script>
+
 <!-- AI Description Options Modal -->
 <div class="modal fade" id="aiOptionsModal" tabindex="-1" aria-labelledby="aiOptionsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="aiOptionsModalLabel"><i class="ti ti-list-check me-2"></i>Pilih Opsi Deskripsi</h5>
-                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close">
-                    <span class="ti ti-x"></span>
-                </button>
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-light-primary border-0">
+                <div class="d-flex align-items-center flex-grow-1">
+                    <div class="avatar-sm bg-primary-subtle rounded-circle me-3 d-flex align-items-center justify-content-center">
+                        <i class="ti ti-list-check text-primary fs-5"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="modal-title fw-bold text-dark" id="aiOptionsModalLabel">Pilih Opsi Deskripsi</h5>
+                        <p class="text-muted small mb-0">Pilih salah satu opsi di bawah atau generate ulang</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="aiOptionsTargetField" value="">
-                <p class="text-muted mb-3">Pilih salah satu opsi di bawah ini atau <button type="button" class="btn btn-link p-0" onclick="regenerateOptions()">generate ulang</button></p>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <p class="text-muted mb-0">Pilih salah satu opsi di bawah ini atau </p>
+                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="regenerateOptions()">
+                        <i class="ti ti-refresh me-1"></i> Generate Ulang
+                    </button>
+                </div>
 
-                <div id="aiOptionsLoading" style="display:none;">
+                <div id="aiOptionsLoading" class="d-none">
                     <div class="d-flex align-items-center justify-content-center py-4">
-                        <div class="spinner-border spinner-border-sm me-2" role="status">
+                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                         <small class="text-muted">Sedang menghasilkan opsi baru...</small>
@@ -2159,8 +2315,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <!-- Options will be inserted here -->
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Batal</button>
+            <div class="modal-footer bg-light-secondary border-0">
+                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">
+                    <i class="ti ti-x me-1"></i> Batal
+                </button>
             </div>
         </div>
     </div>
@@ -2168,6 +2326,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- AI Loading Indicator (for editor) -->
 <style>
+/* Modal enhancements */
+.modal-header.bg-light-primary {
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8f4fd 100%);
+}
+[data-bs-theme="dark"] .modal-header.bg-light-primary {
+    background: linear-gradient(135deg, #1e2433 0%, #1a2433 100%);
+}
+.modal-header.bg-light-primary .modal-title {
+    font-size: 1.1rem;
+}
+.bg-primary-soft {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+[data-bs-theme="dark"] .bg-primary-soft {
+    background-color: rgba(99, 102, 241, 0.15);
+}
+.modal-content.border-0 {
+    border-radius: 12px;
+    overflow: hidden;
+}
+.modal-footer.bg-light-secondary {
+    background-color: #f8f9fa;
+}
+[data-bs-theme="dark"] .modal-footer.bg-light-secondary {
+    background-color: #2a2c40;
+}
+
 .ai-generate-btn {
     font-size: 11px;
     padding: 4px 10px;
@@ -2250,6 +2435,26 @@ document.addEventListener('DOMContentLoaded', function() {
 .ai-loading-overlay::after .spinner-border {
     width: 3rem;
     height: 3rem;
+}
+/* HAKI Check Button Styles */
+.btn-haki-check {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    z-index: 5;
+}
+.btn-haki-check i {
+    font-size: 12px;
+}
+.btn-haki-check:hover {
+    background: #0d6efd;
+    color: white;
+}
+.ai-option-card {
+    min-height: 80px;
 }
 </style>
 
