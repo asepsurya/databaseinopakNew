@@ -19,11 +19,10 @@ use Illuminate\Support\Facades\Validator;
 class MyController extends Controller
 {
      use CreatesNotifications;
-    // Ollama Proxy - Forward requests to myollama.scrollwebid.com
-    // Maps /api/generate to /api/tags
+    // Ollama Proxy
     public function ollamaProxy(Request $request, $endpoint)
     {
-        $targetUrl = 'https://myollama.scrollwebid.com';
+        $targetUrl = config('services.ai.url');
 
         // Map /api/generate to /api/tags
         $mappedEndpoint = str_replace('api/generate', 'api/tags', $endpoint);

@@ -18,6 +18,10 @@ class Project extends Model
         return $this->hasMany('App\\Models\\Ikm','id_Project');
     }
 
+    public function ikmFolders(){
+        return $this->hasMany('App\\Models\\IkmFolder', 'id_Project');
+    }
+
     public function produkDesigns(){
         return $this->hasManyThrough('App\Models\ProdukDesign', 'App\\Models\\Ikm', 'id_Project', 'id_Ikm');
     }

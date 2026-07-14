@@ -45,11 +45,10 @@ class ProjectController extends Controller
 
          $data = $query->orderBy('id', 'DESC')->paginate(20)->appends(request()->query());
 
-         return view('pages.project.view',[
-             'title'=>'Project',
-             'projects'=>$data,
-             'searchIkm'=>Ikm::all()
-         ]);
+          return view('pages.project.view',[
+              'title'=>'Project',
+              'projects'=>$data
+          ]);
        }
     public function store(StoreProjectRequest $request){
         $validasi = $request->validated();
@@ -145,12 +144,13 @@ class ProjectController extends Controller
                 ->limit(10)
                 ->get();
 
+            $projectIds = $ikmData->pluck('id_project')->filter()->unique();
+            $projectsMap = Project::whereIn('id', $projectIds)->get()->keyBy('id');
+
             foreach ($ikmData as $ikm) {
-                // Get project name for this IKM
                 $projectName = null;
-                if ($ikm->id_project) {
-                    $project = Project::find($ikm->id_project);
-                    $projectName = $project ? $project->NamaProjek : null;
+                if ($ikm->id_project && isset($projectsMap[$ikm->id_project])) {
+                    $projectName = $projectsMap[$ikm->id_project]->NamaProjek;
                 }
 
                 // Encrypt the IDs for secure routing

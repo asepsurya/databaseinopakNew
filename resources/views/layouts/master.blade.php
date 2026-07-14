@@ -168,6 +168,93 @@
             color: #f46a6a !important;
         }
 
+        /* Custom Tailwind-inspired SweetAlert Styles */
+        .swal2-tailwind-popup {
+            border-radius: 12px !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+            font-family: inherit !important;
+            border: 1px solid #e5e7eb !important;
+        }
+        .swal2-tailwind-title {
+            font-weight: 600 !important;
+            font-size: 16px !important;
+            color: #111827 !important;
+        }
+        .swal2-tailwind-content {
+            font-size: 14px !important;
+            color: #4b5563 !important;
+            line-height: 1.5 !important;
+        }
+        .swal2-tailwind-confirm {
+            border-radius: 8px !important;
+            font-weight: 500 !important;
+            padding: 8px 20px !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.2s ease !important;
+        }
+        .swal2-tailwind-confirm:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+        .swal2-tailwind-cancel {
+            border-radius: 8px !important;
+            font-weight: 500 !important;
+            padding: 8px 20px !important;
+            border: 1px solid #d1d5db !important;
+            background: #fff !important;
+            color: #374151 !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.2s ease !important;
+        }
+        .swal2-tailwind-cancel:hover {
+            background: #f9fafb !important;
+            transform: translateY(-1px) !important;
+        }
+        .swal2-tailwind-warning-icon {
+            border-color: #fbbf24 !important;
+            color: #f59e0b !important;
+        }
+        .swal2-tailwind-danger-icon {
+            border-color: #fca5a5 !important;
+            color: #ef4444 !important;
+        }
+        .swal2-tailwind-info-icon {
+            border-color: #93c5fd !important;
+            color: #3b82f6 !important;
+        }
+
+        /* Dark mode support for Tailwind SweetAlert */
+        [data-bs-theme="dark"] .swal2-tailwind-popup,
+        .dark .swal2-tailwind-popup,
+        body.dark .swal2-tailwind-popup {
+            background: #1f2937 !important;
+            color: #f9fafb !important;
+            border-color: #374151 !important;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3) !important;
+        }
+        [data-bs-theme="dark"] .swal2-tailwind-title,
+        .dark .swal2-tailwind-title,
+        body.dark .swal2-tailwind-title {
+            color: #f9fafb !important;
+        }
+        [data-bs-theme="dark"] .swal2-tailwind-content,
+        .dark .swal2-tailwind-content,
+        body.dark .swal2-tailwind-content {
+            color: #d1d5db !important;
+        }
+        [data-bs-theme="dark"] .swal2-tailwind-cancel,
+        .dark .swal2-tailwind-cancel,
+        body.dark .swal2-tailwind-cancel {
+            background: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #f3f4f6 !important;
+        }
+        [data-bs-theme="dark"] .swal2-tailwind-cancel:hover,
+        .dark .swal2-tailwind-cancel:hover,
+        body.dark .swal2-tailwind-cancel:hover {
+            background: #4b5563 !important;
+        }
+
         /* Neo Theme Sidebar Add Button Styles */
         .btn-neo-add {
             background: linear-gradient(135deg, #5b5b5b 0%, #3a3a3a 100%) !important;

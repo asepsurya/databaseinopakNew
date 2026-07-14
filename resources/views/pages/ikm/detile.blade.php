@@ -1674,13 +1674,13 @@ Pisahkan setiap variasi dengan:
 dan
 ===OPTION_END===
 `;
-// ollama run gemini-3-flash-preview  gpt-oss:120b-cloud
+// AI Generation
     try {
-        const res = await fetch('https://myollama.scrollwebid.com/api/generate', {
+        const res = await fetch('{{ config('services.ai.url') }}/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gemini-3-flash-preview',
+                model: '{{ config('services.ai.model_primary') }}',
                 prompt: enhancedPrompt,
                 stream: true,
                 web_search: { enabled: true, search_depth: 'high' },
@@ -1924,11 +1924,11 @@ dan
 `;
 
     try {
-        const res = await fetch('https://myollama.scrollwebid.com/api/generate', {
+        const res = await fetch('{{ config('services.ai.url') }}/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'gpt-oss:120b-cloud',
+                model: '{{ config('services.ai.model_secondary') }}',
                 prompt: enhancedPrompt,
                 stream: true,
                 web_search: { enabled: true, search_depth: 'high' },

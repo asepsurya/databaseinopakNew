@@ -23,7 +23,7 @@ class StoreIkmRequest extends FormRequest
     {
         return [
             // Data Pemilik IKM
-            'nama' => 'required|string|max:255|trim',
+            'nama' => 'required|string|max:255',
             'gender' => 'required|string|in:laki-laki,perempuan,Laki-laki,Perempuan',
             'alamat' => 'required|string|max:500',
             'id_provinsi' => 'required|integer|exists:provinces,id',
@@ -49,7 +49,7 @@ class StoreIkmRequest extends FormRequest
             'other' => 'nullable|string|max:1000',
 
             // Data Perizinan
-            'namaUsaha' => 'required|string|max:255|trim',
+            'namaUsaha' => 'required|string|max:255',
             'noNIB' => 'nullable|string|max:50',
             'noISO' => 'nullable|string|max:50',
             'noPIRT' => 'nullable|string|max:50',

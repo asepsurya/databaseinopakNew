@@ -586,8 +586,7 @@ class DetileIkmController extends Controller
     public function publik_cots(){
     return view('pages.public-cots.cots_public',[
         'title'=>'Form COTS',
-        'dataIkm'=>Ikm::all(),
-        'project'=>Project::all(),
+        'project'=>Project::select('id', 'namaProject')->orderBy('namaProject')->get(),
         'provinsi'=>province::all(),
 
     ]);

@@ -34,5 +34,11 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    
+    'ai' => [
+        'url'             => env('AI_SERVER_URL', 'https://myollama.scrollwebid.com'),
+        'model_primary'   => env('AI_MODEL_PRIMARY', 'gemini-3-flash-preview'),
+        'model_secondary' => env('AI_MODEL_SECONDARY', 'gpt-oss:120b-cloud'),
+    ],
 
 ];

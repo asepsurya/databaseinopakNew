@@ -73,7 +73,17 @@ Route::post('/project/create',[ProjectController::class,'store'])->middleware('a
 Route::post('/project/update',[ProjectController::class,'update'])->middleware('auth');
 Route::delete('/project/hapus/{id}',[ProjectController::class,'hapus'])->middleware('auth');
 //menu Ikm
+Route::get('/project/dataIkm/folder-tree',[IkmController::class,'folderTree'])->middleware('auth')->name('ikm.folderTree');
 Route::get('/project/dataIkm/{project:id}',[IkmController::class,'view'])->middleware('auth')->name('Ikm.index');
+Route::get('/project/dataIkm/{project}/folder/{folder_id}',[IkmController::class,'view'])->middleware('auth')->name('Ikm.folder');
+Route::post('/project/dataIkm/createFolder',[IkmController::class,'createFolder'])->middleware('auth')->name('ikm.createFolder');
+Route::post('/project/dataIkm/deleteFolder',[IkmController::class,'deleteFolder'])->middleware('auth')->name('ikm.deleteFolder');
+Route::post('/project/dataIkm/renameFolder',[IkmController::class,'renameFolder'])->middleware('auth')->name('ikm.renameFolder');
+Route::post('/project/dataIkm/moveFolderAction',[IkmController::class,'moveFolderAction'])->middleware('auth')->name('ikm.moveFolderAction');
+Route::post('/project/dataIkm/folder/uploadDocument',[IkmController::class,'uploadFolderDocument'])->middleware('auth')->name('ikm.folder.uploadDocument');
+Route::delete('/project/dataIkm/folder/{folder}/document/{document}',[IkmController::class,'deleteFolderDocument'])->middleware('auth')->name('ikm.folder.deleteDocument');
+Route::post('/project/dataIkm/moveIkm',[IkmController::class,'moveIkm'])->middleware('auth')->name('ikm.move');
+
 Route::get('/project/dataIkm/Ikm/{ikm}/edit',[IkmController::class,'edit'])->middleware('auth')->name('ikm.edit');
 Route::post('/project/dataIkm/Ikm/update',[IkmController::class,'UpdateIkm'])->middleware('auth')->name('ikm.update');
 Route::post('/project/dataIkm/Ikm/{id}/update',[DetileIkmController::class,'ubahFotoIkm'])->middleware('auth')->name('ikm.updatePhoto');
@@ -145,7 +155,7 @@ Route::get('/clean', function() {
     }
     });
 
-// Ollama Proxy - Forward /api/generate to /api/tags on myollama.scrollwebid.com
+// Ollama Proxy
 Route::any('/ollama/{any}', [MyController::class, 'ollamaProxy'])->where('any', '.*');
 
 // Ollama Proxy - Forward /api/generate to /api/tags

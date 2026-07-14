@@ -35,4 +35,8 @@ class Ikm extends Model
         return $this->belongsTo("App\Models\Project","id_Project");
     }
 
+    public function folder(){
+        return $this->belongsTo("App\Models\IkmFolder", "folder_id");
+    }
+
 }

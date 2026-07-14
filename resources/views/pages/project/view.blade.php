@@ -336,10 +336,10 @@
                             <span class="ti ti-times fs--1"></span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <form action="/project/update" method="POST" id="updateProjectForm-{{ $project->id }}">
-                            @csrf
-                            <input type="text" name="id" hidden value="{{ $project->id }}">
+                    <form action="/project/update" method="POST" id="updateProjectForm-{{ $project->id }}">
+                        @csrf
+                        <input type="text" name="id" hidden value="{{ $project->id }}">
+                        <div class="modal-body">
                             <div class="row">
                                 <div class="mb-3">
                                     <label for="projectName-{{ $project->id }}" class="form-label">Nama Projek</label>
@@ -359,9 +359,9 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-primary" type="submit">Simpan</button>
-                            </form>
                             <button class="btn btn-outline-primary" type="button" data-bs-dismiss="modal">Batal</button>
                         </div>
+                    </form>
                 </div>
             </div>
         </div>
