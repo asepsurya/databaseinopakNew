@@ -823,7 +823,7 @@
 
                     {{-- <span id="sidebarToggleBtn"></span> --}}
                     <!-- Search Box (full-width on desktop, icon-only on mobile) -->
-                    <div id="search-box" class="app-search d-none d-lg-flex flex-grow-1 position-relative mx-2">
+                    <div id="search-box" class=" d-none d-lg-flex flex-grow-1 position-relative mx-2">
                         <button type="button" id="openSearchBtn" data-search-open class="form-control rounded-pill topbar-search w-100 d-flex align-items-center gap-2 text-start" aria-label="Buka pencarian">
                             <i class="ti ti-search text-muted"></i>
                             <span class="text-muted fw-normal text-truncate">Cari IKM, Folder, Project...</span>
