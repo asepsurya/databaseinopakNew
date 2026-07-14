@@ -822,16 +822,14 @@
                     </button> --}}
 
                     {{-- <span id="sidebarToggleBtn"></span> --}}
-                    <!-- Search Box (trigger for fullscreen overlay) -->
-                    <div id="search-box" class="app-search d-flex position-relative">
-                        <button type="button" id="openSearchBtn"
-                            class="form-control rounded-pill topbar-search d-flex align-items-center gap-2 text-start"
-                            aria-label="Buka pencarian">
+                    <!-- Search Box (full-width on desktop, icon-only on mobile) -->
+                    <div id="search-box" class="app-search d-none d-lg-flex flex-grow-1 position-relative mx-2">
+                        <button type="button" id="openSearchBtn" data-search-open class="form-control rounded-pill topbar-search w-100 d-flex align-items-center gap-2 text-start" aria-label="Buka pencarian">
+                            <i class="ti ti-search text-muted"></i>
                             <span class="text-muted fw-normal text-truncate">Cari IKM, Folder, Project...</span>
-                            <i class="ti ti-search ms-auto text-muted"></i>
+                            <i class="ti ti-arrow-up-right ms-auto text-muted"></i>
                         </button>
                     </div>
-
 
                 </div>
 
@@ -946,6 +944,11 @@
                             </a>
                         </div>
                     @endif
+
+                    <!-- Mobile search icon (right side, near user) -->
+                    <button type="button" id="openSearchBtnMobile" data-search-open class="btn btn-link text-muted d-lg-none px-1 d-flex align-items-center me-1" aria-label="Cari">
+                        <i class="ti ti-search fs-18"></i>
+                    </button>
 
                     <!-- User Profile -->
                     <div class="topbar-item nav-user">
@@ -2570,7 +2573,7 @@
         });
     </script>
             <script>
-cons        t texts = [
+const texts = [
             "Cari IKM...",
             "Cari Folder...",
             "Cari Project...",
@@ -2590,12 +2593,12 @@ let isDeleting = false;
         
 const input = document.getElementById("topSearch");
         
-func        tion typeEffect() {
+function typeEffect() {
     const currentText = texts[index];
 
             if (        isDeleting) {
                 charIndex--;
-    } el        se {
+    } else {
                 charIndex++;
     }
 
@@ -2658,7 +2661,6 @@ func        tion typeEffect() {
          (function() {
             'use strict';
 
-            const openBtn = document.getElementById('openSearchBtn');
             const overlay = document.getElementById('searchOverlay');
             const closeBtn = document.getElementById('closeSearchBtn');
             const backdrop = document.getElementById('searchOverlayBackdrop');
@@ -2681,15 +2683,15 @@ func        tion typeEffect() {
                 searchInput.blur();
             }
 
-            if (openBtn) {
-                openBtn.addEventListener('click', openOverla y);
-                openBtn.addEventListener('keydown', function(e) {
+            document.querySelectorAll('[data-search-open]').forEach(function(btn) {
+                btn.addEventListener('click', openOverlay);
+                btn.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         openOverlay();
                     }
                 });
-            }
+            });
 
             if (closeBtn) closeBtn.addEventListener('click', closeOverlay);
             if (backdrop) backdrop.addEventListener('click', closeOverlay);
